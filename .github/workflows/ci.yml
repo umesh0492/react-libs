@@ -1,0 +1,114 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Required for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write       # upload Pages artifact
+  id-token: write    # OIDC token for trusted deployment
+
+jobs:
+  # ── 1. Validate ─────────────────────────────────────────────────────────────
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      PERF_P95_THRESHOLD: 400
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@umesh0492'
+
+      - name: Global CI Cache (Coverage, Vitest)
+        uses: actions/cache@v4
+        with:
+          path: |
+            coverage
+            node_modules/.cache/vitest
+          key: ${{ runner.os }}-ci-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ci-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-ci-
+
+      - name: Install Dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Type Definitions Check
+        run: npx tsc --noEmit
+
+      - name: Lint (Static Analysis & Custom Rules)
+        run: npm run lint
+
+      - name: Verify Component Exports
+        run: node scripts/check-exports.mjs
+
+      - name: Performance Gate (P95 Enforcement)
+        run: npm run perf
+
+      - name: Execute Vitest (Coverage + Interaction Tests on Changed Files)
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            npx vitest run --changed origin/main --coverage --passWithNoTests
+          else
+            npx vitest run --changed HEAD~1 --coverage --passWithNoTests
+          fi
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Upload Storybook to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: storybook-static
+
+  # # ── 2. AI Code Review (PRs only) ──────────────────────────────────────────
+  # ai-review:
+  #   if: github.event_name == 'pull_request'
+  #   runs-on: self-hosted
+  #   permissions:
+  #     contents: read
+  #     pull-requests: write
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  # 
+  #     - name: AI PR Reviewer (Powered by Gemini Free Tier)
+  #       uses: google-gemini/gemini-review-action@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  #       with:
+  #         model: 'gemini-1.5-flash'
+  #         review_comment_languge: en-US
+
+  # ── 3. Deploy (main only, after CI passes) ──────────────────────────────────
+  deploy:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

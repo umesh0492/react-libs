@@ -1,0 +1,25 @@
+/*
+ * Storybook Preview Entry CSS
+ *
+ * This file is the CSS entry point for the Storybook preview environment.
+ * It must:
+ *   1. Import Tailwind v4 first (generates all utility classes)
+ *   2. Then import the shared design token layer (theme.css)
+ *
+ * Consuming apps have their own equivalent entry:
+ *   @import "tailwindcss";
+ *   @import "@umesh0492/react-libs/styles/theme.css";
+ */
+
+@import "tailwindcss";
+@import "../src/styles/theme.css";
+
+/* ─── Storybook canvas reset ─────────────────────────────────── */
+/* Ensure the Storybook preview iframe body uses our token system */
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

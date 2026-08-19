@@ -1,0 +1,906 @@
+{
+  "generatedAt": "2026-05-22 16:25:35 UTC",
+  "totalWallMs": 13585,
+  "global": {
+    "count": 618,
+    "passing": 618,
+    "failing": 0,
+    "skipped": 0,
+    "mean": 15.9,
+    "p50": 1.5,
+    "p95": 99,
+    "p99": 181.5,
+    "max": 314.3,
+    "min": 0,
+    "totalWallMs": 13585
+  },
+  "components": [
+    {
+      "component": "Overlays / Dropdown menu",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 174.6,
+      "p50": 34.8,
+      "p95": 314.3,
+      "p99": 314.3
+    },
+    {
+      "component": "Feedback / Toast",
+      "count": 10,
+      "pass": 10,
+      "fail": 0,
+      "mean": 41.6,
+      "p50": 13.5,
+      "p95": 272.3,
+      "p99": 272.3
+    },
+    {
+      "component": "Feedback / Toaster",
+      "count": 5,
+      "pass": 5,
+      "fail": 0,
+      "mean": 91.2,
+      "p50": 82.4,
+      "p95": 207.8,
+      "p99": 207.8
+    },
+    {
+      "component": "Forms / Radio group",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 130.6,
+      "p50": 57.5,
+      "p95": 203.8,
+      "p99": 203.8
+    },
+    {
+      "component": "Forms / Filter select",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 50.6,
+      "p50": 16.8,
+      "p95": 201.8,
+      "p99": 201.8
+    },
+    {
+      "component": "Forms / Input",
+      "count": 5,
+      "pass": 5,
+      "fail": 0,
+      "mean": 54.9,
+      "p50": 28,
+      "p95": 190,
+      "p99": 190
+    },
+    {
+      "component": "components/__tests__/comprehensive-matrix.test.tsx",
+      "count": 4,
+      "pass": 4,
+      "fail": 0,
+      "mean": 90.4,
+      "p50": 24.2,
+      "p95": 181.5,
+      "p99": 181.5
+    },
+    {
+      "component": "Forms / Slider",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 125,
+      "p50": 75,
+      "p95": 175,
+      "p99": 175
+    },
+    {
+      "component": "Overlays / Dialog",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 122.1,
+      "p50": 82.9,
+      "p95": 161.4,
+      "p99": 161.4
+    },
+    {
+      "component": "Forms / Textarea",
+      "count": 3,
+      "pass": 3,
+      "fail": 0,
+      "mean": 83.3,
+      "p50": 90.6,
+      "p95": 153,
+      "p99": 153
+    },
+    {
+      "component": "Data-display / Image viewer",
+      "count": 11,
+      "pass": 11,
+      "fail": 0,
+      "mean": 32.6,
+      "p50": 16.5,
+      "p95": 143.2,
+      "p99": 143.2
+    },
+    {
+      "component": "Navigation / Tabs",
+      "count": 1,
+      "pass": 1,
+      "fail": 0,
+      "mean": 140.9,
+      "p50": 140.9,
+      "p95": 140.9,
+      "p99": 140.9
+    },
+    {
+      "component": "Overlays / Alert dialog",
+      "count": 1,
+      "pass": 1,
+      "fail": 0,
+      "mean": 140.5,
+      "p50": 140.5,
+      "p95": 140.5,
+      "p99": 140.5
+    },
+    {
+      "component": "Overlays / Confirm dialog",
+      "count": 9,
+      "pass": 9,
+      "fail": 0,
+      "mean": 32.5,
+      "p50": 17.9,
+      "p95": 133.9,
+      "p99": 133.9
+    },
+    {
+      "component": "Overlays / Tooltip",
+      "count": 5,
+      "pass": 5,
+      "fail": 0,
+      "mean": 37,
+      "p50": 12.1,
+      "p95": 130.6,
+      "p99": 130.6
+    },
+    {
+      "component": "Layout / Page header",
+      "count": 12,
+      "pass": 12,
+      "fail": 0,
+      "mean": 13.5,
+      "p50": 2.5,
+      "p95": 129.5,
+      "p99": 129.5
+    },
+    {
+      "component": "Core / Popover",
+      "count": 1,
+      "pass": 1,
+      "fail": 0,
+      "mean": 128.2,
+      "p50": 128.2,
+      "p95": 128.2,
+      "p99": 128.2
+    },
+    {
+      "component": "Forms / Form",
+      "count": 10,
+      "pass": 10,
+      "fail": 0,
+      "mean": 19.9,
+      "p50": 3.1,
+      "p95": 127.6,
+      "p99": 127.6
+    },
+    {
+      "component": "Data-display / Carousel",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 28.4,
+      "p50": 7.7,
+      "p95": 126.6,
+      "p99": 126.6
+    },
+    {
+      "component": "Data-display / Pdf viewer",
+      "count": 3,
+      "pass": 3,
+      "fail": 0,
+      "mean": 59.5,
+      "p50": 47.4,
+      "p95": 123.6,
+      "p99": 123.6
+    },
+    {
+      "component": "Forms / Checkbox",
+      "count": 3,
+      "pass": 3,
+      "fail": 0,
+      "mean": 65.5,
+      "p50": 38.6,
+      "p95": 120.8,
+      "p99": 120.8
+    },
+    {
+      "component": "Core / Item",
+      "count": 18,
+      "pass": 18,
+      "fail": 0,
+      "mean": 9.7,
+      "p50": 1,
+      "p95": 120,
+      "p99": 120
+    },
+    {
+      "component": "Overlays / Command",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 29.3,
+      "p50": 8,
+      "p95": 116.7,
+      "p99": 116.7
+    },
+    {
+      "component": "Data-display / Accordion",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 58.9,
+      "p50": 10,
+      "p95": 107.8,
+      "p99": 107.8
+    },
+    {
+      "component": "Overlays / Drawer",
+      "count": 5,
+      "pass": 5,
+      "fail": 0,
+      "mean": 74.4,
+      "p50": 67.3,
+      "p95": 103.6,
+      "p99": 103.6
+    },
+    {
+      "component": "Feedback / Toasters",
+      "count": 5,
+      "pass": 5,
+      "fail": 0,
+      "mean": 24.4,
+      "p50": 3.5,
+      "p95": 100.4,
+      "p99": 100.4
+    },
+    {
+      "component": "Forms / Input otp",
+      "count": 7,
+      "pass": 7,
+      "fail": 0,
+      "mean": 22.4,
+      "p50": 7.7,
+      "p95": 99.5,
+      "p99": 99.5
+    },
+    {
+      "component": "Forms / Button group",
+      "count": 12,
+      "pass": 12,
+      "fail": 0,
+      "mean": 9.9,
+      "p50": 0.8,
+      "p95": 99,
+      "p99": 99
+    },
+    {
+      "component": "Overlays / Context menu",
+      "count": 11,
+      "pass": 11,
+      "fail": 0,
+      "mean": 34.8,
+      "p50": 29.4,
+      "p95": 88.8,
+      "p99": 88.8
+    },
+    {
+      "component": "Overlays / Sheet",
+      "count": 1,
+      "pass": 1,
+      "fail": 0,
+      "mean": 86.9,
+      "p50": 86.9,
+      "p95": 86.9,
+      "p99": 86.9
+    },
+    {
+      "component": "Forms / Switch",
+      "count": 3,
+      "pass": 3,
+      "fail": 0,
+      "mean": 45.8,
+      "p50": 35.5,
+      "p95": 86.8,
+      "p99": 86.8
+    },
+    {
+      "component": "Forms / Button",
+      "count": 6,
+      "pass": 6,
+      "fail": 0,
+      "mean": 20.9,
+      "p50": 5.8,
+      "p95": 86.3,
+      "p99": 86.3
+    },
+    {
+      "component": "Navigation / Menubar",
+      "count": 10,
+      "pass": 10,
+      "fail": 0,
+      "mean": 29.3,
+      "p50": 20.9,
+      "p95": 78.4,
+      "p99": 78.4
+    },
+    {
+      "component": "Navigation / Breadcrumb",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 19.6,
+      "p50": 1.2,
+      "p95": 71.1,
+      "p99": 71.1
+    },
+    {
+      "component": "Forms / Async select",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 46,
+      "p50": 26.3,
+      "p95": 65.6,
+      "p99": 65.6
+    },
+    {
+      "component": "Navigation / Sidebar",
+      "count": 36,
+      "pass": 36,
+      "fail": 0,
+      "mean": 7.5,
+      "p50": 2.1,
+      "p95": 55.3,
+      "p99": 79.3
+    },
+    {
+      "component": "Navigation / Navigation menu",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 17.3,
+      "p50": 5.6,
+      "p95": 51,
+      "p99": 51
+    },
+    {
+      "component": "Data-display / Data table",
+      "count": 21,
+      "pass": 21,
+      "fail": 0,
+      "mean": 16.2,
+      "p50": 4,
+      "p95": 34.8,
+      "p99": 124.3
+    },
+    {
+      "component": "Forms / Field",
+      "count": 23,
+      "pass": 23,
+      "fail": 0,
+      "mean": 12.4,
+      "p50": 4.6,
+      "p95": 32,
+      "p99": 152.8
+    },
+    {
+      "component": "Forms / Input group",
+      "count": 20,
+      "pass": 20,
+      "fail": 0,
+      "mean": 10.2,
+      "p50": 2.9,
+      "p95": 25.1,
+      "p99": 91.2
+    },
+    {
+      "component": "Feedback / Empty",
+      "count": 11,
+      "pass": 11,
+      "fail": 0,
+      "mean": 3.3,
+      "p50": 1.2,
+      "p95": 21.2,
+      "p99": 21.2
+    },
+    {
+      "component": "Navigation / Pagination",
+      "count": 20,
+      "pass": 20,
+      "fail": 0,
+      "mean": 10.9,
+      "p50": 4.7,
+      "p95": 18.5,
+      "p99": 86.4
+    },
+    {
+      "component": "Feedback / Alert",
+      "count": 7,
+      "pass": 7,
+      "fail": 0,
+      "mean": 3.8,
+      "p50": 1,
+      "p95": 18.2,
+      "p99": 18.2
+    },
+    {
+      "component": "Data-display / Chart",
+      "count": 22,
+      "pass": 22,
+      "fail": 0,
+      "mean": 4.7,
+      "p50": 2,
+      "p95": 17.4,
+      "p99": 33.9
+    },
+    {
+      "component": "Core / Typography",
+      "count": 13,
+      "pass": 13,
+      "fail": 0,
+      "mean": 2.1,
+      "p50": 0.8,
+      "p95": 16.4,
+      "p99": 16.4
+    },
+    {
+      "component": "Core / Kbd",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 2.8,
+      "p50": 0.9,
+      "p95": 15.7,
+      "p99": 15.7
+    },
+    {
+      "component": "lib/__tests__/india-locations.test.ts",
+      "count": 22,
+      "pass": 22,
+      "fail": 0,
+      "mean": 0.9,
+      "p50": 0.1,
+      "p95": 4.7,
+      "p99": 10.1
+    },
+    {
+      "component": "Feedback / Success micro interaction",
+      "count": 8,
+      "pass": 8,
+      "fail": 0,
+      "mean": 0.8,
+      "p50": 0.2,
+      "p95": 4.2,
+      "p99": 4.2
+    },
+    {
+      "component": "lib/__tests__/utils.test.ts",
+      "count": 12,
+      "pass": 12,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 3.1,
+      "p99": 3.1
+    },
+    {
+      "component": "Data-display / Table",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 1.3,
+      "p50": 0.4,
+      "p95": 2.3,
+      "p99": 2.3
+    },
+    {
+      "component": "Layout / Resizable",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 1,
+      "p50": 0.4,
+      "p95": 1.6,
+      "p99": 1.6
+    },
+    {
+      "component": "Layout / Scroll area",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.9,
+      "p50": 0.3,
+      "p95": 1.6,
+      "p99": 1.6
+    },
+    {
+      "component": "Layout / Separator",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.9,
+      "p50": 0.1,
+      "p95": 1.6,
+      "p99": 1.6
+    },
+    {
+      "component": "Forms / Toggle",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.8,
+      "p50": 0.2,
+      "p95": 1.5,
+      "p99": 1.5
+    },
+    {
+      "component": "Overlays / Hover card",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.8,
+      "p50": 0.1,
+      "p95": 1.5,
+      "p99": 1.5
+    },
+    {
+      "component": "Data-display / Avatar",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.8,
+      "p50": 0.1,
+      "p95": 1.4,
+      "p99": 1.4
+    },
+    {
+      "component": "lib/__tests__/export-utils.test.ts",
+      "count": 23,
+      "pass": 23,
+      "fail": 0,
+      "mean": 0.6,
+      "p50": 0.3,
+      "p95": 1,
+      "p99": 5.7
+    },
+    {
+      "component": "Data-display / Status badge",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.5,
+      "p50": 0.1,
+      "p95": 0.9,
+      "p99": 0.9
+    },
+    {
+      "component": "Data-display / Badge",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.5,
+      "p50": 0.1,
+      "p95": 0.8,
+      "p99": 0.8
+    },
+    {
+      "component": "Core / Language toggle",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Data-display / ActiveFilterBadge",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Data-display / Collapsible",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.2,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Empty state",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Progress",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Role empty state",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Skeleton list",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Skeleton",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Sonner",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Feedback / Spinner",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Layout / Aspect ratio",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Layout / Card",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Forms / Label",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Forms / Select",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Forms / Toggle group",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.7,
+      "p99": 0.7
+    },
+    {
+      "component": "Core / Calendar",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.6,
+      "p99": 0.6
+    },
+    {
+      "component": "Core / Date range picker",
+      "count": 2,
+      "pass": 2,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0.1,
+      "p95": 0.6,
+      "p99": 0.6
+    },
+    {
+      "component": "lib/__tests__/validators.test.ts",
+      "count": 45,
+      "pass": 45,
+      "fail": 0,
+      "mean": 0.4,
+      "p50": 0,
+      "p95": 0.3,
+      "p99": 7.9
+    },
+    {
+      "component": "lib/__tests__/formatters.test.ts",
+      "count": 62,
+      "pass": 62,
+      "fail": 0,
+      "mean": 0.3,
+      "p50": 0,
+      "p95": 0.2,
+      "p99": 11.4
+    }
+  ],
+  "slowest": [
+    {
+      "file": "src/components/ui/overlays/__tests__/dropdown-menu.test.tsx",
+      "component": "Overlays / Dropdown menu",
+      "name": "DropdownMenu Keyboard Navigations & Triggers should assert dynamic portal drop-downs rendering accessible menu items securely natively",
+      "durationMs": 314.3,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/feedback/__tests__/toast.test.tsx",
+      "component": "Feedback / Toast",
+      "name": "Toast renders default toast with title",
+      "durationMs": 272.3,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/feedback/__tests__/toaster.test.tsx",
+      "component": "Feedback / Toaster",
+      "name": "Toaster shows a toast with title after trigger click",
+      "durationMs": 207.8,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/forms/__tests__/radio-group.test.tsx",
+      "component": "Forms / Radio group",
+      "name": "RadioGroup Composite Keyboard Bindings should parse parent groups rendering subcomponents safely accurately",
+      "durationMs": 203.8,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/forms/__tests__/filter-select.test.tsx",
+      "component": "Forms / Filter select",
+      "name": "FilterSelect calls onChange with empty string when _empty option is selected",
+      "durationMs": 201.8,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/forms/__tests__/input.test.tsx",
+      "component": "Forms / Input",
+      "name": "Input Component Interaction Suite should capture strictly bound simulated typing loops dynamically accurately",
+      "durationMs": 190,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/__tests__/comprehensive-matrix.test.tsx",
+      "component": "components/__tests__/comprehensive-matrix.test.tsx",
+      "name": "Comprehensive Matrix Interaction Coverage Overlay Triggers Deep Event Hooks",
+      "durationMs": 181.5,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/forms/__tests__/slider.test.tsx",
+      "component": "Forms / Slider",
+      "name": "Slider Accessibility Navigation Bounds should bootstrap complex nested radix primitives exactly synchronously safely",
+      "durationMs": 175,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/overlays/__tests__/dialog.test.tsx",
+      "component": "Overlays / Dialog",
+      "name": "Dialog Portal Injection Bounds should inject portals into generic document nodes asserting modal visibility correctly",
+      "durationMs": 161.4,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/forms/__tests__/textarea.test.tsx",
+      "component": "Forms / Textarea",
+      "name": "Textarea Input Component Interaction Map should natively render functional scalable text nodes strictly",
+      "durationMs": 153,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/forms/__tests__/field.test.tsx",
+      "component": "Forms / Field",
+      "name": "Field Component Suite renders Field with role=\"group\"",
+      "durationMs": 152.8,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/data-display/__tests__/image-viewer.test.tsx",
+      "component": "Data-display / Image viewer",
+      "name": "ImageViewer zooms in when Zoom In button is clicked",
+      "durationMs": 143.2,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/navigation/__tests__/tabs.test.tsx",
+      "component": "Navigation / Tabs",
+      "name": "Tabs Component Interaction Routing should assert native accessible radix tab-panel bindings synchronously checking automatic keyboard selections safely",
+      "durationMs": 140.9,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/overlays/__tests__/alert-dialog.test.tsx",
+      "component": "Overlays / Alert dialog",
+      "name": "AlertDialog Keyboard/Mouse Interaction Boundaries should assert accessible overlays validating action/cancel click simulations rigorously",
+      "durationMs": 140.5,
+      "status": "passed"
+    },
+    {
+      "file": "src/components/ui/overlays/__tests__/confirm-dialog.test.tsx",
+      "component": "Overlays / Confirm dialog",
+      "name": "ConfirmDialog renders title when open",
+      "durationMs": 133.9,
+      "status": "passed"
+    }
+  ]
+}
