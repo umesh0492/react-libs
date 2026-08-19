@@ -1,0 +1,135 @@
+/*
+ * calendar.css — final cleaned
+ */
+
+/* ───────── Popover animation ───────── */
+
+@keyframes popover-zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes popover-zoom-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+}
+
+.popover-content[data-state="open"] {
+  animation: popover-zoom-in 180ms ease-out;
+}
+
+.popover-content[data-state="closed"] {
+  animation: popover-zoom-out 120ms ease-in;
+}
+
+/* ───────── Month slide animation ───────── */
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.direction-next {
+  animation: slide-in-right 220ms ease;
+}
+
+.direction-prev {
+  animation: slide-in-left 220ms ease;
+}
+
+/* ───────── Layout stability ───────── */
+
+.calendar-month-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.calendar-month-caption {
+  flex-shrink: 0;
+  min-height: 40px;
+}
+
+/* ───────── DayPicker helpers ───────── */
+
+.rdp-vhidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.rdp-dir-rtl {
+  direction: rtl;
+}
+
+.rdp-dir-ltr {
+  direction: ltr;
+}
+
+/* ───────── Today styling ───────── */
+
+.rdp-today .rdp-day_button {
+  border: 1px solid hsl(var(--primary));
+  background-color: transparent;
+}
+
+.rdp-today-dot .rdp-day_button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background-color: hsl(var(--primary));
+}
+
+.rdp-today.rdp-selected .rdp-day_button {
+  border: none;
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.rdp-today-dot.rdp-selected .rdp-day_button::after {
+  background-color: hsl(var(--primary-foreground));
+}
