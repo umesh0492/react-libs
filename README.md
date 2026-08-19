@@ -135,8 +135,11 @@ import { Button } from "@ui/forms/button"
 |---|---|---|---|
 | **Forms** | `Button` | `@ui/forms/button` | `isLoading`, `loadingText`, all variants |
 | | `Input` | `@ui/forms/input` | Controlled, uncontrolled |
+| | `FileUpload` | `@ui/forms/file-upload` | Drag-and-drop, previews, multi-file validation |
+| | `MultiSelect` | `@ui/forms/multi-select` | Searchable tag picker with chip badges |
 | | `Textarea` | `@ui/forms/textarea` | Auto-resize support |
 | | `Select` | `@ui/forms/select` | `SelectTrigger`, `SelectContent`, `SelectItem` |
+| | `AsyncSelect` | `@ui/forms/async-select` | Debounced async search select |
 | | `FilterSelect` | `@ui/forms/filter-select` | Searchable select for filter bars |
 | | `Checkbox` | `@ui/forms/checkbox` | Accessible, indeterminate state |
 | | `RadioGroup` | `@ui/forms/radio-group` | `RadioGroupItem` |
@@ -149,6 +152,8 @@ import { Button } from "@ui/forms/button"
 | | `InputGroup` | `@ui/forms/input-group` | Left/right adornment input |
 | | `ButtonGroup` | `@ui/forms/button-group` | Grouped button row |
 | **Data Display** | `Badge` | `@ui/data-display/badge` | `default`, `secondary`, `destructive`, `outline` |
+| | `KPICard` | `@ui/data-display/kpi-card` | Metric card with trend percentage indicator |
+| | `Timeline` | `@ui/data-display/timeline` | Vertical activity and audit log feed |
 | | `StatusBadge` | `@ui/data-display/status-badge` | 30+ procurement statuses |
 | | `ActiveFilterBadge` | `@ui/data-display/active-filter-badge` | Dismissable filter chip |
 | | `Avatar` | `@ui/data-display/avatar` | Image + fallback initials |
@@ -177,12 +182,15 @@ import { Button } from "@ui/forms/button"
 | | `Command` | `@ui/overlays/command` | Command palette (cmdk) |
 | | `Drawer` | `@ui/overlays/drawer` | Bottom sheet (vaul) |
 | **Navigation** | `Sidebar` | `@ui/navigation/sidebar` | App sidebar with collapse |
+| | `Stepper` | `@ui/navigation/stepper` | Horizontal & vertical progress workflow |
 | | `NavigationMenu` | `@ui/navigation/navigation-menu` | Top nav with dropdowns |
 | | `Breadcrumb` | `@ui/navigation/breadcrumb` | Page hierarchy trail |
 | | `Tabs` | `@ui/navigation/tabs` | Tab navigation |
 | | `Menubar` | `@ui/navigation/menubar` | App menubar (File/Edit style) |
 | | `Pagination` | `@ui/navigation/pagination` | Page navigation |
-| **Feedback** | `Toast/Toaster` | `@ui/feedback/toast` | Notification system |
+| **Feedback** | `Banner` | `@ui/feedback/banner` | System announcement banner with CTA & dismiss |
+| | `CopyButton` | `@ui/feedback/copy-button` | 1-click copy with checkmark feedback |
+| | `Toast/Toaster` | `@ui/feedback/toast` | Notification system |
 | | `Sonner` | `@ui/feedback/sonner` | Sonner toast alternative |
 | | `Skeleton` | `@ui/feedback/skeleton` | Loading placeholder |
 | | `SkeletonList` | `@ui/feedback/skeleton-list` | Multi-row skeleton |
