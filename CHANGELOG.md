@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.0.1] - 2026-08-19
+## [0.0.2] - 2026-08-19
 
 ### 🚀 Initial Open-Source Release
 
 Official initial release of **`@umesh0492/react-libs`** — a production-grade React 19 component library engineered with Tailwind CSS v4 design tokens and Radix UI headless primitives.
 
 - **📖 Interactive Storybook**: [https://umesh0492.github.io/react-libs/](https://umesh0492.github.io/react-libs/)
-- **📦 NPM Package**: `@umesh0492/react-libs@0.0.1`
+- **📦 NPM Package**: `@umesh0492/react-libs@0.0.2`
 - **📂 GitHub Repository**: [https://github.com/umesh0492/react-libs](https://github.com/umesh0492/react-libs)
 
 ---
