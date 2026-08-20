@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/layout/card";
+import { cn } from "../../../lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "../layout/card";
 
 export interface KPICardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;

@@ -2,8 +2,8 @@ import * as React from "react"
 import { cn } from "../../../lib/utils"
 
 export interface PageHeaderProps {
-  title: string
-  description?: string
+  title: React.ReactNode
+  description?: React.ReactNode
   /** Slot for breadcrumbs or back button */
   breadcrumbs?: React.ReactNode
   /** Action buttons rendered on the right */

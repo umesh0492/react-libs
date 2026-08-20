@@ -1,7 +1,7 @@
 import * as React from "react";
 import { UploadCloud, X, FileText, CheckCircle2, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatBytes } from "@/lib/formatters";
+import { cn } from "../../../lib/utils";
+import { formatBytes } from "../../../lib/formatters";
 
 export interface FileItem {
   id: string;

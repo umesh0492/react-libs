@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Info, CheckCircle2, AlertTriangle, AlertCircle, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/forms/button";
+import { cn } from "../../../lib/utils";
+import { Button } from "../forms/button";
 
 export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "info" | "success" | "warning" | "destructive";

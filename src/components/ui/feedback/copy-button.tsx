@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Copy, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button, ButtonProps } from "@/components/ui/forms/button";
+import { cn } from "../../../lib/utils";
+import { Button, type ButtonProps } from "../forms/button";
 
 export interface CopyButtonProps extends Omit<ButtonProps, "onClick"> {
   value: string;
