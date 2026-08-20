@@ -26,6 +26,19 @@ export interface CreateEntityPanelProps {
   size?: "default" | "sm" | "lg" | "xl";
 }
 
+function getSheetSizeClass(size: "default" | "sm" | "lg" | "xl") {
+  switch (size) {
+    case "sm":
+      return "sm:max-w-md";
+    case "lg":
+      return "sm:max-w-xl";
+    case "xl":
+      return "sm:max-w-2xl";
+    default:
+      return "sm:max-w-lg";
+  }
+}
+
 export function CreateEntityPanel({
   open,
   onOpenChange,
@@ -40,19 +53,12 @@ export function CreateEntityPanel({
   children,
   size = "default",
 }: CreateEntityPanelProps) {
-  const sizeClasses = {
-    sm: "sm:max-w-md",
-    default: "sm:max-w-lg",
-    lg: "sm:max-w-xl",
-    xl: "sm:max-w-2xl",
-  };
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         className={cn(
           "flex flex-col h-full overflow-hidden p-0",
-          sizeClasses[size] || sizeClasses.default
+          getSheetSizeClass(size)
         )}
       >
         {/* Header */}

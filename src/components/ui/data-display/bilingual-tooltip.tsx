@@ -1,5 +1,6 @@
 import * as React from "react";
 import { formatNumber } from "../../../lib/formatters";
+import { cn } from "../../../lib/utils";
 
 export interface BilingualTooltipProps {
   active?: boolean;
@@ -38,6 +39,13 @@ const HINDI_CHART_LABELS: Record<string, string> = {
   "Share of Spend": "खर्च का हिस्सा",
 };
 
+function getSafeLookup(map: Record<string, string> | undefined, key: string): string | undefined {
+  if (!map) return undefined;
+  const entries = Object.entries(map);
+  const found = entries.find(([k]) => k === key);
+  return found ? found[1] : undefined;
+}
+
 export function BilingualTooltip({
   active,
   payload,
@@ -51,15 +59,23 @@ export function BilingualTooltip({
   if (!active || !payload || payload.length === 0) return null;
 
   const translate = (key: string): string => {
-    if (labelMap?.[key]) return labelMap[key];
-    if (language === "hi") return HINDI_CHART_LABELS[key] ?? key;
+    const custom = getSafeLookup(labelMap, key);
+    if (custom) return custom;
+    if (language === "hi") {
+      const hindi = getSafeLookup(HINDI_CHART_LABELS, key);
+      return hindi ?? key;
+    }
     return key;
   };
 
   const translateLabel = (lbl?: string): string => {
     if (!lbl) return "";
-    if (labelMap?.[lbl]) return labelMap[lbl];
-    if (language === "hi") return HINDI_CHART_LABELS[lbl] ?? lbl;
+    const custom = getSafeLookup(labelMap, lbl);
+    if (custom) return custom;
+    if (language === "hi") {
+      const hindi = getSafeLookup(HINDI_CHART_LABELS, lbl);
+      return hindi ?? lbl;
+    }
     return lbl;
   };
 
@@ -75,48 +91,22 @@ export function BilingualTooltip({
   };
 
   return (
-    <div
-      style={{
-        background: "white",
-        border: "1px solid #e2e8f0",
-        borderRadius: "8px",
-        padding: "10px 14px",
-        boxShadow: "0 4px 12px -2px rgba(0,0,0,0.12)",
-        minWidth: 140,
-      }}
-    >
+    <div className="rounded-lg border border-border bg-card p-2.5 shadow-md min-w-[140px] text-xs">
       {label !== undefined && (
-        <p
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: "#64748b",
-            marginBottom: 6,
-            borderBottom: "1px solid #f1f5f9",
-            paddingBottom: 4,
-          }}
-        >
+        <p className="font-semibold text-muted-foreground mb-1.5 border-b border-border pb-1 text-xs">
           {translateLabel(label)}
         </p>
       )}
       {payload.map((entry, i) => (
-        <div
-          key={i}
-          style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}
-        >
+        <div key={i} className="flex items-center gap-1.5 mt-1">
           <span
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: entry.color ?? entry.fill ?? "#94a3b8",
-              flexShrink: 0,
-            }}
+            className={cn("w-2.5 h-2.5 rounded-full shrink-0", !entry.color && !entry.fill && "bg-muted-foreground")}
+            style={{ backgroundColor: entry.color || entry.fill }}
           />
-          <span style={{ fontSize: 12, color: "#475569", flex: 1 }}>
+          <span className="text-muted-foreground flex-1 text-xs">
             {translate(entry.name)}
           </span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>
+          <span className="font-bold text-foreground text-xs">
             {formatVal(entry.value, entry.name)}
           </span>
         </div>

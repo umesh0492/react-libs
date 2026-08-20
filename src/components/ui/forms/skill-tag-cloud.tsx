@@ -1,7 +1,6 @@
 import * as React from "react";
 import { X, Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { Badge } from "../data-display/badge";
 import { Button } from "./button";
 import { Input } from "./input";
 

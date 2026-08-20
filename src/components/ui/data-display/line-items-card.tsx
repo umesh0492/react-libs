@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Badge } from "./badge";
 import { formatCurrency } from "../../../lib/formatters";
 import { cn } from "../../../lib/utils";
 
@@ -38,12 +37,20 @@ export interface LineItemsCardProps extends React.HTMLAttributes<HTMLDivElement>
   maskFormatter?: (val: string) => string;
 }
 
-const BILL_STATUS_STYLE: Record<string, string> = {
-  RECEIVED: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-none",
-  BILLED: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border-none",
-  PARTIALLY_BILLED: "bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300 border-none",
-  CANCELLED: "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-none",
-};
+function getBillStatusStyle(status: string) {
+  switch (status) {
+    case "RECEIVED":
+      return "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-none";
+    case "BILLED":
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border-none";
+    case "PARTIALLY_BILLED":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300 border-none";
+    case "CANCELLED":
+      return "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-none";
+    default:
+      return "bg-slate-100 text-slate-700";
+  }
+}
 
 export function LineItemsCard({
   items = [],
@@ -52,7 +59,7 @@ export function LineItemsCard({
   footerLabel = "Total",
   footerTotal,
   emptyMessage = "No line items available.",
-  isIntraState = true,
+  isIntraState: _isIntraState = true,
   maskFormatter,
   className,
   ...props
@@ -165,7 +172,7 @@ export function LineItemsCard({
                       <span
                         className={cn(
                           "inline-block rounded px-2 py-0.5 text-[10px] font-bold",
-                          BILL_STATUS_STYLE[item.bill_status] || "bg-slate-100 text-slate-700"
+                          getBillStatusStyle(item.bill_status)
                         )}
                       >
                         {item.bill_status.replace("_", " ")}

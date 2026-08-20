@@ -1,6 +1,5 @@
 import * as React from "react";
-import { Plus, MoreHorizontal } from "lucide-react";
-import { SectionCard } from "../layout/section-card";
+import { Plus } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
 export interface KanbanCardItem {
@@ -92,8 +91,16 @@ export function PipelineKanban({
             {col.items.map((item) => (
               <div
                 key={item.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onCardClick?.(item, col.id)}
-                className="cursor-pointer rounded-lg border border-slate-200/80 bg-white p-3 shadow-2xs transition-all hover:border-indigo-400 hover:shadow-xs dark:border-slate-800 dark:bg-slate-900"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onCardClick?.(item, col.id);
+                  }
+                }}
+                className="cursor-pointer rounded-lg border border-slate-200/80 bg-white p-3 shadow-2xs transition-all hover:border-indigo-400 hover:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-slate-800 dark:bg-slate-900"
               >
                 <div className="flex items-start justify-between gap-2">
                   <h5 className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-1">

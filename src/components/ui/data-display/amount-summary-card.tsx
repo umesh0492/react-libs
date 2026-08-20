@@ -2,7 +2,7 @@ import * as React from "react";
 import { Coins, Sparkles } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "../layout/card";
 import { Badge } from "./badge";
-import { formatCurrency, formatNumber } from "../../../lib/formatters";
+import { formatCurrency } from "../../../lib/formatters";
 import { cn } from "../../../lib/utils";
 
 export interface AmountSummaryItem {
@@ -28,6 +28,174 @@ export interface AmountSummaryCardProps extends React.HTMLAttributes<HTMLDivElem
   maskFormatter?: (val: number | string) => string;
 }
 
+function calculateItemTax(item: AmountSummaryItem, isTaxInclusive: boolean) {
+  const qty = Number(item.totalQuantity) || 0;
+  const price = Number(item.targetPrice) || 0;
+  const rate = item.tax_rate !== undefined ? Number(item.tax_rate) : 18;
+
+  if (isTaxInclusive) {
+    const totalPrice = qty * price;
+    const taxPerUnit = price * (rate / (100 + rate));
+    const totalTax = qty * taxPerUnit;
+    return { base: totalPrice - totalTax, totalTax };
+  }
+
+  const base = qty * price;
+  const taxPerUnit = price * (rate / 100);
+  return { base, totalTax: qty * taxPerUnit };
+}
+
+function calculateItemsTotals(items: AmountSummaryItem[], isTaxInclusive: boolean, isIntraState: boolean) {
+  let calcBase = 0;
+  let calcGst = 0;
+  let calcCgst = 0;
+  let calcSgst = 0;
+  let calcIgst = 0;
+
+  for (const item of items) {
+    const { base, totalTax } = calculateItemTax(item, isTaxInclusive);
+    calcBase += base;
+    calcGst += totalTax;
+
+    if (isIntraState) {
+      calcCgst += totalTax / 2;
+      calcSgst += totalTax / 2;
+    } else {
+      calcIgst += totalTax;
+    }
+  }
+
+  return { calcBase, calcGst, calcCgst, calcSgst, calcIgst };
+}
+
+interface TaxBreakdownProps {
+  showIntraState: boolean;
+  finalCgstAmount: number;
+  finalSgstAmount: number;
+  finalGstAmount: number;
+  finalIgstAmount: number;
+  fmt: (num: number) => string;
+}
+
+function TaxBreakdown({
+  showIntraState,
+  finalCgstAmount,
+  finalSgstAmount,
+  finalGstAmount,
+  finalIgstAmount,
+  fmt,
+}: TaxBreakdownProps) {
+  if (showIntraState) {
+    return (
+      <>
+        <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+          <span className="text-[11px] font-medium text-slate-500">CGST</span>
+          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+            +{fmt(finalCgstAmount > 0 ? finalCgstAmount : finalGstAmount / 2)}
+          </span>
+        </div>
+        <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+          <span className="text-[11px] font-medium text-slate-500">SGST</span>
+          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+            +{fmt(finalSgstAmount > 0 ? finalSgstAmount : finalGstAmount / 2)}
+          </span>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+      <span className="text-[11px] font-medium text-slate-500">IGST</span>
+      <span className="font-semibold text-purple-600 dark:text-purple-400">
+        +{fmt(finalIgstAmount > 0 ? finalIgstAmount : finalGstAmount)}
+      </span>
+    </div>
+  );
+}
+
+interface TotalPayableSectionProps {
+  isUrgent: boolean;
+  isSm: boolean;
+  totalValue: number;
+  fmt: (num: number) => string;
+}
+
+function TotalPayableSection({ isUrgent, isSm, totalValue, fmt }: TotalPayableSectionProps) {
+  return (
+    <>
+      <div
+        className={cn(
+          "mt-2 p-3.5 rounded-xl border flex justify-between items-center shadow-xs transition-all",
+          isUrgent
+            ? "bg-slate-900 border-rose-900/50 text-white"
+            : "bg-slate-900 border-slate-800 text-white"
+        )}
+      >
+        <div className="space-y-0.5">
+          <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">
+            Total Payable
+          </span>
+          <span className="text-[9px] text-slate-500 block leading-tight">
+            Inclusive of taxes & deductions
+          </span>
+        </div>
+        <div className="text-right">
+          <span
+            className={cn(
+              "font-extrabold tracking-tight block text-emerald-400",
+              isSm ? "text-sm" : "text-base"
+            )}
+          >
+            {fmt(totalValue)}
+          </span>
+        </div>
+      </div>
+
+      {isUrgent && (
+        <Badge className="bg-rose-500/10 text-rose-600 hover:bg-rose-500/15 border border-rose-500/20 w-full justify-center py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 mt-1">
+          <Sparkles className="h-3 w-3 animate-pulse text-rose-500" />
+          <span>Urgent Priority Settlement</span>
+        </Badge>
+      )}
+    </>
+  );
+}
+
+function resolveFinalAmounts(
+  baseAmount?: number,
+  gstAmount?: number,
+  cgstAmount?: number,
+  sgstAmount?: number,
+  igstAmount?: number,
+  items?: AmountSummaryItem[],
+  isTaxInclusive = false,
+  isIntraState = false
+) {
+  let finalBaseAmount = baseAmount ?? 0;
+  let finalGstAmount = gstAmount ?? 0;
+  let finalCgstAmount = cgstAmount ?? 0;
+  let finalSgstAmount = sgstAmount ?? 0;
+  let finalIgstAmount = igstAmount ?? 0;
+
+  if (items && items.length > 0) {
+    const computed = calculateItemsTotals(items, isTaxInclusive, isIntraState);
+    if (baseAmount === undefined) finalBaseAmount = computed.calcBase;
+    if (gstAmount === undefined) finalGstAmount = computed.calcGst;
+    if (cgstAmount === undefined) finalCgstAmount = computed.calcCgst;
+    if (sgstAmount === undefined) finalSgstAmount = computed.calcSgst;
+    if (igstAmount === undefined) finalIgstAmount = computed.calcIgst;
+  }
+
+  return {
+    finalBaseAmount,
+    finalGstAmount,
+    finalCgstAmount,
+    finalSgstAmount,
+    finalIgstAmount,
+  };
+}
+
 export function AmountSummaryCard({
   baseAmount,
   gstAmount,
@@ -46,55 +214,22 @@ export function AmountSummaryCard({
   className,
   ...props
 }: AmountSummaryCardProps) {
-  let finalBaseAmount = baseAmount || 0;
-  let finalGstAmount = gstAmount || 0;
-  let finalCgstAmount = cgstAmount || 0;
-  let finalSgstAmount = sgstAmount || 0;
-  let finalIgstAmount = igstAmount || 0;
-
-  if (items && items.length > 0) {
-    let calcBase = 0;
-    let calcGst = 0;
-    let calcCgst = 0;
-    let calcSgst = 0;
-    let calcIgst = 0;
-
-    items.forEach((item) => {
-      const qty = Number(item.totalQuantity) || 0;
-      const price = Number(item.targetPrice) || 0;
-      const rate = item.tax_rate !== undefined ? Number(item.tax_rate) : 18;
-
-      let base = 0;
-      let totalTax = 0;
-
-      if (isTaxInclusive) {
-        const totalPrice = qty * price;
-        const taxPerUnit = price * (rate / (100 + rate));
-        totalTax = qty * taxPerUnit;
-        base = totalPrice - totalTax;
-      } else {
-        base = qty * price;
-        const taxPerUnit = price * (rate / 100);
-        totalTax = qty * taxPerUnit;
-      }
-
-      calcBase += base;
-      calcGst += totalTax;
-
-      if (isIntraState) {
-        calcCgst += totalTax / 2;
-        calcSgst += totalTax / 2;
-      } else {
-        calcIgst += totalTax;
-      }
-    });
-
-    if (baseAmount === undefined) finalBaseAmount = calcBase;
-    if (gstAmount === undefined) finalGstAmount = calcGst;
-    if (cgstAmount === undefined) finalCgstAmount = calcCgst;
-    if (sgstAmount === undefined) finalSgstAmount = calcSgst;
-    if (igstAmount === undefined) finalIgstAmount = calcIgst;
-  }
+  const {
+    finalBaseAmount,
+    finalGstAmount,
+    finalCgstAmount,
+    finalSgstAmount,
+    finalIgstAmount,
+  } = resolveFinalAmounts(
+    baseAmount,
+    gstAmount,
+    cgstAmount,
+    sgstAmount,
+    igstAmount,
+    items,
+    isTaxInclusive,
+    isIntraState
+  );
 
   const tdsAmount = finalBaseAmount * (tdsPercentage / 100);
   const totalValue =
@@ -144,29 +279,14 @@ export function AmountSummaryCard({
           </div>
 
           {/* Tax Details */}
-          {showIntraState ? (
-            <>
-              <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-                <span className="text-[11px] font-medium text-slate-500">CGST</span>
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-                  +{fmt(finalCgstAmount > 0 ? finalCgstAmount : finalGstAmount / 2)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-                <span className="text-[11px] font-medium text-slate-500">SGST</span>
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-                  +{fmt(finalSgstAmount > 0 ? finalSgstAmount : finalGstAmount / 2)}
-                </span>
-              </div>
-            </>
-          ) : (
-            <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-              <span className="text-[11px] font-medium text-slate-500">IGST</span>
-              <span className="font-semibold text-purple-600 dark:text-purple-400">
-                +{fmt(finalIgstAmount > 0 ? finalIgstAmount : finalGstAmount)}
-              </span>
-            </div>
-          )}
+          <TaxBreakdown
+            showIntraState={showIntraState}
+            finalCgstAmount={finalCgstAmount}
+            finalSgstAmount={finalSgstAmount}
+            finalGstAmount={finalGstAmount}
+            finalIgstAmount={finalIgstAmount}
+            fmt={fmt}
+          />
 
           {transportCost > 0 && (
             <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
@@ -190,40 +310,12 @@ export function AmountSummaryCard({
         </div>
 
         {/* Total Payable Value Banner */}
-        <div
-          className={cn(
-            "mt-2 p-3.5 rounded-xl border flex justify-between items-center shadow-xs transition-all",
-            isUrgent
-              ? "bg-slate-900 border-rose-900/50 text-white"
-              : "bg-slate-900 border-slate-800 text-white"
-          )}
-        >
-          <div className="space-y-0.5">
-            <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">
-              Total Payable
-            </span>
-            <span className="text-[9px] text-slate-500 block leading-tight">
-              Inclusive of taxes & deductions
-            </span>
-          </div>
-          <div className="text-right">
-            <span
-              className={cn(
-                "font-extrabold tracking-tight block text-emerald-400",
-                isSm ? "text-sm" : "text-base"
-              )}
-            >
-              {fmt(totalValue)}
-            </span>
-          </div>
-        </div>
-
-        {isUrgent && (
-          <Badge className="bg-rose-500/10 text-rose-600 hover:bg-rose-500/15 border border-rose-500/20 w-full justify-center py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 mt-1">
-            <Sparkles className="h-3 w-3 animate-pulse text-rose-500" />
-            <span>Urgent Priority Settlement</span>
-          </Badge>
-        )}
+        <TotalPayableSection
+          isUrgent={isUrgent}
+          isSm={isSm}
+          totalValue={totalValue}
+          fmt={fmt}
+        />
       </CardContent>
     </Card>
   );
