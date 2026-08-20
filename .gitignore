@@ -39,3 +39,7 @@ graphify-out/
 *.graphify*
 vitest-kbd.json
 
+
+# Secrets
+secret.md
+.npmrc

@@ -1,6 +1,6 @@
 {
   "name": "@umesh0492/react-libs",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Production-grade React 19 component library with Tailwind CSS v4 & Radix UI primitives.",
   "author": "Umesh Gupta <umesh0492@gmail.com>",
   "repository": {

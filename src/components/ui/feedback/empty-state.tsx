@@ -1,30 +1,19 @@
-import type { ReactNode } from "react";
+import * as React from "react";
 import { FolderSearch } from "lucide-react";
 import { Button } from "../forms/button";
 import { cn } from "../../../lib/utils";
 
-interface EmptyStateProps {
-  icon?: ReactNode;
-  title: string;
-  description: string;
-  actionLabel?: string;
-  actionIcon?: ReactNode;
+export interface EmptyStateProps {
+  icon?: React.ReactNode | React.ComponentType<{ className?: string }>;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  actionLabel?: React.ReactNode;
+  actionIcon?: React.ReactNode;
   onAction?: () => void;
-  /** When false, removes the dashed border (e.g. when embedded inside a card) */
   bordered?: boolean;
   className?: string;
 }
 
-/**
- * EmptyState — shown when a list or page has no content.
- *
- * Phase 4 fixes:
- * - Removed hardcoded `bg-slate-50/50`, `border-slate-200`, `text-slate-900` — uses tokens
- * - `bordered` prop controls dashed border (default: true)
- * - CTA gets an optional `actionIcon` (e.g. `<Plus />`)
- * - Title uses `font-semibold` (not bold) for hierarchy consistency
- * - Description uses `text-muted-foreground`
- */
 export function EmptyState({
   icon,
   title,
@@ -35,6 +24,15 @@ export function EmptyState({
   bordered = true,
   className,
 }: EmptyStateProps) {
+  const renderIcon = () => {
+    if (!icon) return <FolderSearch className="w-8 h-8 text-muted-foreground/60" />;
+    if (typeof icon === "function") {
+      const IconComponent = icon as React.ComponentType<{ className?: string }>;
+      return <IconComponent className="w-8 h-8 text-muted-foreground/60" />;
+    }
+    return icon;
+  };
+
   return (
     <div
       className={cn(
@@ -43,24 +41,21 @@ export function EmptyState({
         className
       )}
     >
-      {/* Icon container */}
-      <div className="w-14 h-14 bg-card border border-border/60 shadow-sm text-muted-foreground rounded-full flex items-center justify-center mb-5">
-        {icon || <FolderSearch className="w-6 h-6" />}
+      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-muted mb-4 text-muted-foreground">
+        {renderIcon()}
       </div>
 
-      {/* Text */}
-      <h3 className="text-base font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground max-w-sm mb-6 leading-relaxed">{description}</p>
+      <h3 className="text-base font-semibold text-foreground mb-1">{title}</h3>
 
-      {/* CTA */}
+      {description ? (
+        <p className="text-sm text-muted-foreground max-w-sm mb-6 leading-relaxed">
+          {description}
+        </p>
+      ) : null}
+
       {actionLabel && onAction && (
-        <Button
-          onClick={onAction}
-          variant="default"
-          size="default"
-          className="min-w-[140px]"
-        >
-          {actionIcon && <span className="mr-1.5 -ml-0.5">{actionIcon}</span>}
+        <Button onClick={onAction} className="gap-2">
+          {actionIcon}
           {actionLabel}
         </Button>
       )}

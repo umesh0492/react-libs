@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Check, ChevronsUpDown, X, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/data-display/badge";
+import { cn } from "../../../lib/utils";
+import { Badge } from "../data-display/badge";
 
 export interface Option {
   label: string;
