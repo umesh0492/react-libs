@@ -883,3 +883,186 @@ export function OrdersPage() {
   )
 }
 ```
+
+---
+
+## FileUpload
+
+```tsx
+import { FileUpload, FileItem } from "@umesh0492/react-libs"
+import { useState } from "react"
+
+export function DocumentUpload() {
+  const [files, setFiles] = useState<FileItem[]>([])
+
+  return (
+    <FileUpload
+      value={files}
+      onChange={setFiles}
+      label="Upload receipts and invoices"
+      description="PDF, PNG, JPG up to 10MB"
+      maxSize={10 * 1024 * 1024}
+      maxFiles={5}
+    />
+  )
+}
+```
+
+---
+
+## MultiSelect
+
+```tsx
+import { MultiSelect, Option } from "@umesh0492/react-libs"
+import { useState } from "react"
+
+const tagOptions: Option[] = [
+  { label: "Electronics", value: "electronics" },
+  { label: "Groceries", value: "groceries" },
+  { label: "Fashion", value: "fashion" },
+  { label: "Home & Kitchen", value: "home_kitchen" },
+]
+
+export function TagFilter() {
+  const [selected, setSelected] = useState<string[]>(["electronics"])
+
+  return (
+    <MultiSelect
+      options={tagOptions}
+      value={selected}
+      onChange={setSelected}
+      placeholder="Select product categories..."
+      maxCount={3}
+    />
+  )
+}
+```
+
+---
+
+## Stepper
+
+```tsx
+import { Stepper, StepItem } from "@umesh0492/react-libs"
+import { useState } from "react"
+
+const onboardingSteps: StepItem[] = [
+  { title: "Account", description: "Email & Authentication" },
+  { title: "Business Info", description: "GST & KYC verification" },
+  { title: "Catalog", description: "Upload initial inventory" },
+  { title: "Launch", description: "Go live on portal" },
+]
+
+export function OnboardingFlow() {
+  const [activeStep, setActiveStep] = useState(1)
+
+  return (
+    <Stepper
+      steps={onboardingSteps}
+      activeStep={activeStep}
+      clickable
+      onStepClick={setActiveStep}
+    />
+  )
+}
+```
+
+---
+
+## KPICard
+
+```tsx
+import { KPICard } from "@umesh0492/react-libs"
+import { DollarSign, Users, ShoppingCart } from "lucide-react"
+
+export function DashboardMetrics() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <KPICard
+        title="Monthly Revenue"
+        value="1,45,200"
+        prefix="₹"
+        change={14.8}
+        changePeriod="vs last month"
+        icon={<DollarSign className="h-4 w-4" />}
+      />
+      <KPICard
+        title="Active Customers"
+        value="3,840"
+        change={-2.1}
+        changePeriod="vs last week"
+        icon={<Users className="h-4 w-4" />}
+      />
+      <KPICard
+        title="Completed Orders"
+        value="12,890"
+        change={8.4}
+        changePeriod="vs last week"
+        icon={<ShoppingCart className="h-4 w-4" />}
+      />
+    </div>
+  )
+}
+```
+
+---
+
+## Timeline
+
+```tsx
+import { Timeline, TimelineItem } from "@umesh0492/react-libs"
+
+const orderEvents: TimelineItem[] = [
+  {
+    title: "Delivered",
+    description: "Package received by customer",
+    timestamp: "10:45 AM",
+    status: "success",
+  },
+  {
+    title: "Out for Delivery",
+    description: "Assigned to courier partner",
+    timestamp: "08:15 AM",
+    status: "info",
+  },
+  {
+    title: "Order Processed",
+    description: "Items packed and ready at fulfillment hub",
+    timestamp: "Yesterday",
+    status: "default",
+  },
+]
+
+export function OrderHistory() {
+  return <Timeline items={orderEvents} />
+}
+```
+
+---
+
+## CopyButton & Banner
+
+```tsx
+import { Banner, CopyButton } from "@umesh0492/react-libs"
+
+export function Announcement() {
+  return (
+    <div className="space-y-4">
+      <Banner
+        variant="info"
+        title="Maintenance Notice:"
+        dismissible
+        action={{ label: "Details", onClick: () => console.log("clicked") }}
+      >
+        Scheduled platform upgrade on Sunday at 02:00 UTC.
+      </Banner>
+
+      <div className="flex items-center gap-2 p-2 bg-muted rounded">
+        <code>npm install @umesh0492/react-libs</code>
+        <CopyButton value="npm install @umesh0492/react-libs" />
+      </div>
+    </div>
+  )
+}
+```
+

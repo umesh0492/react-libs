@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.0] - 2026-08-19
+
+### 🚀 Enterprise Component Suite Expansion
+
+Added 7 high-impact enterprise UI primitives complete with full TypeScript typings, comprehensive unit tests, Storybook stories, and WCAG accessibility standards:
+
+- **`FileUpload`**: Drag-and-drop dropzone with file size/type validation, thumbnails, and multi-file removal.
+- **`MultiSelect`**: Searchable tag selector with removable chip badges and overflow limit count.
+- **`Stepper`**: Multi-step process workflow indicator with horizontal and vertical orientations.
+- **`KPICard`**: Executive KPI metric card with percentage trend indicator badges and icon slots.
+- **`Timeline`**: Vertical activity and audit log feed with connecting lines and status marker variants.
+- **`CopyButton`**: Accessible one-click clipboard copy utility with animated checkmark feedback.
+- **`Banner`**: System-wide notification announcement bar with action CTA and dismiss controls.
+
+---
+
 ## [0.0.2] - 2026-08-19
 
 ### 🚀 Initial Open-Source Release
