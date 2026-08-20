@@ -20,7 +20,7 @@ export const Default: Story = {
     statusText: "AI Job Radar: Sweeping 10,000+ Verified Roles",
     blips: [
       { id: "1", x: 35, y: 25, label: "Staff Distributed Systems Engineer (₹45L)", tone: "emerald" },
-      { id: "2", x: 65, y: 40, label: "VP of Engineering (₹85L)", tone: "purple" as any },
+      { id: "2", x: 65, y: 40, label: "VP of Engineering (₹85L)", tone: "purple" },
       { id: "3", x: 45, y: 70, label: "Senior Fullstack Engineer (₹32L)", tone: "indigo" },
       { id: "4", x: 80, y: 65, label: "Lead AI Architect (₹60L)", tone: "amber" },
     ],

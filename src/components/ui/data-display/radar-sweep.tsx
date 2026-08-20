@@ -6,7 +6,7 @@ export interface RadarBlip {
   x: number; // percentage 0-100
   y: number; // percentage 0-100
   label?: string;
-  tone?: "primary" | "emerald" | "amber" | "rose";
+  tone?: "primary" | "emerald" | "amber" | "rose" | "indigo" | "purple" | "cyan";
   pulse?: boolean;
 }
 
@@ -33,8 +33,14 @@ export function RadarSweep({
         return "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]";
       case "rose":
         return "bg-rose-400 shadow-[0_0_8px_rgba(248,113,113,0.8)]";
-      default:
+      case "indigo":
         return "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]";
+      case "purple":
+        return "bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.8)]";
+      case "cyan":
+        return "bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]";
+      default:
+        return "bg-primary shadow-[0_0_8px_var(--primary)]";
     }
   };
 
