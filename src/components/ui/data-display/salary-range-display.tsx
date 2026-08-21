@@ -1,5 +1,4 @@
 import * as React from "react";
-import { IndianRupee, TrendingUp } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
 export interface SalaryRangeDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,6 +14,19 @@ export interface SalaryRangeDisplayProps extends React.HTMLAttributes<HTMLDivEle
   variant?: "badge" | "card";
 }
 
+function formatSalaryRange(min?: number, max?: number, currency = "₹") {
+  if (min !== undefined && max !== undefined) {
+    return `${currency}${min}L - ${currency}${max}L`;
+  }
+  if (min !== undefined) {
+    return `${currency}${min}L+`;
+  }
+  if (max !== undefined) {
+    return `Up to ${currency}${max}L`;
+  }
+  return "Competitive";
+}
+
 export function SalaryRangeDisplay({
   minLakhs,
   maxLakhs,
@@ -25,14 +37,7 @@ export function SalaryRangeDisplay({
   className,
   ...props
 }: SalaryRangeDisplayProps) {
-  const formattedRange =
-    minLakhs !== undefined && maxLakhs !== undefined
-      ? `${currencySymbol}${minLakhs}L - ${currencySymbol}${maxLakhs}L`
-      : minLakhs !== undefined
-      ? `${currencySymbol}${minLakhs}L+`
-      : maxLakhs !== undefined
-      ? `Up to ${currencySymbol}${maxLakhs}L`
-      : "Competitive";
+  const formattedRange = formatSalaryRange(minLakhs, maxLakhs, currencySymbol);
 
   if (variant === "badge") {
     return (

@@ -9,6 +9,18 @@ export interface ProgressRingProps extends React.HTMLAttributes<HTMLDivElement> 
   showLabel?: boolean;
 }
 
+function getProgressColor(clamped: number) {
+  if (clamped >= 80) return "text-emerald-500";
+  if (clamped >= 50) return "text-amber-500";
+  return "text-rose-500";
+}
+
+function getProgressBgColor(clamped: number) {
+  if (clamped >= 80) return "text-emerald-100 dark:text-emerald-950/60";
+  if (clamped >= 50) return "text-amber-100 dark:text-amber-950/60";
+  return "text-rose-100 dark:text-rose-950/60";
+}
+
 export function ProgressRing({
   percentage,
   size = 80,
@@ -23,21 +35,9 @@ export function ProgressRing({
   const clamped = Math.min(100, Math.max(0, percentage));
   const strokeDashoffset = circumference - (clamped / 100) * circumference;
 
-  const autoColor =
-    clamped >= 80
-      ? "text-emerald-500"
-      : clamped >= 50
-      ? "text-amber-500"
-      : "text-rose-500";
-
+  const autoColor = getProgressColor(clamped);
   const color = colorOverride ?? autoColor;
-
-  const bgColor =
-    clamped >= 80
-      ? "text-emerald-100 dark:text-emerald-950/60"
-      : clamped >= 50
-      ? "text-amber-100 dark:text-amber-950/60"
-      : "text-rose-100 dark:text-rose-950/60";
+  const bgColor = getProgressBgColor(clamped);
 
   return (
     <div

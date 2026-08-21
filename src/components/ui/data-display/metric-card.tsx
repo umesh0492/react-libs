@@ -127,21 +127,27 @@ export interface MetricGridProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
+function getGridColClass(columns: 1 | 2 | 3 | 4) {
+  switch (columns) {
+    case 1:
+      return "grid-cols-1";
+    case 2:
+      return "grid-cols-1 sm:grid-cols-2";
+    case 3:
+      return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+    default:
+      return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+  }
+}
+
 export function MetricGrid({
   columns = 4,
   className,
   ...props
 }: MetricGridProps) {
-  const colClasses = {
-    1: "grid-cols-1",
-    2: "grid-cols-1 sm:grid-cols-2",
-    3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-    4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
-  };
-
   return (
     <div
-      className={cn("grid gap-4", colClasses[columns] || colClasses[4], className)}
+      className={cn("grid gap-4", getGridColClass(columns), className)}
       {...props}
     />
   );

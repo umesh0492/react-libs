@@ -1,7 +1,6 @@
 import * as React from "react";
 import { CheckCircle2, ExternalLink, GitPullRequest, Award, ShieldCheck } from "lucide-react";
 import { SectionCard } from "../layout/section-card";
-import { Badge } from "./badge";
 import { cn } from "../../../lib/utils";
 
 export interface ProofOfWorkItem {
@@ -22,7 +21,7 @@ export interface ProofOfWorkCardProps extends React.HTMLAttributes<HTMLDivElemen
 
 export function ProofOfWorkCard({
   item,
-  onOpen,
+  onOpen: _onOpen,
   className,
   ...props
 }: ProofOfWorkCardProps) {

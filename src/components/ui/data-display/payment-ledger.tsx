@@ -1,7 +1,6 @@
 import * as React from "react";
-import { Wallet, TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
+import { Wallet, ExternalLink } from "lucide-react";
 import { formatCurrency, formatDate } from "../../../lib/formatters";
-import { Badge } from "./badge";
 import { cn } from "../../../lib/utils";
 
 export interface LedgerEntry {
@@ -29,23 +28,32 @@ export interface PaymentLedgerProps extends React.HTMLAttributes<HTMLDivElement>
   maskFormatter?: (val: string) => string;
 }
 
-const BILL_BADGE: Record<string, string> = {
-  BILLED: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300",
-  PARTIALLY_BILLED: "bg-violet-100 text-violet-800 dark:bg-violet-950/50 dark:text-violet-300",
-  RECEIVED: "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300",
-  CANCELLED: "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
-  SETTLED: "bg-blue-100 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300",
-};
+function getBillBadgeStyle(status: string) {
+  switch (status) {
+    case "BILLED":
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300";
+    case "PARTIALLY_BILLED":
+      return "bg-violet-100 text-violet-800 dark:bg-violet-950/50 dark:text-violet-300";
+    case "RECEIVED":
+      return "bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300";
+    case "CANCELLED":
+      return "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400";
+    case "SETTLED":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300";
+    default:
+      return "bg-slate-100 text-slate-600";
+  }
+}
 
 export function PaymentLedger({
   ledgerEntries = [],
   totalDR = 0,
   totalCR = 0,
-  net = 0,
+  net: _net = 0,
   netLabel = "Net Payable",
   showFooter = true,
   onGRNClick,
-  onInvoiceClick,
+  onInvoiceClick: _onInvoiceClick,
   maskFormatter,
   className,
   ...props
@@ -170,8 +178,7 @@ export function PaymentLedger({
                       <span
                         className={cn(
                           "inline-block rounded px-2 py-0.5 text-[10px] font-bold",
-                          BILL_BADGE[entry.bill_status || entry.status || ""] ||
-                            "bg-slate-100 text-slate-600"
+                          getBillBadgeStyle(entry.bill_status || entry.status || "")
                         )}
                       >
                         {(entry.bill_status || entry.status)?.replace("_", " ")}
