@@ -12,7 +12,7 @@ describe("CreateEntityPanel", () => {
       <CreateEntityPanel
         open={true}
         onOpenChange={handleClose}
-        title="Add Vendor Organization"
+        title="Create New Organization"
         description="Fill organization details"
         onSave={handleSave}
         saveLabel="Create Org"
@@ -21,7 +21,7 @@ describe("CreateEntityPanel", () => {
       </CreateEntityPanel>
     );
 
-    expect(screen.getByText("Add Vendor Organization")).toBeInTheDocument();
+    expect(screen.getByText("Create New Organization")).toBeInTheDocument();
     expect(screen.getByText("Fill organization details")).toBeInTheDocument();
     expect(screen.getByText("Form Body Inputs")).toBeInTheDocument();
 

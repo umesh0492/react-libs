@@ -104,7 +104,7 @@ import { initAnalytics, HttpAdapter, MixpanelAdapter, ConsoleAdapter } from "@um
 
 // Initialize once at app root (e.g., main.tsx or App.tsx)
 initAnalytics({
-  appId: "vendor_portal",
+  appId: "enterprise_app",
   adapters: [
     new HttpAdapter({ endpoint: "/api/telemetry" }),
     new MixpanelAdapter(),

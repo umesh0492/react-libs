@@ -51,11 +51,11 @@ describe("DomTracker Event Delegation", () => {
   it("inherits contextual journey and step from parent track area", () => {
     const area = document.createElement("div");
     area.setAttribute("data-track-area", "");
-    area.setAttribute("data-track-area-journey", "vendor_onboarding");
-    area.setAttribute("data-track-area-step", "bank_account");
+    area.setAttribute("data-track-area-journey", "user_onboarding");
+    area.setAttribute("data-track-area-step", "account_setup");
     area.setAttribute(
       "data-track-area-metadata",
-      JSON.stringify({ vendorType: "domestic" })
+      JSON.stringify({ accountType: "business" })
     );
 
     const btn = document.createElement("button");
@@ -68,9 +68,9 @@ describe("DomTracker Event Delegation", () => {
     expect(onInteraction).toHaveBeenCalledTimes(1);
     const [, meta] = onInteraction.mock.calls[0];
     expect(meta).toEqual({
-      journey: "vendor_onboarding",
-      step: "bank_account",
-      vendorType: "domestic",
+      journey: "user_onboarding",
+      step: "account_setup",
+      accountType: "business",
     });
   });
 

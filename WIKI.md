@@ -639,7 +639,7 @@ import {
     <SidebarHeader>
       <div className="flex items-center gap-2 px-4 py-3">
         <Logo />
-        <span className="font-semibold">Admin Portal</span>
+        <span className="font-semibold">Application Console</span>
       </div>
     </SidebarHeader>
 
@@ -949,8 +949,8 @@ import { useState } from "react"
 const onboardingSteps: StepItem[] = [
   { title: "Account", description: "Email & Authentication" },
   { title: "Business Info", description: "GST & KYC verification" },
-  { title: "Catalog", description: "Upload initial inventory" },
-  { title: "Launch", description: "Go live on portal" },
+  { title: "Catalog", description: "Upload initial catalog items" },
+  { title: "Launch", description: "Go live on platform" },
 ]
 
 export function OnboardingFlow() {
