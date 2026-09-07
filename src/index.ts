@@ -5,7 +5,7 @@ export * from "./lib/formatters";
 export * from "./lib/export-utils";
 export * from "./lib/validators";
 export * from "./lib/indiaLocations";
-export * from "./lib/dit";
+export * from "./lib/blob-storage";
 export * from "./lib/masking";
 export * from "./lib/telemetry";
 export * from "./lib/analytics";

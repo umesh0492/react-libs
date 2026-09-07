@@ -1,7 +1,7 @@
 # @umesh0492/react-libs
 
-> **The shared UI component library for enterprise procurement portals.**  
-> Single source of truth for all visual components, design tokens, hooks, and formatters across web portals.
+> **The shared UI component library for modern enterprise web applications.**  
+> Single source of truth for visual components, design tokens, hooks, analytics, and formatters across web applications.
 
 [![Version](https://img.shields.io/badge/version-0.3.0-green)](./package.json)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#testing)
