@@ -22,8 +22,7 @@
 ## Button
 
 ```tsx
-import { Button } from "@ui/forms/button"
-// OR: import { Button } from "@umesh0492/react-libs"
+import { Button } from "@umesh0492/react-libs"
 ```
 
 ### Variants
@@ -60,13 +59,13 @@ import { Button } from "@ui/forms/button"
 ## StatusBadge
 
 ```tsx
-import { StatusBadge } from "@ui/data-display/status-badge"
+import { StatusBadge } from "@umesh0492/react-libs"
 ```
 
-Covers every status across the procurement domain. Always consistent colour — do not build custom status indicators.
+Covers every status across business workflows. Always consistent colour — do not build custom status indicators.
 
 ```tsx
-// Order lifecycle
+// Order / Request lifecycle
 <StatusBadge status="pending" />             // 🟡 Amber
 <StatusBadge status="confirmed" />           // 🔵 Blue
 <StatusBadge status="in_progress" />         // 🔵 Blue
@@ -76,13 +75,13 @@ Covers every status across the procurement domain. Always consistent colour — 
 <StatusBadge status="cancelled" />           // 🔴 Red
 <StatusBadge status="returned" />            // 🟠 Orange
 
-// Payment
+// Payment / Billing
 <StatusBadge status="paid" />               // 🟢 Green
 <StatusBadge status="unpaid" />             // 🔴 Red
 <StatusBadge status="partially_paid" />     // 🟡 Amber
 <StatusBadge status="overdue_payment" />    // 🔴 Dark Red
 
-// RFQ / Tender
+// Proposals / Contracts
 <StatusBadge status="open" />              // 🔵 Blue
 <StatusBadge status="awarded" />           // 🟢 Green
 <StatusBadge status="closed" />            // ⚫ Slate
@@ -99,9 +98,9 @@ Covers every status across the procurement domain. Always consistent colour — 
 <StatusBadge status="uploaded" />          // 🔵 Blue
 
 // Modifier props
-<StatusBadge status="active" size="sm" />            // Compact variant
-<StatusBadge status="active" showDot={false} />      // No dot icon
-<StatusBadge status="pending" label="Awaiting GRN" /> // Custom label override
+<StatusBadge status="active" size="sm" />               // Compact variant
+<StatusBadge status="active" showDot={false} />         // No dot icon
+<StatusBadge status="pending" label="Awaiting Review" /> // Custom label override
 ```
 
 ---
@@ -109,7 +108,7 @@ Covers every status across the procurement domain. Always consistent colour — 
 ## PageHeader
 
 ```tsx
-import { PageHeader, PageHeaderSkeleton } from "@ui/layout/page-header"
+import { PageHeader, PageHeaderSkeleton } from "@umesh0492/react-libs"
 ```
 
 **Use on every page** for consistent spacing, breadcrumbs, and action placement.
@@ -120,8 +119,8 @@ import { PageHeader, PageHeaderSkeleton } from "@ui/layout/page-header"
 
 // Full featured
 <PageHeader
-  title="Purchase Orders"
-  description="Track all active and completed orders across partners"
+  title="Orders"
+  description="Track all active and completed requests across accounts"
   badge={<StatusBadge status="active" size="sm" />}
   breadcrumbs={
     <Breadcrumb>
@@ -135,7 +134,7 @@ import { PageHeader, PageHeaderSkeleton } from "@ui/layout/page-header"
   actions={
     <>
       <Button variant="outline" size="sm"><Download /> Export</Button>
-      <Button><Plus /> New PO</Button>
+      <Button><Plus /> New Order</Button>
     </>
   }
 />
@@ -151,7 +150,7 @@ import { PageHeader, PageHeaderSkeleton } from "@ui/layout/page-header"
 ## DataTable
 
 ```tsx
-import { DataTable } from "@ui/data-display/data-table"
+import { DataTable } from "@umesh0492/react-libs"
 ```
 
 Generic sortable table with skeleton loading, empty state, and pagination.
@@ -159,17 +158,17 @@ Generic sortable table with skeleton loading, empty state, and pagination.
 ```tsx
 const columns = [
   {
-    key: "poNumber",
-    header: "PO Number",
+    key: "invoiceNumber",
+    header: "Invoice #",
     sortable: true,
   },
   {
-    key: "partner",
-    header: "Partner",
+    key: "organization",
+    header: "Organization",
     cell: (row) => (
       <div className="flex items-center gap-2">
-        <Avatar className="h-6 w-6"><AvatarFallback>{row.partner.name[0]}</AvatarFallback></Avatar>
-        <span>{row.partner.name}</span>
+        <Avatar className="h-6 w-6"><AvatarFallback>{row.organization.name[0]}</AvatarFallback></Avatar>
+        <span>{row.organization.name}</span>
       </div>
     ),
   },
@@ -194,7 +193,7 @@ const columns = [
           <Button variant="ghost" size="icon"><MoreHorizontal /></Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => navigate(`/po/${row.id}`)}>View</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/invoices/${row.id}`)}>View</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive"
@@ -210,15 +209,15 @@ const columns = [
 
 <DataTable
   columns={columns}
-  data={orders}
+  data={invoices}
   rowKey={(row) => row.id}
   isLoading={isLoading}
   skeletonRows={10}
-  emptyMessage="No purchase orders found. Create your first PO."
+  emptyMessage="No records found."
   sortKey={sortKey}
   sortDirection={sortDir}
   onSort={(key, dir) => { setSortKey(key); setSortDir(dir) }}
-  onRowClick={(row) => navigate(`/orders/${row.id}`)}
+  onRowClick={(row) => navigate(`/invoices/${row.id}`)}
   pagination={{
     page,
     pageSize: 20,
@@ -235,7 +234,7 @@ const columns = [
 ## ConfirmDialog
 
 ```tsx
-import { ConfirmDialog } from "@ui/overlays/confirm-dialog"
+import { ConfirmDialog } from "@umesh0492/react-libs"
 ```
 
 Replace all manual `<AlertDialog>` confirm patterns with this. Handles own loading state.
@@ -246,23 +245,23 @@ const [isDeleting, setIsDeleting] = useState(false)
 
 async function handleDelete() {
   setIsDeleting(true)
-  await deleteOrder(orderId)
+  await deleteRecord(recordId)
   setIsDeleting(false)
   setShowDelete(false)
 }
 
 <Button variant="destructive" size="sm" onClick={() => setShowDelete(true)}>
-  Delete Order
+  Delete Record
 </Button>
 
 <ConfirmDialog
   open={showDelete}
   onOpenChange={setShowDelete}
-  title="Delete Purchase Order?"
-  description="PO-2024-001 will be permanently deleted. This action cannot be undone."
+  title="Delete Record?"
+  description="REC-2026-001 will be permanently deleted. This action cannot be undone."
   variant="destructive"
   confirmLabel="Delete"
-  cancelLabel="Keep Order"
+  cancelLabel="Keep Record"
   isLoading={isDeleting}
   onConfirm={handleDelete}
 />
@@ -276,10 +275,10 @@ async function handleDelete() {
 import {
   Dialog, DialogContent, DialogHeader,
   DialogTitle, DialogDescription, DialogFooter,
-} from "@ui/overlays/dialog"
+} from "@umesh0492/react-libs"
 ```
 
-> **Rule:** Always use `@ui/overlays/dialog` — never build custom modals. `dialog.tsx` manages its own overlay, animations, portal, and focus trap via Radix.
+> **Rule:** Always use `Dialog` from `@umesh0492/react-libs` — never build custom modals. It manages its own overlay, animations, portal, and focus trap via Radix.
 
 ```tsx
 const [open, setOpen] = useState(false)
@@ -290,9 +289,9 @@ const [open, setOpen] = useState(false)
   </DialogTrigger>
   <DialogContent className="sm:max-w-[500px]">
     <DialogHeader>
-      <DialogTitle>Edit Partner Profile</DialogTitle>
+      <DialogTitle>Edit Profile</DialogTitle>
       <DialogDescription>
-        Update the partner's contact and billing information.
+        Update contact and billing information.
       </DialogDescription>
     </DialogHeader>
 
@@ -316,7 +315,7 @@ const [open, setOpen] = useState(false)
 import {
   Sheet, SheetContent, SheetHeader,
   SheetTitle, SheetDescription, SheetFooter,
-} from "@ui/overlays/sheet"
+} from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -326,8 +325,8 @@ import {
   </SheetTrigger>
   <SheetContent side="right" className="w-[480px] sm:max-w-[480px]">
     <SheetHeader>
-      <SheetTitle>Partner Details</SheetTitle>
-      <SheetDescription>View and update partner information.</SheetDescription>
+      <SheetTitle>Profile Details</SheetTitle>
+      <SheetDescription>View and update account information.</SheetDescription>
     </SheetHeader>
     <div className="py-6">
       {/* Content */}
@@ -346,18 +345,18 @@ import {
 ## Form Inputs (react-hook-form + Zod)
 
 ```tsx
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@ui/forms/form"
-import { Input } from "@ui/forms/input"
-import { Textarea } from "@ui/forms/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@ui/forms/select"
-import { Checkbox } from "@ui/forms/checkbox"
-import { Switch } from "@ui/forms/switch"
+import {
+  Form, FormField, FormItem, FormLabel,
+  FormControl, FormMessage, Input, Textarea,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Checkbox, Switch
+} from "@umesh0492/react-libs"
 ```
 
 ```tsx
 const schema = z.object({
-  partnerName: z.string().min(2),
-  category: z.enum(["produce", "dairy", "dry"]),
+  organizationName: z.string().min(2),
+  category: z.enum(["enterprise", "growth", "starter"]),
   notes: z.string().optional(),
   active: z.boolean().default(true),
 })
@@ -512,8 +511,7 @@ formatRelativeTime(record.updated_at)
 ## Toast Notifications
 
 ```tsx
-import { useToast } from "@ui/feedback/use-toast"
-import { Toaster } from "@ui/feedback/toaster"
+import { useToast, Toaster } from "@umesh0492/react-libs"
 
 // Add <Toaster /> once in App.tsx / root layout
 ```
@@ -522,7 +520,7 @@ import { Toaster } from "@ui/feedback/toaster"
 const { toast } = useToast()
 
 // Success
-toast({ title: "Order confirmed", description: "PO-001 has been approved.", variant: "success" })
+toast({ title: "Order confirmed", description: "ORD-001 has been approved.", variant: "success" })
 
 // Error
 toast({ title: "Payment failed", description: "Card was declined.", variant: "destructive" })
@@ -531,7 +529,7 @@ toast({ title: "Payment failed", description: "Card was declined.", variant: "de
 toast({ title: "Export ready", description: "Download will start shortly.", variant: "info" })
 
 // Warning
-toast({ title: "Low stock warning", description: "Only 3 units remaining.", variant: "warning" })
+toast({ title: "Low storage warning", description: "Only 3% capacity remaining.", variant: "warning" })
 ```
 
 **Variants:** `default` · `success` · `destructive` · `warning` · `info`
@@ -541,7 +539,7 @@ toast({ title: "Low stock warning", description: "Only 3 units remaining.", vari
 ## Skeleton Loading
 
 ```tsx
-import { Skeleton } from "@ui/feedback/skeleton"
+import { Skeleton } from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -563,23 +561,22 @@ import { Skeleton } from "@ui/feedback/skeleton"
 ## EmptyState
 
 ```tsx
-import { EmptyState } from "@ui/feedback/empty-state"
-import { RoleEmptyState } from "@ui/feedback/role-empty-state"
+import { EmptyState, RoleEmptyState } from "@umesh0492/react-libs"
 ```
 
 ```tsx
 // Generic empty state
 <EmptyState
   icon={<Package className="h-12 w-12 text-muted-foreground" />}
-  title="No purchase orders"
-  description="Create your first PO to get started."
-  action={<Button><Plus /> Create PO</Button>}
+  title="No records found"
+  description="Create your first entry to get started."
+  action={<Button><Plus /> Create Entry</Button>}
 />
 
 // Permission-aware — shows different content based on user role
 <RoleEmptyState
-  role="partner"                     // "admin" | "partner" | "catalog"
-  entity="purchase-order"
+  role="member"                     // "admin" | "member" | "viewer"
+  entity="order"
   onCreate={() => setOpenCreate(true)}
 />
 ```
@@ -592,7 +589,7 @@ import { RoleEmptyState } from "@ui/feedback/role-empty-state"
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
   ChartLegend, ChartLegendContent,
-} from "@ui/data-display/chart"
+} from "@umesh0492/react-libs"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts"
 ```
 
@@ -630,7 +627,7 @@ import {
   SidebarGroup, SidebarGroupLabel, SidebarGroupContent,
   SidebarMenu, SidebarMenuItem, SidebarMenuButton,
   SidebarProvider, SidebarTrigger, SidebarInset,
-} from "@ui/navigation/sidebar"
+} from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -655,7 +652,7 @@ import {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="/orders"><ShoppingCart /> Purchase Orders</a>
+                <a href="/orders"><ShoppingCart /> Orders</a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -691,9 +688,10 @@ import {
 ## Pagination
 
 ```tsx
-import { Pagination, PaginationContent, PaginationItem,
+import {
+  Pagination, PaginationContent, PaginationItem,
   PaginationNext, PaginationPrevious, PaginationButton,
-} from "@ui/navigation/pagination"
+} from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -721,7 +719,7 @@ import { Pagination, PaginationContent, PaginationItem,
 ## Accordion
 
 ```tsx
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@ui/data-display/accordion"
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -748,7 +746,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@u
 ## Tabs
 
 ```tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@ui/navigation/tabs"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -769,7 +767,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@ui/navigation/tabs"
 ## Tooltip
 
 ```tsx
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/overlays/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -779,7 +777,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/ov
       <Button variant="ghost" size="icon"><Info /></Button>
     </TooltipTrigger>
     <TooltipContent>
-      <p>View order details</p>
+      <p>View details</p>
     </TooltipContent>
   </Tooltip>
 </TooltipProvider>
@@ -795,7 +793,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/ov
 import {
   Breadcrumb, BreadcrumbList, BreadcrumbItem,
   BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage,
-} from "@ui/navigation/breadcrumb"
+} from "@umesh0492/react-libs"
 ```
 
 ```tsx
@@ -810,10 +808,11 @@ import {
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbPage>PO-2024-001</BreadcrumbPage>
+      <BreadcrumbPage>INV-2026-001</BreadcrumbPage>
     </BreadcrumbItem>
   </BreadcrumbList>
 </Breadcrumb>
+```
 ```
 
 ---

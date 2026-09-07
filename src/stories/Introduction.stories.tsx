@@ -13,7 +13,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '**@umesh0492/react-lib** — Shared UI component library for modern enterprise procurement portals. ' +
+          '**@umesh0492/react-lib** — Shared UI component library for modern enterprise workspaces. ' +
           '75+ components · 828 tests · 100% pass rate · 99% coverage · Storybook 10 · Tailwind v4 · React 19',
       },
     },
@@ -242,7 +242,7 @@ export const ComponentDirectory: Story = {
             </h1>
             <p style={{ margin: 0, fontSize: 15, color: '#6b7280' }}>
               <strong style={{ color: '#111827' }}>@umesh0492/react-lib</strong> —
-              Shared UI component library for modern enterprise procurement portals.
+              Shared UI component library for modern enterprise workspaces.
             </p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }}>
@@ -313,15 +313,11 @@ export const ComponentDirectory: Story = {
 
           <div>
             <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-              Vite alias setup (vite.config.ts) — enables @ui/* short imports
+              Direct Imports — No bundler aliases needed
             </p>
-            <CodeBlock>{`import { resolve } from 'path';
-
-// In plugins/resolve.alias:
-{
-  '@ui/misc': resolve(__dirname, '../node_modules/@umesh0492/react-libs/src/hooks'),
-  '@ui': resolve(__dirname, '../node_modules/@umesh0492/react-libs/src/components/ui'),
-}`}</CodeBlock>
+            <CodeBlock>{`import { Button, Dialog, Card } from '@umesh0492/react-libs';
+import { cn, formatCurrency } from '@umesh0492/react-libs/utils';
+import { initAnalytics } from '@umesh0492/react-libs/analytics';`}</CodeBlock>
           </div>
         </div>
 
@@ -345,7 +341,7 @@ export const ComponentDirectory: Story = {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
             <div>
               <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-                Partner Portal (orange brand)
+                Enterprise Workspace (orange theme)
               </p>
               <CodeBlock>{`:root {
   --color-primary: 24.6 95% 53.1%;
@@ -354,7 +350,7 @@ export const ComponentDirectory: Story = {
             </div>
             <div>
               <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-                Catalog Portal (default green)
+                Default Workspace (emerald theme)
               </p>
               <CodeBlock>{`:root {
   /* Uses react-lib defaults */
@@ -450,24 +446,22 @@ export const ComponentDirectory: Story = {
           }}
         >
           <SectionTitle>📍 Import Paths</SectionTitle>
-          <CodeBlock>{`// Components (via @ui/* alias)
-import { Button }           from '@ui/forms/button';
-import { Card }             from '@ui/layout/card';
-import { Badge }            from '@ui/data-display/badge';
-import { Dialog }           from '@ui/overlays/dialog';
-import { Tabs }             from '@ui/navigation/tabs';
-import { Spinner }          from '@ui/feedback/spinner';
-import { EmptyState }       from '@ui/feedback/empty-state';
-import { RoleEmptyState }   from '@ui/feedback/role-empty-state';
-import { SkeletonList }     from '@ui/feedback/skeleton-list';
-import { Calendar }         from '@ui/core/calendar';
-import { DateRangePicker }  from '@ui/core/date-range-picker';
-import { LanguageToggle }   from '@ui/core/language-toggle';
-import { ActiveFilterBadge } from '@ui/data-display/ActiveFilterBadge';
-import { StatusBadge }      from '@ui/data-display/status-badge';
+          <CodeBlock>{`// UI Components (from root package)
+import {
+  Button, Card, Badge, Dialog, Tabs,
+  Spinner, EmptyState, RoleEmptyState,
+  Calendar, DateRangePicker, LanguageToggle,
+  ActiveFilterBadge, StatusBadge, useToast
+} from '@umesh0492/react-libs';
 
-// Hooks (via @ui/misc/* alias)
-import { useToast }         from '@ui/misc/use-toast';`}</CodeBlock>
+// Pure Utilities & Formatters (Server/RSC Safe)
+import { cn, formatCurrency, formatDate, isValidEmail } from '@umesh0492/react-libs/utils';
+
+// Analytics Engine
+import { initAnalytics, trackEvent } from '@umesh0492/react-libs/analytics';
+
+// Client-Only PDF Viewer
+import { PdfViewer } from '@umesh0492/react-libs/pdf';`}</CodeBlock>
         </div>
 
         {/* ── Quick Links ── */}

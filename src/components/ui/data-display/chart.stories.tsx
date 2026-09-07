@@ -49,33 +49,33 @@ type Story = StoryObj<typeof meta>;
 // ── Shared data & config ────────────────────────────────────────────────────
 
 const monthlyData = [
-  { month: 'Jan', rfq: 186, po: 80,  grn: 60 },
-  { month: 'Feb', rfq: 305, po: 200, grn: 175 },
-  { month: 'Mar', rfq: 237, po: 120, grn: 100 },
-  { month: 'Apr', rfq: 73,  po: 190, grn: 140 },
-  { month: 'May', rfq: 209, po: 130, grn: 110 },
-  { month: 'Jun', rfq: 214, po: 140, grn: 125 },
+  { month: 'Jan', requests: 186, orders: 80,  delivered: 60 },
+  { month: 'Feb', requests: 305, orders: 200, delivered: 175 },
+  { month: 'Mar', requests: 237, orders: 120, delivered: 100 },
+  { month: 'Apr', requests: 73,  orders: 190, delivered: 140 },
+  { month: 'May', requests: 209, orders: 130, delivered: 110 },
+  { month: 'Jun', requests: 214, orders: 140, delivered: 125 },
 ];
 
 const multiConfig = {
-  rfq:  { label: 'RFQs',         color: 'hsl(var(--chart-1))' },
-  po:   { label: 'Purchase Orders', color: 'hsl(var(--chart-2))' },
-  grn:  { label: 'GRN Received', color: 'hsl(var(--chart-3))' },
+  requests:  { label: 'Requests',  color: 'hsl(var(--chart-1))' },
+  orders:    { label: 'Orders',    color: 'hsl(var(--chart-2))' },
+  delivered: { label: 'Delivered', color: 'hsl(var(--chart-3))' },
 };
 
 const categoryData = [
-  { name: 'Produce',    value: 38 },
-  { name: 'Grains',     value: 27 },
-  { name: 'Spices',     value: 18 },
-  { name: 'Dairy',      value: 12 },
-  { name: 'Others',     value: 5  },
+  { name: 'Compute',   value: 38 },
+  { name: 'Storage',   value: 27 },
+  { name: 'Network',   value: 18 },
+  { name: 'Database',  value: 12 },
+  { name: 'Analytics', value: 5  },
 ];
 const pieConfig = {
-  Produce: { label: 'Produce',  color: 'hsl(var(--chart-1))' },
-  Grains:  { label: 'Grains',   color: 'hsl(var(--chart-2))' },
-  Spices:  { label: 'Spices',   color: 'hsl(var(--chart-3))' },
-  Dairy:   { label: 'Dairy',    color: 'hsl(var(--chart-4))' },
-  Others:  { label: 'Others',   color: 'hsl(var(--chart-5))' },
+  Compute:   { label: 'Compute',   color: 'hsl(var(--chart-1))' },
+  Storage:   { label: 'Storage',   color: 'hsl(var(--chart-2))' },
+  Network:   { label: 'Network',   color: 'hsl(var(--chart-3))' },
+  Database:  { label: 'Database',  color: 'hsl(var(--chart-4))' },
+  Analytics: { label: 'Analytics', color: 'hsl(var(--chart-5))' },
 };
 
 // ── Stories ─────────────────────────────────────────────────────────────────
@@ -88,7 +88,7 @@ export const BarWithYAxis: Story = {
   args: { config: multiConfig, children: <div /> },
   render: (args) => (
     <div className="w-full max-w-[600px] bg-card rounded-xl border shadow-sm p-6">
-      <h3 className="font-semibold text-base mb-1">Procurement Activity</h3>
+      <h3 className="font-semibold text-base mb-1">Activity Overview</h3>
       <p className="text-xs text-muted-foreground mb-4">Jan – Jun 2026</p>
       <ChartContainer config={multiConfig} className="h-[280px] w-full">
         <BarChart data={monthlyData} barCategoryGap="30%">
@@ -109,9 +109,9 @@ export const BarWithYAxis: Story = {
           />
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
-          <Bar dataKey="rfq" fill="var(--color-rfq)" radius={[4,4,0,0]} />
-          <Bar dataKey="po"  fill="var(--color-po)"  radius={[4,4,0,0]} />
-          <Bar dataKey="grn" fill="var(--color-grn)" radius={[4,4,0,0]} />
+          <Bar dataKey="requests"  fill="var(--color-requests)"  radius={[4,4,0,0]} />
+          <Bar dataKey="orders"    fill="var(--color-orders)"    radius={[4,4,0,0]} />
+          <Bar dataKey="delivered" fill="var(--color-delivered)" radius={[4,4,0,0]} />
         </BarChart>
       </ChartContainer>
     </div>
@@ -130,8 +130,8 @@ export const LineWithArea: Story = {
   args: { config: multiConfig, children: <div /> },
   render: () => (
     <div className="w-full max-w-[600px] bg-card rounded-xl border shadow-sm p-6">
-      <h3 className="font-semibold text-base mb-1">Partner Activity Trend</h3>
-      <p className="text-xs text-muted-foreground mb-4">Monthly volume — RFQ vs PO</p>
+      <h3 className="font-semibold text-base mb-1">Activity Trend</h3>
+      <p className="text-xs text-muted-foreground mb-4">Monthly volume — Requests vs Orders</p>
       <ChartContainer config={multiConfig} className="h-[260px] w-full">
         <LineChart data={monthlyData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -139,8 +139,8 @@ export const LineWithArea: Story = {
           <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} width={36} tickMargin={8} />
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
-          <Line type="monotone" dataKey="rfq" stroke="var(--color-rfq)" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="po"  stroke="var(--color-po)"  strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="requests" stroke="var(--color-requests)" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="orders"   stroke="var(--color-orders)"   strokeWidth={2} dot={false} />
         </LineChart>
       </ChartContainer>
     </div>
@@ -153,7 +153,7 @@ export const StackedArea: Story = {
   render: () => (
     <div className="w-full max-w-[600px] bg-card rounded-xl border shadow-sm p-6">
       <h3 className="font-semibold text-base mb-1">Cumulative Volume</h3>
-      <p className="text-xs text-muted-foreground mb-4">Stacked area — RFQ, PO, GRN</p>
+      <p className="text-xs text-muted-foreground mb-4">Stacked area — Requests, Orders, Delivered</p>
       <ChartContainer config={multiConfig} className="h-[260px] w-full">
         <AreaChart data={monthlyData}>
           <defs>
@@ -169,9 +169,9 @@ export const StackedArea: Story = {
           <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} width={36} tickMargin={8} />
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
-          <Area type="monotone" dataKey="rfq" stroke="var(--color-rfq)" fill="url(#grad-rfq)" strokeWidth={2} />
-          <Area type="monotone" dataKey="po"  stroke="var(--color-po)"  fill="url(#grad-po)"  strokeWidth={2} />
-          <Area type="monotone" dataKey="grn" stroke="var(--color-grn)" fill="url(#grad-grn)" strokeWidth={2} />
+          <Area type="monotone" dataKey="requests"  stroke="var(--color-requests)"  fill="url(#grad-requests)"  strokeWidth={2} />
+          <Area type="monotone" dataKey="orders"    stroke="var(--color-orders)"    fill="url(#grad-orders)"    strokeWidth={2} />
+          <Area type="monotone" dataKey="delivered" stroke="var(--color-delivered)" fill="url(#grad-delivered)" strokeWidth={2} />
         </AreaChart>
       </ChartContainer>
     </div>
@@ -183,8 +183,8 @@ export const DonutPie: Story = {
   args: { config: pieConfig, children: <div /> },
   render: () => (
     <div className="w-full max-w-[420px] bg-card rounded-xl border shadow-sm p-6">
-      <h3 className="font-semibold text-base mb-1">Partner Category Mix</h3>
-      <p className="text-xs text-muted-foreground mb-4">Share by procurement spend</p>
+      <h3 className="font-semibold text-base mb-1">Resource Category Mix</h3>
+      <p className="text-xs text-muted-foreground mb-4">Share by infrastructure allocation</p>
       <ChartContainer config={pieConfig} className="h-[240px] w-full">
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
@@ -211,8 +211,8 @@ export const Default: Story = {
           <XAxis dataKey="month" tickLine={false} tickMargin={8} axisLine={false} tick={{ fontSize: 11 }}
             tickFormatter={(v) => v.slice(0, 3)} />
           <ChartTooltip content={<ChartTooltipContent />} />
-          <Bar dataKey="rfq" fill="var(--color-rfq)" radius={4} />
-          <Bar dataKey="po"  fill="var(--color-po)"  radius={4} />
+          <Bar dataKey="requests" fill="var(--color-requests)" radius={4} />
+          <Bar dataKey="orders"   fill="var(--color-orders)"   radius={4} />
         </BarChart>
       </ChartContainer>
     </div>

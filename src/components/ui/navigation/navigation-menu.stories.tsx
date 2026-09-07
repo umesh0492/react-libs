@@ -54,7 +54,7 @@ const NavigationMenuDemo = () => (
             <ListItem href="/admin" title="Admin Portal">
               Manage purchase orders, partner approvals, and order tracking.
             </ListItem>
-            <ListItem href="/partner" title="Partner Portal">
+            <ListItem href="/workspace" title="Workspace">
               Submit quotes, manage GRNs, and handle payment queries.
             </ListItem>
             <ListItem href="/catalog" title="Catalog">

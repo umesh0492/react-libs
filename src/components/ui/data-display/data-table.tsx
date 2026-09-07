@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react"
 import {ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react"
 import {

@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { ArrowLeft, ArrowRight, Loader2, LogOut } from "lucide-react";
 import { cn } from "../../../lib/utils";

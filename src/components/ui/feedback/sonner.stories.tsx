@@ -46,7 +46,7 @@ export const AllVariants: Story = {
     <div className="p-6 flex flex-wrap gap-3">
       <Button
         variant="default"
-        onClick={() => toast.success('Purchase order approved!', { description: 'PO-2025-0421 has been sent to Agro Supplies Co.' })}
+        onClick={() => toast.success('Order approved!', { description: 'ORD-2025-0421 has been sent to Acme Corporation.' })}
       >
         Success Toast
       </Button>
@@ -58,21 +58,21 @@ export const AllVariants: Story = {
       </Button>
       <Button
         variant="secondary"
-        onClick={() => toast.warning('Stock running low', { description: 'Basmati Rice stock is at 12% capacity.' })}
+        onClick={() => toast.warning('Storage limit approaching', { description: 'Object Storage is at 88% capacity.' })}
       >
         Warning Toast
       </Button>
       <Button
         variant="outline"
-        onClick={() => toast.info('New partner registered', { description: 'Deccan Organic has completed onboarding.' })}
+        onClick={() => toast.info('New member registered', { description: 'Jane Doe has completed onboarding.' })}
       >
         Info Toast
       </Button>
       <Button
         variant="ghost"
         onClick={() =>
-          toast('Shipment dispatched', {
-            description: 'GRN-0981 is on its way from Delhi Warehouse.',
+          toast('Package dispatched', {
+            description: 'PKG-0981 is on its way from Central Facility.',
             action: { label: 'Track', onClick: () => {} },
           })
         }

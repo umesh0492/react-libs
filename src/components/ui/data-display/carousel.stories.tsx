@@ -76,28 +76,28 @@ type Story = StoryObj<typeof meta>;
 
 const SLIDES = [
   {
-    title: "Agro Supplies Co.",
-    subtitle: "Fresh produce · Delhi",
+    title: "Acme Corporation",
+    subtitle: "Cloud infrastructure · New York",
     bg: "bg-emerald-50 dark:bg-emerald-950/20",
   },
   {
-    title: "Metro Grains Ltd.",
-    subtitle: "Bulk grains · Mumbai",
+    title: "Globex Industries",
+    subtitle: "Enterprise systems · London",
     bg: "bg-amber-50  dark:bg-amber-950/20",
   },
   {
-    title: "South Agrotech",
-    subtitle: "Spices & rice · Chennai",
+    title: "Soylent Tech",
+    subtitle: "Data platforms · San Francisco",
     bg: "bg-rose-50   dark:bg-rose-950/20",
   },
   {
-    title: "Punjab Farms",
-    subtitle: "Wheat & dairy · Ludhiana",
+    title: "Initech Solutions",
+    subtitle: "Developer tooling · Austin",
     bg: "bg-sky-50    dark:bg-sky-950/20",
   },
   {
-    title: "Deccan Organic",
-    subtitle: "Certified organic · Pune",
+    title: "Umbrella Software",
+    subtitle: "Security analytics · Seattle",
     bg: "bg-violet-50 dark:bg-violet-950/20",
   },
 ];

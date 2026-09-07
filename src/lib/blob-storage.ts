@@ -62,13 +62,11 @@ export async function fetchBlobStorageConfig(
   const json = (await res.json()) as {
     storage_base_url?: string;
     storage_secret_key?: string;
-    dit_base_url?: string;
-    dit_secret_key?: string;
   };
 
   _config = {
-    storageBaseUrl: json.storage_base_url || json.dit_base_url || "",
-    storageSecretKey: json.storage_secret_key || json.dit_secret_key || "",
+    storageBaseUrl: json.storage_base_url || "",
+    storageSecretKey: json.storage_secret_key || "",
   };
   return _config;
 }
@@ -161,14 +159,16 @@ export async function downloadFileFromStorage(
   }
 
   const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = displayName || fileName;
-  document.body.appendChild(a);
-  a.click();
-  if (a.parentNode) {
-    a.parentNode.removeChild(a);
+  if (typeof window !== "undefined" && typeof document !== "undefined") {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = displayName || fileName;
+    document.body.appendChild(a);
+    a.click();
+    if (a.parentNode) {
+      a.parentNode.removeChild(a);
+    }
+    window.URL.revokeObjectURL(url);
   }
-  URL.revokeObjectURL(url);
 }

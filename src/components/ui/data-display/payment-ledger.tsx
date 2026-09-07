@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Wallet, ExternalLink } from "lucide-react";
 import { formatCurrency, formatDate } from "../../../lib/formatters";
@@ -5,6 +7,8 @@ import { cn } from "../../../lib/utils";
 
 export interface LedgerEntry {
   key?: string;
+  reference_id?: string;
+  reference_number?: string;
   grn_id?: string;
   grn_number?: string;
   invoice_id?: string;
@@ -23,6 +27,7 @@ export interface PaymentLedgerProps extends React.HTMLAttributes<HTMLDivElement>
   net?: number;
   netLabel?: string;
   showFooter?: boolean;
+  onReferenceClick?: (referenceId: string) => void;
   onGRNClick?: (grnId: string) => void;
   onInvoiceClick?: (invoiceId: string) => void;
   maskFormatter?: (val: string) => string;
@@ -52,6 +57,7 @@ export function PaymentLedger({
   net: _net = 0,
   netLabel = "Net Payable",
   showFooter = true,
+  onReferenceClick,
   onGRNClick,
   onInvoiceClick: _onInvoiceClick,
   maskFormatter,
@@ -144,10 +150,14 @@ export function PaymentLedger({
                   <td className="px-4 py-3">
                     <div className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                       <span>{entry.description}</span>
-                      {entry.grn_id && onGRNClick && (
+                      {((entry.reference_id || entry.grn_id) && (onReferenceClick || onGRNClick)) && (
                         <button
                           type="button"
-                          onClick={() => onGRNClick(entry.grn_id!)}
+                          onClick={() => {
+                            const refId = entry.reference_id || entry.grn_id!;
+                            if (onReferenceClick) onReferenceClick(refId);
+                            else if (onGRNClick) onGRNClick(refId);
+                          }}
                           className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
                         >
                           <ExternalLink className="h-3 w-3 inline" />

@@ -30,8 +30,6 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@umesh0492'
 
       - name: Global CI Cache (Coverage, Vitest)
         uses: actions/cache@v4
@@ -46,8 +44,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Type Definitions Check
         run: npx tsc --noEmit
@@ -55,19 +51,20 @@ jobs:
       - name: Lint (Static Analysis & Custom Rules)
         run: npm run lint
 
+      - name: Build Library Package
+        run: npm run build
+
+      - name: Check Package Types Matrix (attw)
+        run: npx @arethetypeswrong/cli --pack . --ignore-rules no-resolution
+
       - name: Verify Component Exports
         run: node scripts/check-exports.mjs
 
       - name: Performance Gate (P95 Enforcement)
         run: npm run perf
 
-      - name: Execute Vitest (Coverage + Interaction Tests on Changed Files)
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            npx vitest run --changed origin/main --coverage --passWithNoTests
-          else
-            npx vitest run --changed HEAD~1 --coverage --passWithNoTests
-          fi
+      - name: Execute Vitest (Full Test Suite + Coverage)
+        run: npm run test
 
       - name: Build Storybook
         run: npm run build-storybook

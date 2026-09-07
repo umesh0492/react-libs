@@ -98,7 +98,7 @@ export const Default: Story = {
  */
 export const WithCheckboxItems: Story = {
   render: () => {
-    const [cols, setCols] = React.useState({ partner: true, amount: true, date: false, status: true });
+    const [cols, setCols] = React.useState({ name: true, amount: true, date: false, status: true });
     return (
       <div className="p-8">
         <ContextMenu>
@@ -172,7 +172,7 @@ export const WithRadioGroup: Story = {
   },
 };
 
-/** Realistic partner table row right-click. */
+/** Realistic table row right-click. */
 export const TableRowMenu: Story = {
   render: () => {
     const [starred, setStarred] = React.useState(false);
@@ -183,8 +183,8 @@ export const TableRowMenu: Story = {
           <ContextMenuTrigger>
             <div className={`flex items-center justify-between px-4 py-3 rounded-lg border cursor-pointer select-none transition-colors hover:bg-muted/40 ${hidden ? 'opacity-40' : ''}`}>
               <div>
-                <p className="font-medium text-sm">Agro Supplies Co.</p>
-                <p className="text-xs text-muted-foreground">VND-001 · Produce · Delhi</p>
+                <p className="font-medium text-sm">Acme Corporation</p>
+                <p className="text-xs text-muted-foreground">REC-001 · Enterprise · New York</p>
               </div>
               <div className="flex items-center gap-2">
                 {starred && <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />}
@@ -193,14 +193,14 @@ export const TableRowMenu: Story = {
             </div>
           </ContextMenuTrigger>
           <ContextMenuContent className="w-52">
-            <ContextMenuLabel>VND-001</ContextMenuLabel>
+            <ContextMenuLabel>REC-001</ContextMenuLabel>
             <ContextMenuSeparator />
             <ContextMenuItem><Eye className="mr-2 h-4 w-4" />View Profile</ContextMenuItem>
-            <ContextMenuItem><Pencil className="mr-2 h-4 w-4" />Edit Partner</ContextMenuItem>
+            <ContextMenuItem><Pencil className="mr-2 h-4 w-4" />Edit Record</ContextMenuItem>
             <ContextMenuItem><Download className="mr-2 h-4 w-4" />Export Data</ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuCheckboxItem checked={starred} onCheckedChange={setStarred}>
-              <Star className="mr-2 h-4 w-4" />Star Partner
+              <Star className="mr-2 h-4 w-4" />Star Record
             </ContextMenuCheckboxItem>
             <ContextMenuCheckboxItem checked={hidden} onCheckedChange={setHidden}>
               {hidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
@@ -208,7 +208,7 @@ export const TableRowMenu: Story = {
             </ContextMenuCheckboxItem>
             <ContextMenuSeparator />
             <ContextMenuItem className="text-destructive focus:text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" />Remove Partner
+              <Trash2 className="mr-2 h-4 w-4" />Remove Record
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
@@ -216,6 +216,6 @@ export const TableRowMenu: Story = {
     );
   },
   parameters: {
-    docs: { description: { story: 'Realistic partner row with star/hide checkbox items. State is reflected on the row.' } },
+    docs: { description: { story: 'Realistic table row with star/hide checkbox items. State is reflected on the row.' } },
   },
 };

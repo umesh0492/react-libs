@@ -1,3 +1,5 @@
+"use client";
+
 import { X } from "lucide-react";
 import { Button } from "../forms/button";
 import { cn } from "../../../lib/utils";

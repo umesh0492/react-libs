@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../overlays/command";
 import { Check, Loader2 } from "lucide-react";

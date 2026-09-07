@@ -1,0 +1,44 @@
+name: Feature Request
+description: Suggest an idea or new feature for @umesh0492/react-libs
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an enhancement or new feature for `@umesh0492/react-libs`! Please provide as much detail as possible to help the maintainers and community evaluate the proposal.
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: Problem Description
+      description: Is your feature request related to a specific problem or missing capability? Please describe.
+      placeholder: A clear and concise description of the problem or limitation you encountered...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution or new component/hook/utility you would like to see added.
+      placeholder: Describe the proposed API, props, behavior, and expected developer experience...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternative-designs
+    attributes:
+      label: Alternative Designs & Considerations
+      description: Describe any alternative solutions, designs, or workarounds you have considered.
+      placeholder: Alternatives considered, why they were unsuitable, or trade-offs...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context & Examples
+      description: Add any other context, links to design systems (e.g. Radix, shadcn), Figma mockups, or screenshots.
+    validations:
+      required: false

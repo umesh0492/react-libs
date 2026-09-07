@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { UploadCloud, X, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "../../../lib/utils";

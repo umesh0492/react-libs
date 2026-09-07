@@ -43,28 +43,28 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Standard destructive confirmation — delete a partner. */
-export const DeletePartner: Story = {
+/** Standard destructive confirmation — delete a record. */
+export const DeleteRecord: Story = {
   render: () => (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" id="alert-trigger">
           <Trash2 className="h-4 w-4 mr-2" />
-          Remove Partner
+          Remove Record
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Remove Agro Supplies Co.?</AlertDialogTitle>
+          <AlertDialogTitle>Remove Acme Corporation?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently remove the partner and all associated purchase
-            orders, GRNs, and payment history. This action cannot be undone.
+            This will permanently remove the record and all associated data
+            and history. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90">
-            Yes, remove partner
+            Yes, remove record
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -72,7 +72,7 @@ export const DeletePartner: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const trigger = canvas.getByRole('button', { name: /remove partner/i });
+    const trigger = canvas.getByRole('button', { name: /remove record/i });
     await userEvent.click(trigger);
     await waitFor(() =>
       expect(document.body.querySelector('[role="alertdialog"]')).toBeTruthy()
@@ -86,19 +86,22 @@ export const DeletePartner: Story = {
   },
 };
 
+/** Backwards-compatible alias for DeleteRecord. */
+export const DeletePartner: Story = DeleteRecord;
+
 /** Confirm a status change that has downstream effects. */
 export const ConfirmStatusChange: Story = {
   render: () => (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" id="alert-status-trigger">Deactivate Partner</Button>
+        <Button variant="outline" id="alert-status-trigger">Deactivate Account</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Deactivate this partner?</AlertDialogTitle>
+          <AlertDialogTitle>Deactivate this account?</AlertDialogTitle>
           <AlertDialogDescription>
-            Deactivating will pause all pending purchase orders and block new
-            orders until the partner is reactivated.
+            Deactivating will pause all active sessions and block new
+            requests until the account is reactivated.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -62,14 +62,14 @@ export const RowActions: Story = {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>PO-2025-0421</DropdownMenuLabel>
+        <DropdownMenuLabel>INV-2026-0421</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Eye className="mr-2 h-4 w-4" />View Details
           <DropdownMenuShortcut>⌘V</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Edit className="mr-2 h-4 w-4" />Edit Order
+          <Edit className="mr-2 h-4 w-4" />Edit Record
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Download className="mr-2 h-4 w-4" />Export PDF
@@ -86,7 +86,7 @@ export const RowActions: Story = {
         </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-destructive focus:text-destructive">
-          <Trash2 className="mr-2 h-4 w-4" />Cancel Order
+          <Trash2 className="mr-2 h-4 w-4" />Delete Record
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

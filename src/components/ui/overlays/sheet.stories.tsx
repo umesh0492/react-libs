@@ -48,27 +48,27 @@ export const Right: Story = {
   render: () => (
     <Sheet>
       <SheetTrigger asChild>
-        <Button id="sheet-right-trigger">Edit Partner</Button>
+        <Button id="sheet-right-trigger">Edit Profile</Button>
       </SheetTrigger>
       <SheetContent side="right">
         <SheetHeader>
-          <SheetTitle>Agro Supplies Co.</SheetTitle>
+          <SheetTitle>Acme Corporation</SheetTitle>
           <SheetDescription>
-            Update partner details. Changes are saved immediately.
+            Update profile details. Changes are saved immediately.
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-1.5">
             <Label htmlFor="sh-name">Company Name</Label>
-            <Input id="sh-name" defaultValue="Agro Supplies Co." />
+            <Input id="sh-name" defaultValue="Acme Corporation" />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="sh-gst">GST Number</Label>
-            <Input id="sh-gst" defaultValue="22AGRSP0000A1Z5" />
+            <Label htmlFor="sh-tax">Tax ID</Label>
+            <Input id="sh-tax" defaultValue="US-EIN-12345678" />
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor="sh-contact">Contact Email</Label>
-            <Input id="sh-contact" type="email" defaultValue="contact@agrosupplies.in" />
+            <Input id="sh-contact" type="email" defaultValue="contact@acme.com" />
           </div>
         </div>
         <SheetFooter>

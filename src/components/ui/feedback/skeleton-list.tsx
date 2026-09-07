@@ -1,3 +1,5 @@
+"use client";
+
 import { Skeleton } from "../feedback/skeleton";
 
 export function SkeletonList({ count = 5 }: { count?: number }) {

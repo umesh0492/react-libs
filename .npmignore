@@ -1,12 +1,15 @@
+# Include build artifacts
+!dist/**
+!dist
+
 # Test files and configs
 **/__tests__/**
-**/*.test.ts
-**/*.test.tsx
+**/*.test.*
 src/test/**
 vitest-kbd.json
 
 # Storybook files
-**/*.stories.tsx
+**/*.stories.*
 src/stories/**
 .storybook/**
 storybook-static/**

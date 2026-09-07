@@ -1,7 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
-"use client"
+"use client";
 
 import * as React from "react"
 import { GripVertical } from "lucide-react"

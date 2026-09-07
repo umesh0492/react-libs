@@ -23,7 +23,7 @@ export const Default: Story = {
       {
         key: "1",
         date: "2026-08-01",
-        description: "GRN-2026-00412 Received in Full",
+        description: "INV-2026-00412 Invoice Settled",
         type: "DR",
         amount: 120000,
         status: "BILLED",
@@ -31,7 +31,7 @@ export const Default: Story = {
       {
         key: "2",
         date: "2026-08-04",
-        description: "GRN-2026-00418 Partial Delivery",
+        description: "INV-2026-00418 Partial Payment",
         type: "DR",
         amount: 125000,
         status: "PARTIALLY_BILLED",
@@ -39,7 +39,7 @@ export const Default: Story = {
       {
         key: "3",
         date: "2026-08-08",
-        description: "Debit Note DN-8802 Damaged Items",
+        description: "Credit Adjustment CR-8802 Service Credit",
         type: "CR",
         amount: 15000,
         status: "SETTLED",

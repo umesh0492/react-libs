@@ -5,8 +5,8 @@ import { PersonaDropdown } from "../persona-dropdown";
 
 describe("PersonaDropdown", () => {
   const personas = [
-    { id: "buyer_admin", title: "Buyer Admin", subtitle: "Full procurement authority" },
-    { id: "seller_admin", title: "Seller Admin", subtitle: "Order fulfillment & catalog" },
+    { id: "workspace_admin", title: "Workspace Admin", subtitle: "Full administration authority" },
+    { id: "project_member", title: "Project Member", subtitle: "Standard project access" },
   ];
 
   it("renders trigger label with active persona", () => {
@@ -14,11 +14,11 @@ describe("PersonaDropdown", () => {
     render(
       <PersonaDropdown
         personas={personas}
-        activePersonaId="buyer_admin"
+        activePersonaId="workspace_admin"
         onSelectPersona={handleSelect}
       />
     );
 
-    expect(screen.getByText("Buyer Admin")).toBeInTheDocument();
+    expect(screen.getByText("Workspace Admin")).toBeInTheDocument();
   });
 });

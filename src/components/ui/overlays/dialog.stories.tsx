@@ -52,9 +52,9 @@ export const Default: Story = {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Partner Verification Required</DialogTitle>
+          <DialogTitle>Account Verification Required</DialogTitle>
           <DialogDescription>
-            Agro Supplies Co. has submitted their compliance documents.
+            Acme Corporation has submitted their compliance documents.
             Please review and confirm the verification status.
           </DialogDescription>
         </DialogHeader>
@@ -62,7 +62,7 @@ export const Default: Story = {
           <DialogClose asChild>
             <Button variant="outline">Skip for now</Button>
           </DialogClose>
-          <Button>Verify Partner</Button>
+          <Button>Verify Account</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

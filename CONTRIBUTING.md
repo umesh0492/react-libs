@@ -1,6 +1,6 @@
 # Contributing to @umesh0492/react-libs 🧱
 
-> This library powers all frontend portals (admin, partner, catalog) across the enterprise platform. It is the **single source of truth** for visual components, design tokens, hooks, and formatters.
+> Production-grade React 19 component library with Tailwind CSS v4 & Radix UI primitives. It is the **single source of truth** for visual components, design tokens, hooks, and formatters.
 
 ---
 
@@ -17,19 +17,14 @@
 ### Installation
 
 ```bash
-cd Partner-Portal-Design/react-lib
+git clone https://github.com/umesh0492/react-libs.git && cd react-libs
 npm ci
 ```
-
-> **Token required:** `npm ci` reads `@umesh0492` packages from GitHub Packages. Set `GH_PACKAGE_TOKEN` in your environment:
-> ```bash
-> export GH_PACKAGE_TOKEN=ghp_xxxx
-> ```
 
 ### Verifying Setup
 
 ```bash
-npm run test            # All 584 tests should pass
+npm run test            # All 713 tests should pass
 npm run storybook       # Opens http://localhost:6006
 npx tsc --noEmit        # Should produce zero errors
 ```
@@ -141,7 +136,7 @@ Create `src/stories/gauge.stories.tsx` covering **every variant** and the primar
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
-import { Gauge } from '@ui/data-display/gauge';
+import { Gauge } from '../components/ui/data-display/gauge';
 
 const meta = {
   title: 'Data Display/Gauge',
@@ -226,21 +221,25 @@ All PRs against `main` trigger **`ci.yml`** automatically:
 import { expect, within, userEvent, waitFor } from 'storybook/test';
 ```
 
-### Component Aliases
+### Package Imports & Local Development
 
-Consumers use `@ui/...` aliases. Within the library itself, use relative paths:
+Consumers install `@umesh0492/react-libs` and import components and utilities directly:
+
+```tsx
+import { Button, Card, Dialog } from "@umesh0492/react-libs";
+import { cn, formatCurrency } from "@umesh0492/react-libs/utils";
+```
+
+Within the library source code, use relative paths:
 
 ```tsx
 // Inside the library
-import { Button } from "../../forms/button"
-
-// In stories (alias available via vite.config)
-import { Button } from "@ui/forms/button"
+import { Button } from "../../forms/button";
 ```
 
 ### Dialog Rule
 
-**Never build custom modals.** Always use `@ui/overlays/dialog` — it manages portal, overlay, animation, and focus trap via Radix.
+**Never build custom modals.** Always use `Dialog` from `@umesh0492/react-libs` — it manages portal, overlay, animation, and focus trap via Radix.
 
 ### Portal Testing Rule
 

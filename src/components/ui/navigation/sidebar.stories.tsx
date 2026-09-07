@@ -38,7 +38,7 @@ const SidebarDemo = () => (
           </div>
           <div>
             <p className="text-sm font-semibold">ProcureFlow</p>
-            <p className="text-xs text-muted-foreground">Admin Portal</p>
+            <p className="text-xs text-muted-foreground">Workspace Admin</p>
           </div>
         </div>
       </SidebarHeader>

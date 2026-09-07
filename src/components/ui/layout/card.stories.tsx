@@ -56,8 +56,8 @@ export const Default: Story = {
       <CardContent>
         <dl className="space-y-2 text-sm py-1">
           <div className="flex justify-between">
-            <dt className="text-muted-foreground">Partner</dt>
-            <dd className="font-medium">Agro Supplies Co.</dd>
+            <dt className="text-muted-foreground">Client</dt>
+            <dd className="font-medium">Acme Corporation</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Amount</dt>
@@ -96,19 +96,19 @@ export const WithSeparator: Story = {
   render: () => (
     <Card className="w-[360px]">
       <CardHeader>
-        <CardTitle>Partner Profile</CardTitle>
-        <CardDescription>Agro Supplies Co. · VND-001</CardDescription>
+        <CardTitle>Company Profile</CardTitle>
+        <CardDescription>Acme Corp · ORG-001</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center gap-3 py-1">
           <Avatar size="lg">
-            <AvatarImage src="" alt="Partner" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarImage src="" alt="Company" />
+            <AvatarFallback>AC</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-semibold text-sm">Agro Supplies Co.</p>
+            <p className="font-semibold text-sm">Acme Corporation</p>
             <p className="text-xs text-muted-foreground">
-              Fresh produce · Delhi NCR
+              Cloud Infrastructure · San Francisco, CA
             </p>
           </div>
         </div>
@@ -116,7 +116,7 @@ export const WithSeparator: Story = {
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div>
             <p className="text-muted-foreground text-xs">Category</p>
-            <p className="font-medium">Produce</p>
+            <p className="font-medium">Cloud Computing</p>
           </div>
           <div>
             <p className="text-muted-foreground text-xs">Status</p>
@@ -127,7 +127,7 @@ export const WithSeparator: Story = {
             <p className="font-medium">4.8 / 5.0</p>
           </div>
           <div>
-            <p className="text-muted-foreground text-xs">POs (YTD)</p>
+            <p className="text-muted-foreground text-xs">Projects (YTD)</p>
             <p className="font-medium">47</p>
           </div>
         </div>

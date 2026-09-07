@@ -8,13 +8,13 @@ describe('ConfirmDialog', () => {
   const baseProps = {
     open: true,
     onOpenChange: vi.fn(),
-    title: 'Delete Partner?',
+    title: 'Delete Record?',
     onConfirm: vi.fn(),
   };
 
   it('renders title when open', () => {
     render(<ConfirmDialog {...baseProps} />);
-    expect(screen.getByText('Delete Partner?')).toBeInTheDocument();
+    expect(screen.getByText('Delete Record?')).toBeInTheDocument();
   });
 
   it('renders description when provided', () => {
@@ -60,6 +60,6 @@ describe('ConfirmDialog', () => {
 
   it('renders nothing when closed', () => {
     render(<ConfirmDialog {...baseProps} open={false} />);
-    expect(screen.queryByText('Delete Partner?')).not.toBeInTheDocument();
+    expect(screen.queryByText('Delete Record?')).not.toBeInTheDocument();
   });
 });
