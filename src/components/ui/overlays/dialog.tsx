@@ -4,12 +4,6 @@ import { X } from "lucide-react"
 
 import { cn } from "../../../lib/utils"
 
-import { injectRadixAnimations } from "../../../lib/radix-animations"
-
-// Initialize shared animations
-if (typeof document !== "undefined") {
-  injectRadixAnimations()
-}
 
 const Dialog = DialogPrimitive.Root
 

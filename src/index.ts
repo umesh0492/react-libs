@@ -25,8 +25,6 @@ export * from "./components/ui/forms/field";
 export * from "./components/ui/forms/file-upload";
 export * from "./components/ui/forms/filter-select";
 export * from "./components/ui/forms/form";
-export { FormField as SimpleFormField, FormField as FormFieldContainer, type FormFieldProps as SimpleFormFieldProps } from "./components/ui/forms/form-field";
-export * from "./components/ui/forms/form-section";
 export * from "./components/ui/forms/input";
 export * from "./components/ui/forms/input-group";
 export * from "./components/ui/forms/input-otp";
@@ -42,22 +40,14 @@ export * from "./components/ui/forms/textarea";
 export * from "./components/ui/forms/toggle";
 export * from "./components/ui/forms/toggle-group";
 
-// ─── Layout & Page Shell ─────────────────────────────────────────────────────
+// ─── Layout & Page Primitives ────────────────────────────────────────────────
 export * from "./components/ui/layout/aspect-ratio";
 export * from "./components/ui/layout/card";
-export * from "./components/ui/layout/data-table-card";
 export * from "./components/ui/layout/detail-grid";
-export * from "./components/ui/layout/filter-bar";
-export * from "./components/ui/layout/page-actions";
 export * from "./components/ui/layout/page-header";
-export * from "./components/ui/layout/page-section";
-export * from "./components/ui/layout/page-shell";
 export * from "./components/ui/layout/resizable";
 export * from "./components/ui/layout/scroll-area";
-export * from "./components/ui/layout/section-card";
-export * from "./components/ui/layout/section-header";
 export * from "./components/ui/layout/separator";
-export * from "./components/ui/layout/table-toolbar";
 
 // ─── Data Display & Enterprise Composites ───────────────────────────────────
 export * from "./components/ui/data-display/ActiveFilterBadge";
@@ -69,15 +59,12 @@ export * from "./components/ui/data-display/bilingual-tooltip";
 export * from "./components/ui/data-display/carousel";
 export * from "./components/ui/data-display/chart";
 export * from "./components/ui/data-display/collapsible";
-export * from "./components/ui/data-display/context-chip";
 export * from "./components/ui/data-display/data-table";
-export * from "./components/ui/data-display/entity-summary-card";
 export * from "./components/ui/data-display/image-viewer";
 export * from "./components/ui/data-display/info-list";
 export * from "./components/ui/data-display/kpi-card";
 export * from "./components/ui/data-display/line-items-card";
 export * from "./components/ui/data-display/match-score-gauge";
-export * from "./components/ui/data-display/metric-card";
 export * from "./components/ui/data-display/metric-ticker";
 export * from "./components/ui/data-display/quota-card";
 export * from "./components/ui/data-display/payment-ledger";
@@ -110,9 +97,7 @@ export {
   type StandalonePaginationProps,
 } from "./components/ui/navigation/pagination";
 export * from "./components/ui/navigation/persona-dropdown";
-export * from "./components/ui/navigation/scope-trail";
 export * from "./components/ui/navigation/sidebar";
-export * from "./components/ui/navigation/stage-progression";
 export * from "./components/ui/navigation/stepper";
 export * from "./components/ui/navigation/tabs";
 

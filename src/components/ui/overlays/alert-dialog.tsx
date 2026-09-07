@@ -4,12 +4,6 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 import { cn } from "../../../lib/utils"
 import { buttonVariants } from "../forms/button"
 
-import { injectRadixAnimations } from "../../../lib/radix-animations"
-
-// Initialize shared animations
-if (typeof document !== "undefined") {
-  injectRadixAnimations()
-}
 
 const AlertDialog = AlertDialogPrimitive.Root
 

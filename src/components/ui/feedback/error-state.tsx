@@ -1,6 +1,6 @@
 import * as React from "react";
 import { AlertTriangle } from "lucide-react";
-import { SectionCard } from "../layout/section-card";
+import { Card } from "../layout/card";
 import { Button } from "../forms/button";
 import { cn } from "../../../lib/utils";
 
@@ -20,7 +20,7 @@ export function ErrorState({
   ...props
 }: ErrorStateProps) {
   return (
-    <SectionCard
+    <Card
       className={cn("px-6 py-10 text-center", className)}
       {...props}
     >
@@ -40,6 +40,6 @@ export function ErrorState({
           {actionLabel}
         </Button>
       ) : null}
-    </SectionCard>
+    </Card>
   );
 }

@@ -27,3 +27,5 @@ export function DetailGrid({ columns = 3, className, ...props }: DetailGridProps
     />
   );
 }
+
+export { DetailGrid as StatGrid, DetailGrid as MetricGrid, type DetailGridProps as MetricGridProps, type DetailGridProps as StatGridProps };

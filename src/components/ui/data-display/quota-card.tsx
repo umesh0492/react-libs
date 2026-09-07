@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Sparkles } from "lucide-react";
-import { SectionCard } from "../layout/section-card";
+import { Card } from "../layout/card";
 import { Button } from "../forms/button";
 import { Progress } from "../feedback/progress";
 import { cn } from "../../../lib/utils";
@@ -30,7 +30,7 @@ export function QuotaCard({
   const remaining = Math.max(0, total - used);
 
   return (
-    <SectionCard className={cn("p-4.5 space-y-3.5", className)} {...props}>
+    <Card className={cn("p-4.5 space-y-3.5", className)} {...props}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -61,6 +61,6 @@ export function QuotaCard({
           </Button>
         </div>
       ) : null}
-    </SectionCard>
+    </Card>
   );
 }
