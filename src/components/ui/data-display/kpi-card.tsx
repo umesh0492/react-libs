@@ -5,14 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "../layout/card";
 
 export type KPICardTone = "default" | "info" | "success" | "warning" | "danger" | "accent";
 
-export interface KPICardProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
-  label?: string; // alias for title
-  value: string | number;
-  description?: string;
+export interface KPICardProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title?: React.ReactNode;
+  label?: React.ReactNode; // alias for title
+  value: React.ReactNode;
+  description?: React.ReactNode;
   change?: number; // e.g. 12.5 for +12.5%, -4.2 for -4.2%
   changePeriod?: string; // e.g. "vs last month"
-  icon?: React.ReactNode;
+  icon?: React.ComponentType<{ className?: string }> | React.ReactNode;
   prefix?: string;
   suffix?: string;
   variant?: "default" | "outline" | "ghost";
@@ -62,6 +63,15 @@ export const KPICard = React.forwardRef<HTMLDivElement, KPICardProps>(
     const isNegative = typeof change === "number" && change < 0;
     const isZero = typeof change === "number" && change === 0;
 
+    const renderIcon = () => {
+      if (!icon) return null;
+      if (typeof icon === "function") {
+        const IconComp = icon as React.ComponentType<{ className?: string }>;
+        return <IconComp className="h-5 w-5" />;
+      }
+      return icon;
+    };
+
     return (
       <Card
         ref={ref}
@@ -80,7 +90,7 @@ export const KPICard = React.forwardRef<HTMLDivElement, KPICardProps>(
           </CardTitle>
           {icon && (
             <div className="p-2 rounded-lg bg-muted text-muted-foreground flex items-center justify-center">
-              {icon}
+              {renderIcon()}
             </div>
           )}
         </CardHeader>
