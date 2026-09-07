@@ -39,6 +39,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./analytics": "./src/lib/analytics/index.ts",
     "./hooks/use-toast": "./src/hooks/use-toast.ts",
     "./*": "./src/*",
     "./styles/theme.css": "./src/styles/theme.css"
