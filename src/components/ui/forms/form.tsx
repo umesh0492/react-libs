@@ -104,18 +104,22 @@ FormLabel.displayName = "FormLabel"
 const FormControl = React.forwardRef<
   React.ComponentRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
->(({ ...props }, ref) => {
+>(({ "aria-describedby": ariaDescribedBy, ...props }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+
+  const defaultDescribedBy = !error
+    ? `${formDescriptionId}`
+    : `${formDescriptionId} ${formMessageId}`
+
+  const fullDescribedBy = ariaDescribedBy
+    ? `${ariaDescribedBy} ${defaultDescribedBy}`
+    : defaultDescribedBy
 
   return (
     <Slot
       ref={ref}
       id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
+      aria-describedby={fullDescribedBy}
       aria-invalid={!!error}
       {...props}
     />

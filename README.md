@@ -1,12 +1,13 @@
-# @umesh0492/react-lib
+# @umesh0492/react-libs
 
 > **The shared UI component library for enterprise procurement portals.**  
 > Single source of truth for all visual components, design tokens, hooks, and formatters across web portals.
 
-[![Version](https://img.shields.io/badge/version-1.0.42-green)](./package.json)
-[![Tests](https://img.shields.io/badge/tests-828%20passing-brightgreen)](#testing)
-[![Coverage](https://img.shields.io/badge/coverage-99%25-blue)](#test-coverage)
+[![Version](https://img.shields.io/badge/version-0.3.0-green)](./package.json)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#testing)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A598%25-blue)](#test-coverage)
 [![React](https://img.shields.io/badge/react-19-blue)](https://react.dev)
+[![Tailwind](https://img.shields.io/badge/tailwind-v4-38bdf8)](https://tailwindcss.com)
 [![Storybook](https://img.shields.io/badge/storybook-10.x-ff4785)](http://localhost:6006)
 
 ---
@@ -41,13 +42,13 @@ This package is published privately to **GitHub Packages**.
 > **Note:** Use `GH_PACKAGE_TOKEN` — not `GITHUB_TOKEN`. Set it as a repo secret in GitHub Actions and as a local env var for manual publishing.
 
 ```bash
-npm install @umesh0492/react-lib@latest
+npm install @umesh0492/react-libs@latest
 ```
 
-**Local development** (symlink):
+**Local development** (symlink / monorepo):
 ```json
 // package.json of consuming app
-"@umesh0492/react-libs": "../react-lib"
+"@umesh0492/react-libs": "../react-libs"
 ```
 
 ---
@@ -85,7 +86,7 @@ export default defineConfig({
 All color, spacing, font, and radius tokens live in **one canonical file**:
 
 ```
-react-lib/src/styles/theme.css
+@umesh0492/react-libs/src/styles/theme.css
 ```
 
 Each consuming app imports it — no duplication:
@@ -94,7 +95,7 @@ Each consuming app imports it — no duplication:
 /* src/index.css */
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../node_modules/@umesh0492/react-libs/src/styles/theme.css";
+@import "@umesh0492/react-libs/src/styles/theme.css";
 ```
 
 ### Brand Colors
@@ -155,7 +156,7 @@ import { Button } from "@ui/forms/button"
 | | `KPICard` | `@ui/data-display/kpi-card` | Metric card with trend percentage indicator |
 | | `Timeline` | `@ui/data-display/timeline` | Vertical activity and audit log feed |
 | | `StatusBadge` | `@ui/data-display/status-badge` | 30+ procurement statuses |
-| | `ActiveFilterBadge` | `@ui/data-display/active-filter-badge` | Dismissable filter chip |
+| | `ActiveFilterBadge` | `@ui/data-display/ActiveFilterBadge` | Dismissable filter chip |
 | | `Avatar` | `@ui/data-display/avatar` | Image + fallback initials |
 | | `Card` | `@ui/data-display/card` | `CardHeader`, `CardContent`, `CardFooter` |
 | | `DataTable` | `@ui/data-display/data-table` | Sort, skeleton, pagination, empty state |
@@ -239,8 +240,6 @@ import { ConfirmDialog } from "@ui/overlays/confirm-dialog"
 />
 ```
 
-**Props:** `open`, `onOpenChange`, `title`, `description?`, `confirmLabel?` (default: `"Confirm"`), `cancelLabel?`, `variant?`, `isLoading?`, `onConfirm`.
-
 ---
 
 ### StatusBadge
@@ -254,29 +253,6 @@ import { StatusBadge } from "@ui/data-display/status-badge"
 <StatusBadge status="overdue_payment" />   // → 🔴 Overdue
 <StatusBadge status="under_review" />      // → 🟣 Under Review
 <StatusBadge status="rejected" size="sm" label="PO Rejected" />
-```
-
-**30+ statuses:** `pending`, `active`, `inactive`, `draft`, `completed`, `cancelled`, `rejected`, `approved`, `in_progress`, `overdue`, `on_hold`, `confirmed`, `dispatched`, `delivered`, `partially_delivered`, `returned`, `paid`, `unpaid`, `overdue_payment`, `partially_paid`, `accepted`, `partially_accepted`, `grn_pending`, `open`, `closed`, `awarded`, `expired`, `under_review`, `resolved`, `escalated`, `uploaded`, `verified`, `expired_doc`
-
----
-
-### PageHeader
-
-```tsx
-import { PageHeader } from "@ui/layout/page-header"
-
-<PageHeader
-  title="Purchase Orders"
-  description="Manage and track all active purchase orders"
-  badge={<StatusBadge status="active" size="sm" />}
-  breadcrumbs={<Breadcrumb>...</Breadcrumb>}
-  actions={
-    <>
-      <Button variant="outline" size="sm"><Download /> Export</Button>
-      <Button><Plus /> Create PO</Button>
-    </>
-  }
-/>
 ```
 
 ---
@@ -318,7 +294,7 @@ import { useDebounce, useLocalStorage, useIsMobile } from "@umesh0492/react-libs
 | Hook | Usage |
 |---|---|
 | `useDebounce(value, delay)` | Debounce search input before API call |
-| `useLocalStorage<T>(key, default)` | Persist state across page reloads, syncs across tabs |
+| `useLocalStorage<T>(key, default)` | Persist state across page reloads, syncs across tabs with functional updaters |
 | `useIsMobile()` | Returns `true` when viewport < 768px |
 
 ---
@@ -348,74 +324,16 @@ import {
 
 All formatters return `"—"` for `null` / `undefined` / `NaN` — safe to use directly in JSX.
 
-### Localized Formatters (i18n — EN/HI)
-
-```tsx
-const { language } = useLanguage() // "en" | "hi"
-
-formatLocalizedDate("2026-03-27", language)
-// en → "27 Mar 2026" · hi → "२७ मार्च २०२६"
-
-formatLocalizedDateTime("2026-03-27T14:32:00Z", language)
-// en → "27 Mar 2026, 2:32 PM" · hi → "२७ मार्च २०२६, 2:32 pm"
-
-formatLocalizedNumber(1234567, language)
-// en → "12,34,567" · hi → "१२,३४,५६७"
-```
-
----
-
-## Responsive Design
-
-| Component | Mobile | Tablet | Desktop |
-|---|---|---|---|
-| `PageHeader` | Title wraps, actions stack below | Side-by-side | Full layout |
-| `DataTable` | Horizontal scroll, "Page X/N" | Page buttons visible | Full pagination row |
-| `ConfirmDialog` | Full-width, buttons stack | Centered modal | Centered modal |
-| `Button` | 44px min touch target | Standard | Standard |
-| `Sidebar` | Collapses to Sheet overlay | Icon-only | Full labels |
-
 ---
 
 ## Testing
 
 ```bash
-npm run test          # Vitest unit tests + Storybook interaction tests (Chromium)
-npm run storybook     # Visual playground at localhost:6006 (runs tests first)
+npm run test             # Vitest unit tests + Storybook interaction tests
+npm run storybook        # Visual playground at localhost:6006
 npm run build-storybook  # Production static Storybook build
-npm run perf          # Generate docs/performance-report.md + Storybook dashboard data
+npm run perf             # Generate docs/performance-report.md
 ```
-
-### Coverage (as of v1.0.25)
-
-| Domain | Statements | Branches | Functions | Lines |
-|---|---|---|---|---|
-| **All files** | ≥98.7% ✅ | ≥98.2% ✅ | ≥98.7% ✅ | ≥98.7% ✅ |
-| `navigation` | 100% | 100% | 100% | 100% |
-| `overlays` | 100% | 100% | 100% | 100% |
-| `layout` | 100% | 100% | 100% | 100% |
-| `lib` | 100% | 100% | 100% | 100% |
-| `data-display` | 98.7% | 98.7% | 98.7% | 98.7% |
-
-> Full patterns documented in [test.md](./test.md).
-
----
-
-## Performance
-
-```bash
-npm run perf          # Run benchmarks — outputs docs/performance-report.md
-npm run perf:open     # Run + open report in system viewer
-```
-
-View the live dashboard in Storybook: **Docs → Performance Dashboard**.
-
-| Metric | Value (v1.0.25) |
-|---|---|
-| P50 (median) | ~6.3ms |
-| P95 | ~305.8ms |
-| P99 | ~893.6ms |
-| Total suite wall time | ~18.8s |
 
 ---
 
@@ -425,10 +343,10 @@ CI auto-publishes on tag push (`v*`):
 
 ```bash
 # Bump version:
-npm version patch   # 1.0.19 → 1.0.20
+npm version patch   # 0.3.0 → 0.3.1
 git add package.json package-lock.json
-git commit -m "chore: bump react-lib to 1.0.20"
-git tag v1.0.20
+git commit -m "chore: bump react-libs to 0.3.1"
+git tag v0.3.1
 git push && git push --tags
 
 # Manual publish (requires GH_PACKAGE_TOKEN):
@@ -436,23 +354,15 @@ export GH_PACKAGE_TOKEN=ghp_xxxx
 npm publish
 ```
 
-After publishing, update consuming apps:
-```bash
-npm install @umesh0492/react-lib@1.0.42
-```
-
 ---
 
 ## Architecture Notes
 
-### Why no custom modals?
-`@ui/overlays/dialog` manages its own background overlay, animations, portal, and focus trap via Radix. Building custom modals bypasses all of this and breaks accessibility.
+### Design System & Theming
+Components strictly utilize semantic CSS variables registered in `@theme inline` inside `src/styles/theme.css`. Consuming applications achieve complete dark mode and multi-brand support simply by importing `theme.css` into their root stylesheet.
 
-### Why hardcoded bg colors in overlays?
-CSS custom properties (`--popover`, `--background`) resolve from `@theme inline` blocks — these aren't processed in consumers' contexts. We hardcode explicit background colors to guarantee opacity in all environments.
+### Accessible Headless Primitives
+Built on top of `@radix-ui` primitives, all interactive components guarantee keyboard navigation (Enter/Space), proper ARIA relationships (`aria-expanded`, `aria-controls`, `aria-sort`), and focus-visible rings conforming to WCAG 2.1 AA standards.
 
-### Dialog / Overlay Rule
-**Always use `@ui/overlays/dialog`** — never build custom modals.
-
-### Storybook Interaction Tests
-All story `play()` functions are run against real Chromium via `@storybook/addon-vitest`. Portal-rendered components (Tooltip, Popover, Sheet, etc.) must be queried via `within(document.body)` — see [test.md](./test.md) for full patterns.
+### Zero Runtime Side-Effects
+All animations and keyframes are compiled into static CSS stylesheets. Components do not inject `<style>` elements into `document.head`, complying with strict Content Security Policies (`CSP`) and maximizing bundler tree-shaking efficiency.

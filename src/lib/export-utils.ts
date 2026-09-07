@@ -55,15 +55,23 @@ export async function exportData(
   const headers = options.columns ? options.columns.map((c) => c.header) : keys;
 
   if (format === "csv") {
+    const sanitizeCell = (val: unknown) => {
+      if (val == null) return '""';
+      const str = String(val);
+      // Neutralize formula triggers: =, +, -, @, \t, \r (unless it's a standard number)
+      const isFormula = /^[=+\-@\t\r]/.test(str);
+      const isNumber = !isNaN(Number(str)) && str.trim() !== "";
+      const safeStr = isFormula && !isNumber ? `'${str}` : str;
+      return `"${safeStr.replace(/"/g, '""')}"`;
+    };
+
     const rows: string[] = [
-      headers.map((h) => `"${String(h).replace(/"/g, '""')}"`).join(","),
+      headers.map((h) => sanitizeCell(h)).join(","),
       ...data.map((row) =>
         keys
           .map((k) => {
             // eslint-disable-next-line security/detect-object-injection
-            const val = row[k];
-            const str = val == null ? "" : String(val);
-            return `"${str.replace(/"/g, '""')}"`;
+            return sanitizeCell(row[k]);
           })
           .join(",")
       ),

@@ -1,0 +1,28 @@
+# Test files and configs
+**/__tests__/**
+**/*.test.ts
+**/*.test.tsx
+src/test/**
+vitest-kbd.json
+
+# Storybook files
+**/*.stories.tsx
+src/stories/**
+.storybook/**
+storybook-static/**
+
+# Scripts and docs
+scripts/**
+docs/**
+coverage/**
+.temp/**
+.tmp/**
+
+# Development & git
+.git/**
+.github/**
+.husky/**
+.vscode/**
+.idea/**
+*.log
+secret.md

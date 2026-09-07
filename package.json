@@ -12,8 +12,19 @@
     "registry": "https://npm.pkg.github.com"
   },
   "type": "module",
+  "sideEffects": [
+    "*.css",
+    "**/*.css"
+  ],
   "files": [
     "src",
+    "!src/**/__tests__/**",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "!src/**/*.stories.ts",
+    "!src/**/*.stories.tsx",
+    "!src/stories/**",
+    "!src/test/**",
     "styles"
   ],
   "scripts": {
