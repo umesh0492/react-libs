@@ -8,6 +8,7 @@ export * from "./lib/indiaLocations";
 export * from "./lib/dit";
 export * from "./lib/masking";
 export * from "./lib/telemetry";
+export * from "./lib/analytics";
 
 // ─── Hooks ───────────────────────────────────────────────────────────────────
 export * from "./hooks/use-mobile";
