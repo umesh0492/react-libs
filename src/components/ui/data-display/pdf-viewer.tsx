@@ -49,6 +49,20 @@ export function PdfViewer({
   const [currentScale, setCurrentScale] = React.useState(scale)
   const [rotation, setRotation] = React.useState(0)
 
+  React.useEffect(() => {
+    setCurrentScale(scale)
+  }, [scale])
+
+  const prevFileRef = React.useRef(file)
+  React.useEffect(() => {
+    if (prevFileRef.current !== file) {
+      prevFileRef.current = file
+      setPageNumber(1)
+      setError(null)
+      setNumPages(null)
+    }
+  }, [file])
+
   function handleDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages)
     setPageNumber(1)
@@ -89,19 +103,26 @@ export function PdfViewer({
       iframe.src = blobUrl
     }
     
+    const cleanup = () => {
+      setTimeout(() => {
+        if (iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe)
+        }
+        if (blobUrl) URL.revokeObjectURL(blobUrl)
+      }, 1000)
+    }
+
     const triggerPrint = () => {
       try {
         iframe.contentWindow?.print()
       } finally {
-        setTimeout(() => {
-          iframe.remove()
-          if (blobUrl) URL.revokeObjectURL(blobUrl)
-        }, 1000)
+        cleanup()
       }
     }
 
-    document.body.appendChild(iframe)
     iframe.onload = () => setTimeout(triggerPrint, 100)
+    iframe.onerror = cleanup
+    document.body.appendChild(iframe)
   }
 
   return (

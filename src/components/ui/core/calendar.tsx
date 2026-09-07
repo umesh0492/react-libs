@@ -134,12 +134,13 @@ function Calendar({
 
           React.useEffect(() => {
             if (openYear) {
-              setTimeout(() => {
+              const timer = setTimeout(() => {
                 selectedYearRef.current?.scrollIntoView({
                   block: "center",
                   behavior: "smooth",
                 });
               }, 50);
+              return () => clearTimeout(timer);
             }
           }, [openYear]);
 
