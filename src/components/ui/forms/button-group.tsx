@@ -41,20 +41,19 @@ function ButtonGroupText({
   className,
   asChild = false,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & {
+}: React.ComponentProps<"div"> & {
   asChild?: boolean
 }) {
-  const Comp = asChild ? Slot : "div"
+  const mergedClass = cn(
+    "bg-muted shadow-xs flex items-center gap-2 rounded-md border px-4 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
+    className
+  );
 
-  return (
-    <Comp
-      className={cn(
-        "bg-muted shadow-xs flex items-center gap-2 rounded-md border px-4 text-sm font-medium [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
-        className
-      )}
-      {...props}
-    />
-  )
+  if (asChild) {
+    return <Slot className={mergedClass} {...(props as React.ComponentProps<typeof Slot>)} />;
+  }
+
+  return <div className={mergedClass} {...props} />;
 }
 
 function ButtonGroupSeparator({
