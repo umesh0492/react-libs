@@ -80,19 +80,28 @@ export function PdfViewer({
   function handlePrint() {
     const iframe = document.createElement("iframe")
     iframe.style.display = "none"
+    let blobUrl: string | null = null
     
     if (typeof file === "string") {
       iframe.src = file
     } else {
-      iframe.src = URL.createObjectURL(file)
+      blobUrl = URL.createObjectURL(file)
+      iframe.src = blobUrl
     }
     
-    document.body.appendChild(iframe)
-    iframe.onload = () => {
-      setTimeout(() => {
+    const triggerPrint = () => {
+      try {
         iframe.contentWindow?.print()
-      }, 100)
+      } finally {
+        setTimeout(() => {
+          iframe.remove()
+          if (blobUrl) URL.revokeObjectURL(blobUrl)
+        }, 1000)
+      }
     }
+
+    document.body.appendChild(iframe)
+    iframe.onload = () => setTimeout(triggerPrint, 100)
   }
 
   return (

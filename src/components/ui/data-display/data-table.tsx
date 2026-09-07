@@ -80,6 +80,20 @@ function SortIcon({ active, direction }: { active: boolean; direction: SortDirec
  * />
  * ```
  */
+function getAriaSort(
+  colKey: string,
+  sortKey: string | undefined,
+  sortDirection: SortDirection | undefined,
+  isSortable: boolean
+): "ascending" | "descending" | "none" | undefined {
+  if (sortKey === colKey) {
+    if (sortDirection === "asc") return "ascending"
+    if (sortDirection === "desc") return "descending"
+    return "none"
+  }
+  return isSortable ? "none" : undefined
+}
+
 export function DataTable<T extends Record<string, unknown>>({
   columns,
   data,
@@ -117,26 +131,43 @@ export function DataTable<T extends Record<string, unknown>>({
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              {columns.map((col) => (
-                <TableHead
-                  key={col.key}
-                  className={cn(
-                    col.headerClassName,
-                    col.sortable && onSort && "cursor-pointer select-none"
-                  )}
-                  onClick={col.sortable && onSort ? () => handleSort(col.key) : undefined}
-                >
-                  <div className="flex items-center">
-                    {col.header}
-                    {col.sortable && onSort && (
-                      <SortIcon
-                        active={sortKey === col.key}
-                        direction={sortKey === col.key ? (sortDirection ?? null) : null}
-                      />
+              {columns.map((col) => {
+                const isSortable = Boolean(col.sortable && onSort);
+                const sortState = getAriaSort(col.key, sortKey, sortDirection, isSortable);
+
+                return (
+                  <TableHead
+                    key={col.key}
+                    tabIndex={isSortable ? 0 : undefined}
+                    aria-sort={sortState}
+                    className={cn(
+                      col.headerClassName,
+                      isSortable && "cursor-pointer select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     )}
-                  </div>
-                </TableHead>
-              ))}
+                    onClick={isSortable ? () => handleSort(col.key) : undefined}
+                    onKeyDown={
+                      isSortable
+                        ? (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleSort(col.key);
+                            }
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="flex items-center">
+                      {col.header}
+                      {isSortable && (
+                        <SortIcon
+                          active={sortKey === col.key}
+                          direction={sortKey === col.key ? (sortDirection ?? null) : null}
+                        />
+                      )}
+                    </div>
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -213,6 +244,7 @@ export function DataTable<T extends Record<string, unknown>>({
           <div className="flex items-center gap-1">
             {/* Prev */}
             <button
+              type="button"
               onClick={() => pagination.onPageChange(pagination.page - 1)}
               disabled={pagination.page <= 1}
               aria-label="Previous page"
@@ -244,6 +276,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   <span key={`ellipsis-${i}`} className="px-1 text-xs select-none">…</span>
                 ) : (
                   <button
+                    type="button"
                     key={p}
                     onClick={() => pagination.onPageChange(p as number)}
                     aria-label={`Page ${p}`}
@@ -263,6 +296,7 @@ export function DataTable<T extends Record<string, unknown>>({
 
             {/* Next */}
             <button
+              type="button"
               onClick={() => pagination.onPageChange(pagination.page + 1)}
               disabled={pagination.page >= totalPages}
               aria-label="Next page"

@@ -116,9 +116,26 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
 
     const handleRemove = (id: string, e: React.MouseEvent) => {
       e.stopPropagation();
+      const itemToRemove = value.find((f) => f.id === id);
+      if (itemToRemove?.previewUrl) {
+        URL.revokeObjectURL(itemToRemove.previewUrl);
+      }
       const updated = value.filter((f) => f.id !== id);
       onChange?.(updated);
     };
+
+    // Clean up created object URLs on unmount
+    const valueRef = React.useRef(value);
+    valueRef.current = value;
+    React.useEffect(() => {
+      return () => {
+        valueRef.current.forEach((item) => {
+          if (item.previewUrl) {
+            URL.revokeObjectURL(item.previewUrl);
+          }
+        });
+      };
+    }, []);
 
     return (
       <div ref={ref} className={cn("w-full space-y-3", className)} {...props}>

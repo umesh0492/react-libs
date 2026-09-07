@@ -95,7 +95,20 @@ export * from "./components/ui/navigation/breadcrumb";
 export * from "./components/ui/navigation/menubar";
 export * from "./components/ui/navigation/navigation-menu";
 export * from "./components/ui/navigation/onboarding-panel";
-export * from "./components/ui/navigation/pagination";
+export {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  DataTablePagination,
+  type PaginationLinkProps,
+  type PaginationPreviousProps,
+  type PaginationNextProps,
+  type StandalonePaginationProps,
+} from "./components/ui/navigation/pagination";
 export * from "./components/ui/navigation/persona-dropdown";
 export * from "./components/ui/navigation/scope-trail";
 export * from "./components/ui/navigation/sidebar";

@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 
@@ -37,36 +34,57 @@ const PaginationItem = React.forwardRef<
 ))
 PaginationItem.displayName = "PaginationItem"
 
-type PaginationLinkProps = {
+export type PaginationLinkProps = {
   isActive?: boolean
 } & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+  (
+    | ({ href: string } & React.ComponentProps<"a">)
+    | ({ href?: undefined } & React.ComponentProps<"button">)
+  )
 
 const PaginationLink = ({
   className,
   isActive,
   size = "icon",
   ...props
-}: PaginationLinkProps) => (
-  // eslint-disable-next-line jsx-a11y/anchor-has-content
-  <a
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
-      isActive ? "border-emerald-600 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700" : "",
-      className
-    )}
-    {...props}
-  />
-)
+}: PaginationLinkProps) => {
+  const commonClasses = cn(
+    buttonVariants({
+      variant: isActive ? "outline" : "ghost",
+      size,
+    }),
+    isActive
+      ? "border-emerald-600 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-500"
+      : "",
+    className
+  )
+
+  if ("href" in props && props.href !== undefined) {
+    return (
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <a
+        aria-current={isActive ? "page" : undefined}
+        className={commonClasses}
+        {...(props as React.ComponentProps<"a">)}
+      />
+    )
+  }
+
+  const { type = "button", ...buttonProps } = props as React.ComponentProps<"button">
+  return (
+    <button
+      type={type}
+      aria-current={isActive ? "page" : undefined}
+      className={commonClasses}
+      {...buttonProps}
+    />
+  )
+}
 PaginationLink.displayName = "PaginationLink"
 
-interface PaginationPreviousProps extends React.ComponentProps<typeof PaginationLink> {
-  showText?: boolean;
-}
+export type PaginationPreviousProps = {
+  showText?: boolean
+} & PaginationLinkProps
 
 const PaginationPrevious = ({
   className,
@@ -85,9 +103,9 @@ const PaginationPrevious = ({
 )
 PaginationPrevious.displayName = "PaginationPrevious"
 
-interface PaginationNextProps extends React.ComponentProps<typeof PaginationLink> {
-  showText?: boolean;
-}
+export type PaginationNextProps = {
+  showText?: boolean
+} & PaginationLinkProps
 
 const PaginationNext = ({
   className,
@@ -121,14 +139,16 @@ const PaginationEllipsis = ({
 )
 PaginationEllipsis.displayName = "PaginationEllipsis"
 
-interface DataTablePaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  itemsPerPage?: number;
-  onPageChange: (page: number) => void;
-  showText?: boolean;
+export interface DataTablePaginationProps {
+  currentPage: number
+  totalPages: number
+  totalItems: number
+  itemsPerPage?: number
+  onPageChange: (page: number) => void
+  showText?: boolean
 }
+
+export type StandalonePaginationProps = DataTablePaginationProps
 
 export function DataTablePagination({
   currentPage,
@@ -138,43 +158,43 @@ export function DataTablePagination({
   onPageChange,
   showText = true,
 }: DataTablePaginationProps) {
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  const startItem = (currentPage - 1) * itemsPerPage + 1
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems)
 
   // Generate page numbers
-  const getPageNumbers = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
+  const getPageNumbers = (): (number | 'ellipsis')[] => {
+    const pages: (number | 'ellipsis')[] = []
+    const maxVisiblePages = 5
 
     if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i);
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
     } else {
       if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) pages.push(i);
-        pages.push('ellipsis');
-        pages.push(totalPages);
+        for (let i = 1; i <= 4; i++) pages.push(i)
+        pages.push('ellipsis')
+        pages.push(totalPages)
       } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+        pages.push(1)
+        pages.push('ellipsis')
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i)
       } else {
-        pages.push(1);
-        pages.push('ellipsis');
-        pages.push(currentPage - 1);
-        pages.push(currentPage);
-        pages.push(currentPage + 1);
-        pages.push('ellipsis');
-        pages.push(totalPages);
+        pages.push(1)
+        pages.push('ellipsis')
+        pages.push(currentPage - 1)
+        pages.push(currentPage)
+        pages.push(currentPage + 1)
+        pages.push('ellipsis')
+        pages.push(totalPages)
       }
     }
-    return pages;
-  };
+    return pages
+  }
 
   return (
-    <div className={cn("flex items-center justify-between px-4 py-3 bg-white border-t border-slate-200", !showText && "sm:justify-center")}>
+    <div className={cn("flex items-center justify-between px-4 py-3 bg-card text-card-foreground border-t border-border", !showText && "sm:justify-center")}>
       {showText && (
-        <div className="hidden sm:flex flex-1 text-sm text-slate-500">
-          Showing <span className="font-medium text-slate-900 mx-1">{totalItems === 0 ? 0 : startItem}</span> to <span className="font-medium text-slate-900 mx-1">{endItem}</span> of <span className="font-medium text-slate-900 mx-1">{totalItems}</span> results
+        <div className="hidden sm:flex flex-1 text-sm text-muted-foreground">
+          Showing <span className="font-medium text-foreground mx-1">{totalItems === 0 ? 0 : startItem}</span> to <span className="font-medium text-foreground mx-1">{endItem}</span> of <span className="font-medium text-foreground mx-1">{totalItems}</span> results
         </div>
       )}
       <div className="flex items-center justify-between sm:justify-end flex-1 sm:flex-none">
@@ -182,27 +202,24 @@ export function DataTablePagination({
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage > 1) onPageChange(currentPage - 1);
+                disabled={currentPage <= 1}
+                onClick={() => {
+                  if (currentPage > 1) onPageChange(currentPage - 1)
                 }}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
                 showText={showText}
               />
             </PaginationItem>
 
             {getPageNumbers().map((page, i) => (
-              <PaginationItem key={i} className="hidden md:flex">
+              <PaginationItem key={page === 'ellipsis' ? `ellipsis-${i}` : `page-${page}`} className="hidden md:flex">
                 {page === 'ellipsis' ? (
                   <PaginationEllipsis />
                 ) : (
                   <PaginationLink
-                    href="#"
                     isActive={currentPage === page}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (typeof page === 'number') onPageChange(page);
+                    onClick={() => {
+                      onPageChange(page)
                     }}
                   >
                     {page}
@@ -211,15 +228,13 @@ export function DataTablePagination({
               </PaginationItem>
             ))}
 
-
             <PaginationItem>
               <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage < totalPages) onPageChange(currentPage + 1);
+                disabled={currentPage >= totalPages || totalPages === 0}
+                onClick={() => {
+                  if (currentPage < totalPages) onPageChange(currentPage + 1)
                 }}
-                className={currentPage === totalPages || totalPages === 0 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                className={currentPage >= totalPages || totalPages === 0 ? "pointer-events-none opacity-50" : "cursor-pointer"}
                 showText={showText}
               />
             </PaginationItem>
@@ -227,7 +242,7 @@ export function DataTablePagination({
         </Pagination>
       </div>
     </div>
-  );
+  )
 }
 
 export {

@@ -36,22 +36,36 @@ export function AsyncSelect<T>({
   const [options, setOptions] = React.useState<T[]>([]);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  // Sync selected textual label representation with query!
+  const getOptionSafeString = React.useCallback(
+    (option: T): string => {
+      if (getOptionStringValue) {
+        return getOptionStringValue(option);
+      }
+      const label = getOptionLabel(option);
+      if (typeof label === "string") {
+        return label;
+      }
+      if (typeof label === "number") {
+        return String(label);
+      }
+      return getOptionValue(option);
+    },
+    [getOptionStringValue, getOptionLabel, getOptionValue]
+  );
+
+  // Sync selected textual label representation with query
   const syncQueryWithSelection = React.useCallback(
     (opts: T[]) => {
       if (value) {
         const match = opts.find((o) => getOptionValue(o) === value);
         if (match) {
-          const strValue = getOptionStringValue
-            ? getOptionStringValue(match)
-            : String(getOptionLabel(match));
-          setQuery(strValue);
+          setQuery(getOptionSafeString(match));
         }
       } else {
         setQuery("");
       }
     },
-    [value, getOptionValue, getOptionStringValue, getOptionLabel]
+    [value, getOptionValue, getOptionSafeString]
   );
 
   React.useEffect(() => {
@@ -60,9 +74,6 @@ export function AsyncSelect<T>({
     if (!open) {
       return;
     }
-    
-    // We only fetch if open and there is some query logic
-    // Wait, if it opens by default we want to fetch with current query (maybe empty)
     
     setLoading(true);
     const timeout = setTimeout(async () => {
@@ -89,8 +100,6 @@ export function AsyncSelect<T>({
     if (!open) {
       if (options.length > 0) syncQueryWithSelection(options);
       else {
-        // If options not loaded but value provided, we will just fetch 1 off initially if needed OR just clear it.
-        // Usually parent provides text fallback, or we fetch initial batch
         if (!value) setQuery("");
       }
     }
@@ -98,6 +107,7 @@ export function AsyncSelect<T>({
   
   // Close on outside click
   React.useEffect(() => {
+    if (!open) return;
     const handleOutsideClick = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
@@ -106,7 +116,7 @@ export function AsyncSelect<T>({
     };
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [options, syncQueryWithSelection]);
+  }, [open, options, syncQueryWithSelection]);
 
   return (
     <div className={cn("relative w-full z-50", className)} ref={containerRef}>
@@ -125,7 +135,7 @@ export function AsyncSelect<T>({
           className="border-none focus:ring-0 w-full"
         />
         {open && (
-           <div className="absolute top-full z-[100] w-full mt-1 rounded-md border bg-white shadow-md outline-none">
+           <div className="absolute top-full z-[100] w-full mt-1 rounded-md border border-border bg-popover text-popover-foreground shadow-md outline-none">
             <CommandList className="max-h-60 overflow-y-auto w-full p-1">
               {loading && <div className="py-6 text-center text-sm"><Loader2 className="h-4 w-4 animate-spin mx-auto text-muted-foreground" /></div>}
               {!loading && options.length === 0 && <CommandEmpty>{emptyMessage}</CommandEmpty>}
@@ -139,10 +149,7 @@ export function AsyncSelect<T>({
                       onSelect={() => {
                         onChange(optVal, option);
                         setOpen(false);
-                        const strValue = getOptionStringValue
-                          ? getOptionStringValue(option)
-                          : String(getOptionLabel(option));
-                        setQuery(strValue);
+                        setQuery(getOptionSafeString(option));
                       }}
                       className="cursor-pointer"
                     >
