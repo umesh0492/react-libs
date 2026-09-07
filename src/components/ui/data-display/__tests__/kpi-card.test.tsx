@@ -1,7 +1,7 @@
 import * as React from "react";
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { KPICard } from "../kpi-card";
+import { KPICard, MetricCard } from "../kpi-card";
 
 describe("KPICard", () => {
   it("renders metric title, value, and prefix/suffix", () => {
@@ -42,5 +42,22 @@ describe("KPICard", () => {
       />
     );
     expect(screen.getByText("-1.5%")).toBeInTheDocument();
+  });
+
+  it("supports tone, warning, and label via MetricCard alias", () => {
+    render(
+      <MetricCard
+        label="Pending Disputes"
+        value="12"
+        tone="warning"
+        warning="Requires immediate review"
+        change={-5.2}
+      />
+    );
+
+    expect(screen.getByText("Pending Disputes")).toBeInTheDocument();
+    expect(screen.getByText("12")).toBeInTheDocument();
+    expect(screen.getByText("Requires immediate review")).toBeInTheDocument();
+    expect(screen.getByText("-5.2%")).toBeInTheDocument();
   });
 });

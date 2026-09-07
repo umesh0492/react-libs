@@ -6,40 +6,7 @@ import { Button } from "../forms/button";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 
-// Storybook-only prop names that must be stripped before spreading to the DOM.
-// Using Record<string, unknown> avoids `any` and silences sonarjs/no-unused-vars
-// because we consume the values via object destructuring into a typed rest spread.
-const STORYBOOK_PROPS = [
-  "addonAlign",
-  "buttonLabel",
-  "buttonSize",
-  "helperText",
-  "inputAriaLabel",
-  "inputClassName",
-  "inputDefaultValue",
-  "inputPlaceholder",
-  "inputType",
-  "suffixText",
-  "textareaRows",
-  "textareaValue",
-  "widthClassName",
-] as const;
-
-type StorybookPropKey = (typeof STORYBOOK_PROPS)[number];
-
-function omitStorybookProps<T extends Record<string, unknown>>(
-  props: T,
-): Omit<T, StorybookPropKey> {
-  const out = { ...props };
-  for (const key of STORYBOOK_PROPS) {
-    // eslint-disable-next-line security/detect-object-injection
-    delete out[key];
-  }
-  return out as Omit<T, StorybookPropKey>;
-}
-
 function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
-  const rest = omitStorybookProps(props as Record<string, unknown>);
   return (
     <div
       data-slot="input-group"
@@ -62,7 +29,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
 
         className,
       )}
-      {...(rest as React.ComponentProps<"div">)}
+      {...props}
     />
   );
 }
@@ -93,7 +60,6 @@ function InputGroupAddon({
   align = "inline-start",
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
-  const rest = omitStorybookProps(props as Record<string, unknown>);
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
   return (
     <div
@@ -111,7 +77,7 @@ function InputGroupAddon({
 
         control?.focus();
       }}
-      {...(rest as React.ComponentProps<"div">)}
+      {...props}
     />
   );
   /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
@@ -143,27 +109,25 @@ function InputGroupButton({
   ...props
 }: Omit<React.ComponentProps<typeof Button>, "size"> &
   VariantProps<typeof inputGroupButtonVariants>) {
-  const rest = omitStorybookProps(props as Record<string, unknown>);
   return (
     <Button
       type={type}
       data-size={size}
       variant={variant}
       className={cn(inputGroupButtonVariants({ size }), className)}
-      {...(rest as React.ComponentProps<typeof Button>)}
+      {...props}
     />
   );
 }
 
 function InputGroupText({ className, ...props }: React.ComponentProps<"span">) {
-  const rest = omitStorybookProps(props as Record<string, unknown>);
   return (
     <span
       className={cn(
         "text-muted-foreground flex items-center gap-2 text-sm [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
         className,
       )}
-      {...(rest as React.ComponentProps<"span">)}
+      {...props}
     />
   );
 }
@@ -172,7 +136,6 @@ function InputGroupInput({
   className,
   ...props
 }: React.ComponentProps<"input">) {
-  const rest = omitStorybookProps(props as Record<string, unknown>);
   return (
     <Input
       data-slot="input-group-control"
@@ -180,7 +143,7 @@ function InputGroupInput({
         "flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent",
         className,
       )}
-      {...(rest as React.ComponentProps<"input">)}
+      {...props}
     />
   );
 }
@@ -189,7 +152,6 @@ function InputGroupTextarea({
   className,
   ...props
 }: React.ComponentProps<"textarea">) {
-  const rest = omitStorybookProps(props as Record<string, unknown>);
   return (
     <Textarea
       data-slot="input-group-control"
@@ -197,7 +159,7 @@ function InputGroupTextarea({
         "flex-1 resize-none rounded-none border-0 bg-transparent py-3 shadow-none focus-visible:ring-0 dark:bg-transparent",
         className,
       )}
-      {...(rest as React.ComponentProps<"textarea">)}
+      {...props}
     />
   );
 }
