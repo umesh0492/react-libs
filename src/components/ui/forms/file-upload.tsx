@@ -43,6 +43,7 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
     ref
   ) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const createdUrlsRef = React.useRef<Set<string>>(new Set());
     const [isDragging, setIsDragging] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
@@ -73,9 +74,14 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
 
           const isImage = file.type.startsWith("image/");
           const previewUrl = isImage ? URL.createObjectURL(file) : undefined;
+          if (previewUrl) {
+            createdUrlsRef.current.add(previewUrl);
+          }
 
           validFiles.push({
-            id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${file.name}-${file.lastModified}-${file.size}`,
+            id: typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+              ? crypto.randomUUID()
+              : `${file.name}-${file.lastModified}-${file.size}-${Date.now()}`,
             file,
             previewUrl,
             progress: 100,
@@ -124,16 +130,25 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
       onChange?.(updated);
     };
 
-    // Clean up created object URLs on unmount
-    const valueRef = React.useRef(value);
-    valueRef.current = value;
+    // When value changes, revoke any created URLs that are no longer present
     React.useEffect(() => {
+      const currentUrls = new Set(value.map((item) => item.previewUrl).filter(Boolean) as string[]);
+      createdUrlsRef.current.forEach((url) => {
+        if (!currentUrls.has(url)) {
+          URL.revokeObjectURL(url);
+          createdUrlsRef.current.delete(url);
+        }
+      });
+    }, [value]);
+
+    // Clean up all remaining created object URLs on unmount
+    React.useEffect(() => {
+      const urls = createdUrlsRef.current;
       return () => {
-        valueRef.current.forEach((item) => {
-          if (item.previewUrl) {
-            URL.revokeObjectURL(item.previewUrl);
-          }
+        urls.forEach((url) => {
+          URL.revokeObjectURL(url);
         });
+        urls.clear();
       };
     }, []);
 

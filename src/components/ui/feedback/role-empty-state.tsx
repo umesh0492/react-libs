@@ -48,12 +48,20 @@ export function RoleEmptyState({
   helpDescription = "Tutorials and documentation for this section.",
   helpLinks = [],
 }: RoleEmptyStateProps) {
-  const [isLoading, setIsLoading] = useState(loadingMs > 0);
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [prevLoadingMs, setPrevLoadingMs] = useState(loadingMs);
+
+  if (prevLoadingMs !== loadingMs) {
+    setPrevLoadingMs(loadingMs);
+    setLoadingComplete(false);
+  }
+
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const isLoading = loadingMs > 0 && !loadingComplete;
 
   useEffect(() => {
     if (loadingMs <= 0) return;
-    const t = setTimeout(() => setIsLoading(false), loadingMs);
+    const t = setTimeout(() => setLoadingComplete(true), loadingMs);
     return () => clearTimeout(t);
   }, [loadingMs]);
 

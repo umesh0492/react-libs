@@ -28,6 +28,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         setStoredValue((prev) => {
           const newValue =
             typeof value === "function" ? (value as (prev: T) => T)(prev) : value
+
           if (typeof window !== "undefined") {
             try {
               window.localStorage.setItem(key, JSON.stringify(newValue))
@@ -47,14 +48,22 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 
   // Sync across tabs & within-window events
   useEffect(() => {
-    const handler = () => setStoredValue(readValue())
-    window.addEventListener("storage", handler)
-    window.addEventListener("local-storage", handler)
-    return () => {
-      window.removeEventListener("storage", handler)
-      window.removeEventListener("local-storage", handler)
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === key) {
+        setStoredValue(readValue())
+      }
     }
-  }, [readValue])
+    const handleLocalStorage = () => {
+      setStoredValue(readValue())
+    }
+
+    window.addEventListener("storage", handleStorage)
+    window.addEventListener("local-storage", handleLocalStorage)
+    return () => {
+      window.removeEventListener("storage", handleStorage)
+      window.removeEventListener("local-storage", handleLocalStorage)
+    }
+  }, [key, readValue])
 
   return [storedValue, setValue] as const
 }

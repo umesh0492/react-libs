@@ -124,7 +124,8 @@ export async function downloadFromBackend(
   endpoint: string,
   filename: string,
   queryParams: Record<string, string> = {},
-  tokenKey = "auth_jwt"
+  tokenKey = "auth_jwt",
+  signal?: AbortSignal
 ): Promise<void> {
   const token = localStorage.getItem(tokenKey) || localStorage.getItem("jwt") || "";
   if (!token) throw new Error("Not authenticated — please log in again.");
@@ -139,7 +140,8 @@ export async function downloadFromBackend(
   // SECURE DOWNLOAD: Use fetch with Authorization header to avoid token leakage in logs/history
   const response = await fetch(`${fullEndpoint}?${new URLSearchParams(queryParams).toString()}`, {
     method: 'GET',
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { 'Authorization': `Bearer ${token}` },
+    signal,
   });
 
   if (!response.ok) throw new Error(`Download failed: ${response.statusText}`);
@@ -173,7 +175,9 @@ function triggerDownload(blob: Blob, filename: string) {
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
-    document.body.removeChild(a);
+    if (a.parentNode) {
+      a.parentNode.removeChild(a);
+    }
     URL.revokeObjectURL(url);
   }, 200);
 }

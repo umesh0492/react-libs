@@ -35,29 +35,45 @@ export function AsyncSelect<T>({
   const [loading, setLoading] = React.useState(false);
   const [options, setOptions] = React.useState<T[]>([]);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const latestRequestIdRef = React.useRef(0);
+
+  const fetchFnRef = React.useRef(fetchFn);
+  fetchFnRef.current = fetchFn;
+
+  const getOptionLabelRef = React.useRef(getOptionLabel);
+  getOptionLabelRef.current = getOptionLabel;
+
+  const getOptionValueRef = React.useRef(getOptionValue);
+  getOptionValueRef.current = getOptionValue;
+
+  const getOptionStringValueRef = React.useRef(getOptionStringValue);
+  getOptionStringValueRef.current = getOptionStringValue;
+
+  const optionsRef = React.useRef(options);
+  optionsRef.current = options;
 
   const getOptionSafeString = React.useCallback(
     (option: T): string => {
-      if (getOptionStringValue) {
-        return getOptionStringValue(option);
+      if (getOptionStringValueRef.current) {
+        return getOptionStringValueRef.current(option);
       }
-      const label = getOptionLabel(option);
+      const label = getOptionLabelRef.current(option);
       if (typeof label === "string") {
         return label;
       }
       if (typeof label === "number") {
         return String(label);
       }
-      return getOptionValue(option);
+      return getOptionValueRef.current(option);
     },
-    [getOptionStringValue, getOptionLabel, getOptionValue]
+    []
   );
 
   // Sync selected textual label representation with query
   const syncQueryWithSelection = React.useCallback(
     (opts: T[]) => {
       if (value) {
-        const match = opts.find((o) => getOptionValue(o) === value);
+        const match = opts.find((o) => getOptionValueRef.current(o) === value);
         if (match) {
           setQuery(getOptionSafeString(match));
         }
@@ -65,27 +81,35 @@ export function AsyncSelect<T>({
         setQuery("");
       }
     },
-    [value, getOptionValue, getOptionSafeString]
+    [value, getOptionSafeString]
   );
 
+  // Fetch with request sequencing to eliminate stale async race conditions
   React.useEffect(() => {
     let active = true;
 
     if (!open) {
+      setLoading(false);
       return;
     }
     
     setLoading(true);
+    const requestId = ++latestRequestIdRef.current;
+
     const timeout = setTimeout(async () => {
       try {
-        const results = await fetchFn(query);
-        if (active) {
+        const results = await fetchFnRef.current(query);
+        if (active && requestId === latestRequestIdRef.current) {
           setOptions(results);
         }
       } catch (err) {
-        console.error("AsyncSelect fetch error:", err);
+        if (active && requestId === latestRequestIdRef.current) {
+          console.error("AsyncSelect fetch error:", err);
+        }
       } finally {
-        if (active) setLoading(false);
+        if (active && requestId === latestRequestIdRef.current) {
+          setLoading(false);
+        }
       }
     }, debounceMs);
 
@@ -93,17 +117,18 @@ export function AsyncSelect<T>({
       active = false;
       clearTimeout(timeout);
     };
-  }, [query, open, fetchFn, debounceMs]);
+  }, [query, open, debounceMs]);
 
   // Sync query on external value change
   React.useEffect(() => {
     if (!open) {
-      if (options.length > 0) syncQueryWithSelection(options);
-      else {
-        if (!value) setQuery("");
+      if (optionsRef.current.length > 0) {
+        syncQueryWithSelection(optionsRef.current);
+      } else if (!value) {
+        setQuery("");
       }
     }
-  }, [value, open, options, syncQueryWithSelection]);
+  }, [value, open, syncQueryWithSelection]);
   
   // Close on outside click
   React.useEffect(() => {
@@ -111,12 +136,12 @@ export function AsyncSelect<T>({
     const handleOutsideClick = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
-        syncQueryWithSelection(options);
+        syncQueryWithSelection(optionsRef.current);
       }
     };
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [open, options, syncQueryWithSelection]);
+  }, [open, syncQueryWithSelection]);
 
   return (
     <div className={cn("relative w-full z-50", className)} ref={containerRef}>

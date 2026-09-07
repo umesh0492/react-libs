@@ -29,15 +29,27 @@ export const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
     ref
   ) => {
     const [hasCopied, setHasCopied] = React.useState(false);
+    const isMountedRef = React.useRef(true);
+
+    React.useEffect(() => {
+      isMountedRef.current = true;
+      return () => {
+        isMountedRef.current = false;
+      };
+    }, []);
 
     const handleCopy = async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       try {
         await navigator.clipboard.writeText(value);
-        setHasCopied(true);
-        onCopy?.();
+        if (isMountedRef.current) {
+          setHasCopied(true);
+          onCopy?.();
+        }
       } catch (err) {
-        console.error("Failed to copy text: ", err);
+        if (isMountedRef.current) {
+          console.error("Failed to copy text: ", err);
+        }
       }
     };
 

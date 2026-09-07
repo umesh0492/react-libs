@@ -38,6 +38,10 @@ export function ImageViewer({
   const [imageSrc, setImageSrc] = React.useState<string>("")
 
   React.useEffect(() => {
+    setCurrentScale(scale)
+  }, [scale])
+
+  React.useEffect(() => {
     setIsLoading(true)
     setError(null)
     

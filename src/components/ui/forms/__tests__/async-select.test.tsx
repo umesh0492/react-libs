@@ -84,4 +84,58 @@ describe("AsyncSelect", () => {
     // The input should update to "Apple" because the wrapper updated the value
     expect(input).toHaveValue("Apple");
   });
+
+  it("handles out-of-order async responses without overwriting with stale results", async () => {
+    let resolveSlow!: (data: typeof mockData) => void;
+    let resolveFast!: (data: typeof mockData) => void;
+
+    const slowPromise = new Promise<typeof mockData>((res) => {
+      resolveSlow = res;
+    });
+    const fastPromise = new Promise<typeof mockData>((res) => {
+      resolveFast = res;
+    });
+
+    const mockRaceFetch = vi.fn((q: string) => {
+      if (q === "slow") return slowPromise;
+      if (q === "fast") return fastPromise;
+      return Promise.resolve([]);
+    });
+
+    render(
+      <AsyncSelect<{ id: string; name: string; type: string }>
+        value=""
+        onChange={vi.fn()}
+        fetchFn={mockRaceFetch}
+        getOptionValue={(opt) => opt.id}
+        getOptionLabel={(opt) => opt.name}
+        debounceMs={0}
+      />
+    );
+
+    const input = screen.getByPlaceholderText("Type to search...");
+    fireEvent.focus(input);
+
+    // 1. User types "slow"
+    fireEvent.change(input, { target: { value: "slow" } });
+
+    // 2. User quickly replaces with "fast"
+    fireEvent.change(input, { target: { value: "fast" } });
+
+    // 3. Fast response resolves first
+    resolveFast([{ id: "fast-1", name: "Fast Option", type: "fruit" }]);
+
+    await waitFor(() => {
+      expect(screen.getByText("Fast Option")).toBeInTheDocument();
+    });
+
+    // 4. Slow (stale) response resolves late
+    resolveSlow([{ id: "slow-1", name: "Stale Slow Option", type: "fruit" }]);
+
+    // 5. Verify the stale slow option is NOT displayed
+    await waitFor(() => {
+      expect(screen.queryByText("Stale Slow Option")).not.toBeInTheDocument();
+      expect(screen.getByText("Fast Option")).toBeInTheDocument();
+    });
+  });
 });
