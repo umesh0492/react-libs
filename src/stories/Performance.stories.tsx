@@ -348,13 +348,14 @@ function PerformanceDashboard() {
                 const budget = getBudgetColor(row.p95);
                 // Extract readable name: "src/components/ui/forms/button.stories.tsx" → "button.stories"
                 const parts = row.component.split("/");
-                const displayName = parts[parts.length - 1]
+                const lastPart = parts[parts.length - 1] ?? "";
+                const displayName = lastPart
                   .replace(".stories.tsx", "")
                   .replace(".test.tsx", "")
                   .replace(".test.ts", "")
                   .replace(/__tests__\//g, "")
                   .replace(/-/g, " ");
-                const domain = parts.length >= 4 ? parts[parts.length - 3] : "";
+                const domain = parts.length >= 4 ? (parts[parts.length - 3] ?? "") : "";
                 const isStory = row.component.includes(".stories");
 
                 return (

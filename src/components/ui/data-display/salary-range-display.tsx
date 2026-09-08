@@ -9,30 +9,38 @@ export interface MetricRangeBreakdownItem {
   colorClass?: string;
 }
 
+export interface SalaryRangeBreakdown {
+  fixed?: number;
+  variable?: number;
+  equity?: number;
+  /** @deprecated Use `fixed` instead. */
+  fixedLakhs?: number;
+  /** @deprecated Use `variable` instead. */
+  variableLakhs?: number;
+  /** @deprecated Use `equity` instead. */
+  esopsLakhs?: number;
+  items?: MetricRangeBreakdownItem[];
+}
+
 export interface SalaryRangeDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Minimum range value. */
   min?: number;
   /** Maximum range value. */
   max?: number;
-  /** Backwards compatibility alias for min (in Lakhs). */
+  /** @deprecated Use `min` instead. */
   minLakhs?: number;
-  /** Backwards compatibility alias for max (in Lakhs). */
+  /** @deprecated Use `max` instead. */
   maxLakhs?: number;
-  /** Currency symbol prefix (e.g., "$", "₹", "€", "£"). Defaults to "$". */
+  /** Currency symbol prefix (e.g., "$", "€", "£", "₹"). Defaults to "$". */
   currencySymbol?: string;
-  /** Unit suffix for range values (e.g., "k", "M", "L"). */
+  /** Unit suffix for range values (e.g., "k", "M"). */
   unit?: string;
-  /** Frequency/period suffix (e.g., "yr", "mo", "PA", "PM"). Defaults to "yr". */
+  /** Frequency/period suffix (e.g., "yr", "mo", "hr"). Defaults to "yr". */
   period?: string;
   /** Card header label. Defaults to "Compensation Range". */
   label?: string;
   /** Breakdown components (fixed, variable, equity, or custom items). */
-  breakdown?: {
-    fixedLakhs?: number;
-    variableLakhs?: number;
-    esopsLakhs?: number;
-    items?: MetricRangeBreakdownItem[];
-  };
+  breakdown?: SalaryRangeBreakdown;
   /** Generic list of breakdown items. */
   items?: MetricRangeBreakdownItem[];
   /** Visual variant: inline compact badge or detailed card container. Defaults to "badge". */
@@ -68,24 +76,27 @@ function resolveBreakdownItems(
   if (!breakdown) return [];
 
   const list: MetricRangeBreakdownItem[] = [];
-  if (breakdown.fixedLakhs !== undefined) {
+  const fixed = breakdown.fixed ?? breakdown.fixedLakhs;
+  if (fixed !== undefined) {
     list.push({
       label: "Fixed",
-      value: `${currencySymbol}${breakdown.fixedLakhs}${effectiveUnit}`,
+      value: `${currencySymbol}${fixed}${effectiveUnit}`,
       colorClass: "text-slate-800 dark:text-slate-200",
     });
   }
-  if (breakdown.variableLakhs !== undefined) {
+  const variable = breakdown.variable ?? breakdown.variableLakhs;
+  if (variable !== undefined) {
     list.push({
       label: "Variable",
-      value: `${currencySymbol}${breakdown.variableLakhs}${effectiveUnit}`,
+      value: `${currencySymbol}${variable}${effectiveUnit}`,
       colorClass: "text-indigo-600 dark:text-indigo-400",
     });
   }
-  if (breakdown.esopsLakhs !== undefined) {
+  const equity = breakdown.equity ?? breakdown.esopsLakhs;
+  if (equity !== undefined) {
     list.push({
       label: "Equity",
-      value: `${currencySymbol}${breakdown.esopsLakhs}${effectiveUnit}`,
+      value: `${currencySymbol}${equity}${effectiveUnit}`,
       colorClass: "text-purple-600 dark:text-purple-400",
     });
   }
@@ -175,3 +186,5 @@ export function SalaryRangeDisplay({
 /** Generic alias for SalaryRangeDisplay to display any metric or compensation range. */
 export type MetricRangeDisplayProps = SalaryRangeDisplayProps;
 export const MetricRangeDisplay = SalaryRangeDisplay;
+export type CompensationRangeDisplayProps = SalaryRangeDisplayProps;
+export const CompensationRangeDisplay = SalaryRangeDisplay;

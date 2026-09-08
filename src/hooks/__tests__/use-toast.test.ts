@@ -19,10 +19,10 @@ describe("useToast", () => {
     });
 
     expect(sub1.current.toasts.length).toBe(1);
-    expect(sub1.current.toasts[0].title).toBe("Test Notification");
+    expect(sub1.current.toasts[0]!.title).toBe("Test Notification");
 
     expect(sub2.current.toasts.length).toBe(1);
-    expect(sub2.current.toasts[0].title).toBe("Test Notification");
+    expect(sub2.current.toasts[0]!.title).toBe("Test Notification");
   });
 
   it("allows updating an existing toast in-flight", () => {
@@ -35,7 +35,7 @@ describe("useToast", () => {
       });
     });
 
-    expect(result.current.toasts[0].title).toBe("Initial Title");
+    expect(result.current.toasts[0]!.title).toBe("Initial Title");
 
     act(() => {
       toastHandle.update({
@@ -44,7 +44,7 @@ describe("useToast", () => {
       });
     });
 
-    expect(result.current.toasts[0].title).toBe("Updated Title");
+    expect(result.current.toasts[0]!.title).toBe("Updated Title");
   });
 
   it("dismisses toast and marks open as false", () => {
@@ -57,12 +57,12 @@ describe("useToast", () => {
       });
     });
 
-    expect(result.current.toasts[0].open).toBe(true);
+    expect(result.current.toasts[0]!.open).toBe(true);
 
     act(() => {
       toastHandle.dismiss();
     });
 
-    expect(result.current.toasts[0].open).toBe(false);
+    expect(result.current.toasts[0]!.open).toBe(false);
   });
 });

@@ -9,8 +9,6 @@ describe('@umesh0492/react-libs/utils subpath', () => {
     expect(typeof utils.validateGSTIN).toBe('function');
     expect(typeof utils.validatePAN).toBe('function');
     expect(typeof utils.maskSensitiveValue).toBe('function');
-    expect(Array.isArray(utils.INDIA_STATES)).toBe(true);
-    expect(typeof utils.getCitiesForState).toBe('function');
   });
 
   it('does NOT export DOM/browser-dependent export-utils functions', () => {
@@ -25,8 +23,8 @@ describe('@umesh0492/react-libs/utils subpath', () => {
   it('evaluates cleanly in pure environments without DOM APIs', () => {
     // cn works
     expect(utils.cn('px-2', 'py-1')).toBe('px-2 py-1');
-    // formatters work
-    expect(utils.formatCurrency(150000)).toContain('1,50,000');
+    // formatters work (generic USD / en-US default)
+    expect(utils.formatCurrency(150000)).toContain('150,000');
     // validators work
     expect(utils.validatePAN('ABCDE1234F')).toBeUndefined();
     expect(utils.validatePAN('invalid')).toBe('Enter a valid 10-character PAN (e.g. AADCA1234D)');

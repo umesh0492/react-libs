@@ -13,10 +13,7 @@ import { cn } from "../../../lib/utils"
 
 // Explicit worker setup for modern bundlers (Vite/Webpack 5)
 if (typeof window !== "undefined") {
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).toString();
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 }
 
 export interface PdfViewerProps {

@@ -75,8 +75,8 @@ The library exposes dedicated entry points for UI components, server-safe utilit
 
 The primary package entry point (`@umesh0492/react-libs`) is engineered for broad SSR and RSC compatibility:
 - **Zero Module-Level DOM Access**: No browser globals (`window`, `document`, `navigator`, `localStorage`) are evaluated during module evaluation or import, preventing Node.js SSR crashes.
-- **Framework Compatibility**: Verified with **Next.js App Router** (client components), Next.js Pages Router, **Remix**, **Gatsby**, **Astro**, and headless **Node.js** SSR environments.
-- **Client Effects Isolation**: All interactive browser logic (event listeners, observers, measurements) is scoped inside `useEffect` or client-side event handlers to avoid hydration mismatches.
+- **SSR & RSC Architecture**: Interactive components carry explicit `'use client'` boundaries for React Server Component frameworks (such as Next.js App Router). Zero-DOM pure utilities reside in `@umesh0492/react-libs/utils` and run safely in Server Components, Server Actions, and Edge runtimes.
+- **Client Effects Isolation**: All interactive browser logic (event listeners, DOM measurements, post-mount fallbacks) is scoped inside `useEffect` or client event handlers to prevent hydration mismatches. For zero-flash SSR with components like `Sidebar`, pass server cookie values directly to `defaultOpen`.
 
 ### Dedicated Client Subpath for PdfViewer
 
@@ -486,7 +486,7 @@ import {
 
 | Formatter | Example Input | Output |
 |---|---|---|
-| `formatCurrency` | `123456.78` | `₹1,23,456.78` |
+| `formatCurrency` | `123456.78` | `$123,456.78` |
 | `formatDate` | `"2026-03-27"` | `27 Mar 2026` |
 | `formatDateTime` | `"2026-03-27T14:32:00"` | `27 Mar 2026, 14:32` |
 | `formatRelativeTime` | `yesterday` | `1d ago` |
@@ -494,7 +494,7 @@ import {
 | `formatQuantity` | `150, "boxes"` | `150 boxes` |
 | `formatFileSize` | `1234567` | `1.2 MB` |
 | `formatPercent` | `0.856` | `85.6%` |
-| `formatNumber` | `1234567` | `12,34,567` |
+| `formatNumber` | `1234567` | `1,234,567` |
 
 ---
 

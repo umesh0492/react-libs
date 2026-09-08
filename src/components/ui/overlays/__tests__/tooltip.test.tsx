@@ -100,7 +100,7 @@ describe('Tooltip — showArrow prop', () => {
         );
         // Content renders in a portal at the end of body, so container.querySelector doesn't find it.
         // Get the visible text node, then its closest tooltip content div
-        const textNode = screen.getAllByText('Content')[0];
+        const textNode = screen.getAllByText('Content')[0]!;
         const contentDiv = textNode.closest('[role="tooltip"], div[data-state]');
         expect(contentDiv).toHaveClass('my-tooltip');
     });

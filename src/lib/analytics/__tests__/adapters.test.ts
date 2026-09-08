@@ -56,13 +56,13 @@ describe("Analytics Adapters", () => {
     await adapter.track(mockEvent());
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchMock.mock.calls[0];
+    const [url, init] = fetchMock.mock.calls[0]!;
     expect(url).toBe("https://telemetry.example.com/events");
     expect(init.method).toBe("POST");
     expect(init.headers["X-API-KEY"]).toBe("secret-key");
     const body = JSON.parse(init.body);
     expect(body.events).toHaveLength(1);
-    expect(body.events[0].eventId).toBe("evt-123");
+    expect(body.events[0]!.eventId).toBe("evt-123");
   });
 
   it("MixpanelAdapter delegates to window.mixpanel", () => {

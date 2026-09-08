@@ -30,7 +30,7 @@ describe("Stepper", () => {
     );
 
     const stepButtons = screen.getAllByRole("button");
-    fireEvent.click(stepButtons[2]);
+    fireEvent.click(stepButtons[2]!);
     expect(handleStepClick).toHaveBeenCalledWith(2);
   });
 

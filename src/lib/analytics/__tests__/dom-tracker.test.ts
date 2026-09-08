@@ -24,7 +24,7 @@ describe("DomTracker Event Delegation", () => {
     btn.click();
 
     expect(onInteraction).toHaveBeenCalledTimes(1);
-    const [comp] = onInteraction.mock.calls[0];
+    const [comp] = onInteraction.mock.calls[0]!;
     expect(comp.name).toBe("Submit Form");
     expect(comp.interaction).toBe("click");
     expect(comp.id).toMatch(/^cmp_/);
@@ -43,7 +43,7 @@ describe("DomTracker Event Delegation", () => {
     btn.click();
 
     expect(onInteraction).toHaveBeenCalledTimes(1);
-    const [comp, meta] = onInteraction.mock.calls[0];
+    const [comp, meta] = onInteraction.mock.calls[0]!;
     expect(comp.name).toBe("custom_btn_action");
     expect(meta).toEqual({ orderId: "ORD-99", amount: 1200 });
   });
@@ -66,7 +66,7 @@ describe("DomTracker Event Delegation", () => {
     btn.click();
 
     expect(onInteraction).toHaveBeenCalledTimes(1);
-    const [, meta] = onInteraction.mock.calls[0];
+    const [, meta] = onInteraction.mock.calls[0]!;
     expect(meta).toEqual({
       journey: "user_onboarding",
       step: "account_setup",

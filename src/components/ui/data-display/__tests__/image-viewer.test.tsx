@@ -137,4 +137,23 @@ describe("ImageViewer", () => {
     
     createElementSpy.mockRestore()
   })
+
+  it("does not re-fire onLoadSuccess on parent re-renders when image is cached", () => {
+    const onLoadSuccess = vi.fn()
+    const { rerender } = render(
+      <ImageViewer file="cached.png" onLoadSuccess={onLoadSuccess} />
+    )
+    const img = screen.getByAltText("Image preview") as HTMLImageElement
+    Object.defineProperty(img, "complete", { value: true, configurable: true })
+    fireEvent.load(img)
+
+    expect(onLoadSuccess).toHaveBeenCalledTimes(1)
+
+    // Re-render with a new inline callback reference
+    rerender(
+      <ImageViewer file="cached.png" onLoadSuccess={vi.fn()} scale={1.5} />
+    )
+
+    expect(onLoadSuccess).toHaveBeenCalledTimes(1)
+  })
 })

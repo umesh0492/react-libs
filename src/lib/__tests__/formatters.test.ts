@@ -15,9 +15,17 @@ import {
 } from '../formatters';
 
 describe('formatCurrency', () => {
-  it('formats a number as INR', () => {
+  it('formats a number as currency (default USD)', () => {
     const result = formatCurrency(1234.56);
     expect(result).toContain('1,234.56');
+    expect(result).toContain('$');
+  });
+
+  it('formats with custom currency and locale', () => {
+    const inr = formatCurrency(1234.56, 'INR', 'en-IN');
+    expect(inr).toContain('1,234.56');
+    const eur = formatCurrency(1234.56, 'EUR', 'de-DE');
+    expect(eur).toContain('1.234,56');
   });
 
   it('returns em dash for null', () => {
@@ -249,8 +257,8 @@ describe('formatLocalizedDate', () => {
     expect(result).toContain('2026');
   });
 
-  it('formats in Hindi locale', () => {
-    const result = formatLocalizedDate('2026-03-27', 'hi');
+  it('formats in custom locale', () => {
+    const result = formatLocalizedDate('2026-03-27', 'fr-FR');
     expect(result).toBeTruthy();
   });
 
@@ -274,8 +282,8 @@ describe('formatLocalizedDateTime', () => {
     expect(result).toContain('2026');
   });
 
-  it('formats in Hindi locale', () => {
-    const result = formatLocalizedDateTime('2026-03-27T14:30:00', 'hi');
+  it('formats in custom locale', () => {
+    const result = formatLocalizedDateTime('2026-03-27T14:30:00', 'de-DE');
     expect(result).toBeTruthy();
   });
 
@@ -301,8 +309,8 @@ describe('formatLocalizedNumber', () => {
     expect(result).toBeTruthy();
   });
 
-  it('formats in Hindi locale', () => {
-    const result = formatLocalizedNumber(1234.5, 'hi');
+  it('formats in custom locale', () => {
+    const result = formatLocalizedNumber(1234.5, 'de-DE');
     expect(result).toBeTruthy();
   });
 

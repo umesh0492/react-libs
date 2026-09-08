@@ -53,7 +53,7 @@ describe("AnalyticsQueue", () => {
     await queue.flush();
 
     expect(trackBatch).toHaveBeenCalledTimes(1);
-    expect(trackBatch.mock.calls[0][0]).toHaveLength(3);
+    expect(trackBatch.mock.calls[0]![0]).toHaveLength(3);
     queue.destroy();
   });
 
@@ -77,7 +77,7 @@ describe("AnalyticsQueue", () => {
     await vi.advanceTimersByTimeAsync(2000);
 
     expect(trackBatch).toHaveBeenCalledTimes(1);
-    expect(trackBatch.mock.calls[0][0]).toHaveLength(1);
+    expect(trackBatch.mock.calls[0]![0]).toHaveLength(1);
     queue.destroy();
   });
 
