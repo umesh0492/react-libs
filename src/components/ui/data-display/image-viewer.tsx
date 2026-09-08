@@ -39,9 +39,11 @@ export function ImageViewer({
   const [isLoading, setIsLoading] = React.useState(true)
   const [imageSrc, setImageSrc] = React.useState<string>("")
   const imgRef = React.useRef<HTMLImageElement>(null)
+  const hasLoadedSrcRef = React.useRef<string | null>(null)
 
   React.useEffect(() => {
-    if (imgRef.current?.complete) {
+    if (imageSrc && imgRef.current?.complete && hasLoadedSrcRef.current !== imageSrc) {
+      hasLoadedSrcRef.current = imageSrc
       setIsLoading(false)
       onLoadSuccess?.()
     }
@@ -54,6 +56,7 @@ export function ImageViewer({
   React.useEffect(() => {
     setIsLoading(true)
     setError(null)
+    hasLoadedSrcRef.current = null
     
     if (typeof file === "string") {
       setImageSrc(file)
@@ -75,6 +78,7 @@ export function ImageViewer({
   }, [file])
 
   function handleImageLoad() {
+    hasLoadedSrcRef.current = imageSrc
     setIsLoading(false)
     onLoadSuccess?.()
   }

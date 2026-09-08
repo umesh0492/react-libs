@@ -10,5 +10,4 @@ export { cn } from "./lib/utils";
 export * from "./lib/formatters";
 export * from "./lib/validators";
 export * from "./lib/masking";
-export * from "./lib/indiaLocations";
 

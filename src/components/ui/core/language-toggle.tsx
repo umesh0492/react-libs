@@ -9,43 +9,52 @@ import {
   DropdownMenuTrigger,
 } from "../overlays/dropdown-menu"
 
-export type SupportedLanguage = "en" | "hi" | "ta" | "te" | "kn" | "mr" | "gu"
-
-export interface LanguageToggleProps {
-  language: SupportedLanguage
-  setLanguage: (lang: SupportedLanguage) => void
-  className?: string
+export interface LanguageOption<T extends string = string> {
+  code: T;
+  name: string;
+  nativeName?: string;
 }
 
-const LANGUAGES: { code: SupportedLanguage; name: string; nativeName: string }[] = [
-  { code: "en", name: "English",   nativeName: "English" },
-  { code: "hi", name: "Hindi",     nativeName: "हिंदी" },
-  { code: "ta", name: "Tamil",     nativeName: "தமிழ்" },
-  { code: "te", name: "Telugu",    nativeName: "తెలుగు" },
-  { code: "kn", name: "Kannada",  nativeName: "ಕನ್ನಡ" },
-  { code: "mr", name: "Marathi",  nativeName: "मराठी" },
-  { code: "gu", name: "Gujarati", nativeName: "ગુજરાતી" },
-]
+export type SupportedLanguage = "en" | "es" | "fr" | "de" | "ja" | "zh" | (string & {});
+
+export const DEFAULT_LANGUAGES: LanguageOption[] = [
+  { code: "en", name: "English", nativeName: "English" },
+  { code: "es", name: "Spanish", nativeName: "Español" },
+  { code: "fr", name: "French", nativeName: "Français" },
+  { code: "de", name: "German", nativeName: "Deutsch" },
+  { code: "ja", name: "Japanese", nativeName: "日本語" },
+  { code: "zh", name: "Chinese", nativeName: "中文" },
+];
+
+export interface LanguageToggleProps<T extends string = string> {
+  language: T;
+  setLanguage: (lang: T) => void;
+  languages?: LanguageOption<T>[];
+  className?: string;
+}
 
 /**
  * LanguageToggle — portable language-switcher dropdown.
  *
- * Fixed issues:
- * 1. Shows language CODE only in the trigger (no "active: Name" label)
- * 2. ChevronDown inside the trigger indicates it's a dropdown
- * 3. Proper hover/active/focus states via buttonVariants
+ * Configurable with custom languages list or defaults to standard international locales.
  *
  * Usage:
  * ```tsx
  * <LanguageToggle language={language} setLanguage={setLanguage} />
  * ```
  */
-export function LanguageToggle({
+export function LanguageToggle<T extends string = string>({
   language,
   setLanguage,
+  languages = DEFAULT_LANGUAGES as unknown as LanguageOption<T>[],
   className,
-}: LanguageToggleProps) {
-  const current = LANGUAGES.find((l) => l.code === language) ?? LANGUAGES[0]
+}: LanguageToggleProps<T>) {
+  const fallbackLanguage: LanguageOption<T> = languages[0] ?? {
+    code: language,
+    name: String(language).toUpperCase(),
+    nativeName: String(language).toUpperCase(),
+  };
+  const current = languages.find((l) => l.code === language) ?? fallbackLanguage;
 
   return (
     <DropdownMenu>
@@ -70,7 +79,7 @@ export function LanguageToggle({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-[200px]">
-        {LANGUAGES.map((lang) => (
+        {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => setLanguage(lang.code)}
@@ -86,8 +95,8 @@ export function LanguageToggle({
                 {lang.code.toUpperCase()}
               </kbd>
               <span className="flex flex-col gap-0.5 min-w-0">
-                <span className="text-sm leading-none">{lang.nativeName}</span>
-                {lang.nativeName !== lang.name && (
+                <span className="text-sm leading-none">{lang.nativeName ?? lang.name}</span>
+                {lang.nativeName && lang.nativeName !== lang.name && (
                   <span className="text-xs text-muted-foreground leading-none">
                     {lang.name}
                   </span>

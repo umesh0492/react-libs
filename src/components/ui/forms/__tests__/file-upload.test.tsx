@@ -50,9 +50,9 @@ describe("FileUpload", () => {
     fireEvent.change(input, { target: { files: [file] } });
 
     expect(handleChange).toHaveBeenCalled();
-    const passedFiles = handleChange.mock.calls[0][0];
+    const passedFiles = handleChange.mock.calls[0]![0];
     expect(passedFiles.length).toBe(1);
-    expect(passedFiles[0].file.name).toBe("invoice.png");
+    expect(passedFiles[0]!.file.name).toBe("invoice.png");
   });
 
   it("displays custom error message", () => {

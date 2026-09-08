@@ -318,8 +318,8 @@ export const CancelDoesNotCommit: Story = {
     const day10s = await dialogScope.findAllByRole("button", { name: /^10$|10th/ });
     const day15s = await dialogScope.findAllByRole("button", { name: /^15$|15th/ });
     
-    await userEvent.click(day10s[0]);
-    await userEvent.click(day15s[0]);
+    await userEvent.click(day10s[0]!);
+    await userEvent.click(day15s[0]!);
     await userEvent.click(dialogScope.getByRole("button", { name: /cancel/i }));
 
     await waitFor(() => {

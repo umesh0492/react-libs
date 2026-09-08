@@ -46,6 +46,25 @@ describe("SalaryRangeDisplay", () => {
     expect(screen.getByText("₹8L")).toBeInTheDocument();
   });
 
+  it("renders card variant with generic fixed, variable, and equity breakdown", () => {
+    render(
+      <SalaryRangeDisplay
+        min={150}
+        max={200}
+        unit="k"
+        currencySymbol="$"
+        period="yr"
+        variant="card"
+        breakdown={{ fixed: 140, variable: 30, equity: 35 }}
+      />
+    );
+
+    expect(screen.getByText("$150k - $200k yr")).toBeInTheDocument();
+    expect(screen.getByText("$140k")).toBeInTheDocument();
+    expect(screen.getByText("$30k")).toBeInTheDocument();
+    expect(screen.getByText("$35k")).toBeInTheDocument();
+  });
+
   it("renders generic MetricRangeDisplay with custom title and generic items", () => {
     render(
       <MetricRangeDisplay

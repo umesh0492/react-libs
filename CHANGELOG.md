@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-09-08
+
+### 🌐 True Domain Neutralization (Purged Project Assumptions)
+- **Purged India-Specific Locations Module**:
+  - Completely deleted `src/lib/indiaLocations.ts` (`INDIA_STATES`, `INDIA_CITIES`, `getCitiesForState`) and its export from `@umesh0492/react-libs` and `@umesh0492/react-libs/utils`.
+  - Introduced generic `src/lib/locations.ts` with pure data contracts (`RegionState`, `RegionCity`, `RegionOption`) and utility helpers (`filterCitiesByState`, `toStateOptions`, `toCityOptions`).
+- **Generic Currency & Date Formatters**:
+  - Changed default currency and locale in `formatCurrency` from `INR` / `en-IN` / `₹` to standard generic `USD` / `en-US` (`$`).
+  - Generalized `formatNumber`, `formatDate`, `formatDateTime`, `formatLocalizedDate`, `formatLocalizedDateTime`, and `formatLocalizedNumber` to default to `en-US` with full support for any standard BCP-47 locale.
+- **Generic Compensation / Metric Range Display**:
+  - Refactored `SalaryRangeDisplay`: replaced hardcoded Indian Lakhs props (`minLakhs`, `fixedLakhs`, `esopsLakhs`) with generic first-class props (`min`, `max`, `fixed`, `variable`, `equity`, `unit`), defaulting currency to `$`.
+  - Retained backwards-compatible aliases while exporting generic `CompensationRangeDisplay` and `MetricRangeDisplay` component aliases.
+- **Configurable Language Toggle**:
+  - Removed hardcoded 7-Indian-language constant from `LanguageToggle`.
+  - Added configurable `languages?: LanguageOption<T>[]` prop with international defaults (`en`, `es`, `fr`, `de`, `ja`, `zh`).
+
+### ⚛️ Runtime & Component Correctness
+- **`ImageViewer` Cached Image Once-Guard**:
+  - Added `hasLoadedSrcRef` once-guard to prevent cached images from re-triggering `onLoadSuccess?.()` on every parent re-render.
+- **`Sidebar` SSR Flash Honesty**:
+  - Documented post-mount cookie reading in `sidebar.tsx` accurately: client-side cookie reading is a progressive enhancement fallback; true zero-flash SSR requires consumers to pass server cookie state directly into `defaultOpen`.
+- **`PdfViewer` CJS Compatibility**:
+  - Replaced `import.meta.url` worker URL resolution with standard CDN resolution (`https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`), eliminating Node.js CommonJS `UnexpectedModuleSyntax` syntax errors.
+- **`useLocalStorage` Hook Hygiene**:
+  - Fixed React 19 `react-hooks/refs` violation in lazy `useState` initialization by reading `initialValue` directly during initial render instead of accessing a mutable ref.
+
+### 📦 Dependency Hygiene & Chunk Splitting
+- **Optional Peer Dependency for `react-pdf`**:
+  - Moved `react-pdf: ^10.0.0` from unconditional `dependencies` to `peerDependencies` (`optional: true`) and `devDependencies`. Users who do not import `@umesh0492/react-libs/pdf` no longer pull heavy `pdfjs-dist` packages into their node_modules.
+- **Code Splitting Enabled**:
+  - Enabled `splitting: true` in `tsup.config.ts`, breaking monolithic bundles into shared, tree-shakable chunks.
+  - Reduced packed tarball to 292.0 kB compressed and 1.5 MB unpacked across 33 files.
+
+### 🛡️ Type System & Lint Enforcement
+- **Strict `noUncheckedIndexedAccess`**:
+  - Enabled `"noUncheckedIndexedAccess": true` in `tsconfig.json` and resolved all unchecked array/object indexing across core components, export utilities, and analytics suites.
+- **Expanded ESLint Scope**:
+  - Expanded `npm run lint` and `lint:fix` scripts to cover `src/hooks`, achieving 0 errors and 0 warnings across all 127 files.
+- **Divergent Test Config Removed**:
+  - Pruned dead `test` and `coverage` configuration from `vite.config.ts`, retaining `vitest.config.ts` as the single source of truth.
+- **Verified Type Matrix**:
+  - Passed `@arethetypeswrong/cli` 100% green across all 9 subpaths and all resolution modes (`node10`, `node16 CJS`, `node16 ESM`, `bundler`).
+
+### 🧪 Exact Automated Quality Metrics
+- **Test Files**: 124 passed (124).
+- **Tests**: 784 passed (784).
+- **Coverage**: 81.11% statements, 71.47% branches, 81.01% functions, 83.31% lines.
+
 ## [0.4.2] - 2026-09-08
 
 ### ⚛️ Hook Referential Stability & Runtime Memory Safety

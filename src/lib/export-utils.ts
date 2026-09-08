@@ -51,7 +51,7 @@ export async function exportData(
     return;
   }
 
-  const keys = options.columns ? options.columns.map((c) => c.key) : Object.keys(data[0]);
+  const keys = options.columns ? options.columns.map((c) => c.key) : Object.keys(data[0] ?? {});
   const headers = options.columns ? options.columns.map((c) => c.header) : keys;
 
   if (format === "csv") {

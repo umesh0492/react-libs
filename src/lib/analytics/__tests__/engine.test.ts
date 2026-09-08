@@ -41,7 +41,7 @@ describe("AnalyticsEngine", () => {
     await engine.flush();
 
     expect(trackedEvents).toHaveLength(1);
-    const event = trackedEvents[0];
+    const event = trackedEvents[0]!;
     expect(event.eventName).toBe("custom_action");
     expect(event.metadata.appVersion).toBe("2.1.0");
     expect(event.metadata.feature).toBe("export");

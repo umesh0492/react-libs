@@ -1,7 +1,7 @@
 # react-libs — Testing Reference
 
 > **Canonical guide** for writing, debugging, and maintaining tests in `@umesh0492/react-libs`.
-> Current state: **124 test files · 797 tests · 0 failures · ≥80% coverage**.
+> Current state: **124 test files · 784 tests · 0 failures · 81.11% statement / 83.31% line coverage**.
 
 ---
 
@@ -96,28 +96,29 @@ Coverage is enforced by Vitest `thresholds` in `vitest.config.ts`. **Dropping be
 
 | Metric | Threshold | Current |
 |---|---|---|
-| Statements | **80%** | ~81% ✅ |
-| Branches | **70%** | ~71% ✅ |
-| Functions | **80%** | ~81% ✅ |
-| Lines | **80%** | ~83% ✅ |
+| Statements | **80%** | 81.11% ✅ |
+| Branches | **70%** | 71.47% ✅ |
+| Functions | **80%** | 81.01% ✅ |
+| Lines | **80%** | 83.31% ✅ |
 
 ### Coverage by Domain
 
 | Domain | Statements | Branches | Functions | Lines |
 |---|---|---|---|---|
-| `lib` (pure utils & formatters) | 96.58% | 90.60% | 94.73% | 97.14% |
+| `lib` (pure utils & formatters) | 96.67% | 89.50% | 94.73% | 97.23% |
 | `overlays` | 93.72% | 73.68% | 82.25% | 93.72% |
-| `navigation` | 92.44% | 84.42% | 93.33% | 92.48% |
-| `layout` | 82.35% | 30.00% | 64.70% | 82.35% |
-| `forms` | 76.58% | 62.14% | 80.14% | 78.22% |
-| `analytics` | 67.01% | 63.55% | 62.02% | 71.01% |
+| `navigation` | 92.77% | 84.61% | 93.61% | 93.31% |
+| `layout` | 86.27% | 36.58% | 76.47% | 86.27% |
+| `hooks` | 82.50% | 60.97% | 80.00% | 84.07% |
+| `forms` | 81.67% | 66.58% | 82.26% | 83.58% |
+| `analytics` | 67.01% | 63.75% | 62.02% | 71.01% |
 
 ### Coverage Exclude Rules
 
 Stories (`*.stories.tsx`) and the test setup file are excluded from coverage to prevent inflation/deflation:
 
 ```ts
-// vite.config.ts
+// vitest.config.ts
 coverage: {
   include: ["src/**/*.{ts,tsx}"],
   exclude: ["src/**/*.stories.tsx", "src/test/setup.ts", "src/stories/**"],

@@ -11,11 +11,12 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
     clean: false,
+    splitting: true,
     banner: {
       js: "'use client';",
     },
     injectStyle: false,
-    external: ['xlsx', 'jspdf', 'jspdf-autotable'],
+    external: ['xlsx', 'jspdf', 'jspdf-autotable', 'react-pdf'],
   },
   {
     entry: {
@@ -26,6 +27,7 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
     clean: false,
+    splitting: true,
     injectStyle: false,
   },
 ]);

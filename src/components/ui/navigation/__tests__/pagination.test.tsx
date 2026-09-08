@@ -221,7 +221,7 @@ describe('DataTablePagination', () => {
     // Get all page links and click page 2
     const page2Links = screen.getAllByText('2');
     if (page2Links.length > 0) {
-      await user.click(page2Links[0]);
+      await user.click(page2Links[0]!);
       expect(onPageChange).toHaveBeenCalledWith(2);
     }
   });

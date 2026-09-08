@@ -80,7 +80,9 @@ const SidebarProvider = React.forwardRef<
   const [_open, _setOpen] = React.useState(defaultOpen)
   const open = openProp ?? _open
 
-  // Sync state from sidebar_state cookie on client mount to eliminate SSR flash
+  // Client-side fallback: synchronize state with sidebar_state cookie after mount.
+  // Note: For true zero-flash SSR in Next.js/Remix, read the cookie on the server
+  // and pass `<SidebarProvider defaultOpen={cookieValue === "true"}>`.
   React.useEffect(() => {
     if (typeof document !== "undefined") {
       const match = document.cookie.match(

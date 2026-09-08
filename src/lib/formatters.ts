@@ -7,18 +7,20 @@
 
 export type NumericValue = number | string | null | undefined;
 export type DateValue = Date | string | null | undefined;
-export type AppLocale = "en" | "hi" | string;
+export type AppLocale = "en-US" | "en-GB" | "en-IN" | "de-DE" | "fr-FR" | "ja-JP" | (string & {});
 
 // ─── Currency ────────────────────────────────────────────────────────────────
 
 /**
- * Format a number as Indian Rupee currency.
- * @example formatCurrency(123456.78) → "₹1,23,456.78"
+ * Format a number as currency. Defaults to USD / en-US, fully configurable to any ISO currency and BCP-47 locale.
+ * @example formatCurrency(123456.78) → "$123,456.78"
+ * @example formatCurrency(123456.78, "EUR", "de-DE") → "123.456,78 €"
+ * @example formatCurrency(123456.78, "INR", "en-IN") → "₹1,23,456.78"
  */
 export function formatCurrency(
   amount: NumericValue,
-  currency = "INR",
-  locale = "en-IN"
+  currency = "USD",
+  locale = "en-US"
 ): string {
   const value = typeof amount === "string" ? parseFloat(amount) : amount
   if (value == null || isNaN(value)) return "—"
@@ -32,12 +34,12 @@ export function formatCurrency(
 
 /**
  * Format a number with locale-aware grouping (no currency symbol).
- * @example formatNumber(1234567) → "12,34,567"
+ * @example formatNumber(1234567) → "1,234,567"
  */
 export function formatNumber(
   value: NumericValue,
   options?: Intl.NumberFormatOptions,
-  locale = "en-IN"
+  locale = "en-US"
 ): string {
   const num = typeof value === "string" ? parseFloat(value) : value
   if (num == null || isNaN(num)) return "—"
@@ -52,7 +54,7 @@ export function formatNumber(
 export function formatDate(
   date: DateValue,
   options?: Intl.DateTimeFormatOptions,
-  locale = "en-IN"
+  locale = "en-US"
 ): string {
   if (!date) return "—"
   const d = typeof date === "string" ? new Date(date) : date
@@ -69,7 +71,7 @@ export function formatDate(
  */
 export function formatDateTime(
   date: DateValue,
-  locale = "en-IN"
+  locale = "en-US"
 ): string {
   if (!date) return "—"
   const d = typeof date === "string" ? new Date(date) : date
@@ -186,17 +188,18 @@ export function formatPercent(
 // ─── Localized Formatters (i18n-aware) ───────────────────────────────────────
 
 /**
- * Format a date with locale awareness (en-IN default, hi-IN for Hindi).
- * @example formatLocalizedDate("2026-03-27", "hi") → "२७ मार्च २०२६"
+ * Format a date with locale awareness.
+ * @example formatLocalizedDate("2026-03-27", "fr-FR") → "27 mars 2026"
+ * @example formatLocalizedDate("2026-03-27", "hi-IN") → "२७ मार्च २०२६"
  */
 export function formatLocalizedDate(
   date: DateValue,
-  locale: AppLocale = "en"
+  locale: AppLocale = "en-US"
 ): string {
   if (!date) return ""
   const d = typeof date === "string" ? new Date(date) : date
   if (!d || typeof d.getTime !== 'function' || isNaN(d.getTime())) return date?.toString?.() ?? ""
-  return new Intl.DateTimeFormat(locale === "hi" ? "hi-IN" : "en-IN", {
+  return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -208,12 +211,12 @@ export function formatLocalizedDate(
  */
 export function formatLocalizedDateTime(
   date: DateValue,
-  locale: AppLocale = "en"
+  locale: AppLocale = "en-US"
 ): string {
   if (!date) return ""
   const d = typeof date === "string" ? new Date(date) : date
   if (!d || typeof d.getTime !== 'function' || isNaN(d.getTime())) return date?.toString?.() ?? ""
-  return new Intl.DateTimeFormat(locale === "hi" ? "hi-IN" : "en-IN", {
+  return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -224,15 +227,15 @@ export function formatLocalizedDateTime(
 }
 
 /**
- * Format a number with locale-aware grouping (supports Hindi numerals).
- * @example formatLocalizedNumber(1234.5, "hi") → "१,२३४.५"
+ * Format a number with locale-aware grouping.
+ * @example formatLocalizedNumber(1234.5, "de-DE") → "1.234,5"
  */
 export function formatLocalizedNumber(
   value: number | null | undefined,
-  locale: AppLocale = "en"
+  locale: AppLocale = "en-US"
 ): string {
   if (value == null || isNaN(value)) return ""
-  return new Intl.NumberFormat(locale === "hi" ? "hi-IN" : "en-IN", {
+  return new Intl.NumberFormat(locale, {
     maximumFractionDigits: 2,
   }).format(value)
 }
