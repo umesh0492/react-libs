@@ -31,39 +31,46 @@ export interface WithAuditTrailProps {
 /**
  * Higher-Order Component that wraps any clickable element to emit an audit telemetry event.
  */
-export function withAuditTrail<P extends object>(
+export function withAuditTrail<P extends object, Ref = unknown>(
   WrappedComponent: React.ComponentType<P>
 ) {
-  return function WithAuditTrail(props: P & WithAuditTrailProps) {
-    const { actionName, entityId, entityType, auditLogger, onClick, ...rest } =
-      props;
+  const ComponentWithAudit = React.forwardRef<Ref, P & WithAuditTrailProps>(
+    function WithAuditTrail(props, ref) {
+      const { actionName, entityId, entityType, auditLogger, onClick, ...rest } =
+        props as WithAuditTrailProps;
 
-    const handleClick = (e: React.MouseEvent) => {
-      const payload: AuditTrailPayload = {
-        actionName,
-        entityType: entityType ?? "Unknown",
-        entityId: entityId ?? undefined,
-        timestamp: new Date().toISOString(),
+      const handleClick = (e: React.MouseEvent) => {
+        const payload: AuditTrailPayload = {
+          actionName,
+          entityType: entityType ?? "Unknown",
+          entityId: entityId ?? undefined,
+          timestamp: new Date().toISOString(),
+        };
+
+        const logger = auditLogger || globalAuditLogger;
+        if (logger) {
+          try {
+            const res = logger(payload);
+            if (res instanceof Promise) {
+              res.catch(() => {});
+            }
+          } catch {
+            // Swallow telemetry errors to never block user action
+          }
+        }
+
+        if (onClick && typeof onClick === "function") {
+          onClick(e);
+        }
       };
 
-      const logger = auditLogger || globalAuditLogger;
-      if (logger) {
-        try {
-          const res = logger(payload);
-          if (res instanceof Promise) {
-            res.catch(() => {});
-          }
-        } catch {
-          // Swallow telemetry errors to never block user action
-        }
-      }
+      return <WrappedComponent {...(rest as unknown as P)} ref={ref} onClick={handleClick} />;
+    }
+  );
 
-      if (onClick && typeof onClick === "function") {
-        onClick(e);
-      }
-    };
+  ComponentWithAudit.displayName = `withAuditTrail(${
+    WrappedComponent.displayName || WrappedComponent.name || "Component"
+  })`;
 
-    // @ts-expect-error — HOC prop spread is intentionally generic
-    return <WrappedComponent {...rest} onClick={handleClick} />;
-  };
+  return ComponentWithAudit;
 }

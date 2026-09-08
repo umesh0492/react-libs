@@ -8,6 +8,7 @@ import "react-pdf/dist/Page/TextLayer.css"
 
 import { Button } from "../forms/button"
 import { Card } from "../layout/card"
+import { ErrorBoundary } from "../feedback/error-boundary"
 import { cn } from "../../../lib/utils"
 
 // Explicit worker setup for modern bundlers (Vite/Webpack 5)
@@ -180,29 +181,45 @@ export function PdfViewer({
             </div>
           </div>
         ) : (
-          <Document
-            file={file}
-            onLoadSuccess={handleDocumentLoadSuccess}
-            onLoadError={handleDocumentLoadError}
-            loading={
-              <div className="h-64 flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Loading Document...</p>
+          <ErrorBoundary
+            onError={(err) => {
+              setError(err)
+              onLoadError?.(err)
+            }}
+            fallback={({ error: err }) => (
+              <div className="h-48 w-full max-w-sm flex flex-col items-center justify-center text-center p-6 space-y-3">
+                <FileWarning className="w-10 h-10 text-destructive" />
+                <div>
+                  <p className="font-semibold text-foreground">Failed to load PDF</p>
+                  <p className="text-sm text-muted-foreground">{err.message}</p>
+                </div>
               </div>
-            }
-            error={null}
-            className="shadow-sm border border-border"
+            )}
           >
-            <Page
-              pageNumber={pageNumber}
-              scale={currentScale}
-              rotate={rotation}
-              width={maxWidth}
-              renderAnnotationLayer={true}
-              renderTextLayer={true}
-              loading={<div className="h-[500px] w-[400px] bg-muted animate-pulse" />}
-            />
-          </Document>
+            <Document
+              file={file}
+              onLoadSuccess={handleDocumentLoadSuccess}
+              onLoadError={handleDocumentLoadError}
+              loading={
+                <div className="h-64 flex flex-col items-center justify-center space-y-4">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">Loading Document...</p>
+                </div>
+              }
+              error={null}
+              className="shadow-sm border border-border"
+            >
+              <Page
+                pageNumber={pageNumber}
+                scale={currentScale}
+                rotate={rotation}
+                width={maxWidth}
+                renderAnnotationLayer={true}
+                renderTextLayer={true}
+                loading={<div className="h-[500px] w-[400px] bg-muted animate-pulse" />}
+              />
+            </Document>
+          </ErrorBoundary>
         )}
       </div>
 

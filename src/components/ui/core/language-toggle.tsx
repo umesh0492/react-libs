@@ -76,7 +76,7 @@ export function LanguageToggle({
             onClick={() => setLanguage(lang.code)}
             className={
               language === lang.code
-                ? "bg-primary/8 text-primary font-medium"
+                ? "bg-primary/10 text-primary font-medium"
                 : "hover:bg-muted/60"
             }
           >

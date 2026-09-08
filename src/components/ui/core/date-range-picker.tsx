@@ -35,26 +35,50 @@ export interface DatePickerWithRangeProps extends Omit<
   dialogAriaLabel?: string;
 }
 
-export function DatePickerWithRange({
-  className,
-  date,
-  defaultDate,
-  setDate,
-  onSelect,
-  variant = "outline",
-  placeholder = "Pick a date range",
-  triggerClassName,
-  calendarClassName,
-  cancelLabel = "Cancel",
-  applyLabel = "Apply Range",
-  align = "start",
-  numberOfMonths = 2,
-  disabled,
-  defaultMonth,
-  showOutsideDays = false,
-  triggerAriaLabel,
-  dialogAriaLabel = "Date range picker",
-}: DatePickerWithRangeProps) {
+function isSameDateRange(a?: DateRange, b?: DateRange): boolean {
+  if (a === b) return true;
+  if (!a && !b) return true;
+  if (!a || !b) return false;
+  const fromEqual =
+    (!a.from && !b.from) ||
+    (Boolean(a.from) &&
+      Boolean(b.from) &&
+      a.from!.getTime() === b.from!.getTime());
+  const toEqual =
+    (!a.to && !b.to) ||
+    (Boolean(a.to) &&
+      Boolean(b.to) &&
+      a.to!.getTime() === b.to!.getTime());
+  return fromEqual && toEqual;
+}
+
+export const DatePickerWithRange = React.forwardRef<
+  HTMLDivElement,
+  DatePickerWithRangeProps
+>(function DatePickerWithRange(
+  {
+    className,
+    date,
+    defaultDate,
+    setDate,
+    onSelect,
+    variant = "outline",
+    placeholder = "Pick a date range",
+    triggerClassName,
+    calendarClassName,
+    cancelLabel = "Cancel",
+    applyLabel = "Apply Range",
+    align = "start",
+    numberOfMonths = 2,
+    disabled,
+    defaultMonth,
+    showOutsideDays = false,
+    triggerAriaLabel,
+    dialogAriaLabel = "Date range picker",
+    ...props
+  },
+  ref
+) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [internalDate, setInternalDate] = React.useState<DateRange | undefined>(
     defaultDate,
@@ -69,9 +93,21 @@ export function DatePickerWithRange({
 
   const activeDate = date !== undefined ? date : internalDate;
 
+  const prevDefaultDateRef = React.useRef(defaultDate);
+  const prevDateRef = React.useRef(date);
+
   React.useEffect(() => {
+    const wasControlled = prevDateRef.current !== undefined;
+    prevDateRef.current = date;
+
     if (date === undefined) {
-      setInternalDate(defaultDate);
+      if (
+        wasControlled ||
+        !isSameDateRange(prevDefaultDateRef.current, defaultDate)
+      ) {
+        prevDefaultDateRef.current = defaultDate;
+        setInternalDate(defaultDate);
+      }
     }
   }, [date, defaultDate]);
 
@@ -116,7 +152,7 @@ export function DatePickerWithRange({
   }, [activeDate, placeholder]);
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div ref={ref} className={cn("grid gap-2", className)} {...props}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -161,4 +197,5 @@ export function DatePickerWithRange({
       </Popover>
     </div>
   );
-}
+});
+DatePickerWithRange.displayName = "DatePickerWithRange";

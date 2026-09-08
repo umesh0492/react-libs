@@ -81,8 +81,24 @@ export async function exportData(
   }
 
   if (format === "xlsx") {
-    // Use Function indirection to fully bypass Vite/Rollup static import analysis.
-    const XLSX = await (new Function('m', 'return import(m)'))('xlsx');
+    interface XlsxInstance {
+      utils: {
+        aoa_to_sheet: (data: unknown[][]) => unknown;
+        book_new: () => unknown;
+        book_append_sheet: (wb: unknown, ws: unknown, name: string) => void;
+      };
+      writeFile: (wb: unknown, filename: string) => void;
+    }
+    let XLSX: XlsxInstance;
+    try {
+      const moduleName = "xlsx";
+      const xlsxModule = (await import(/* @vite-ignore */ moduleName)) as { default?: XlsxInstance } & XlsxInstance;
+      XLSX = xlsxModule.default || xlsxModule;
+    } catch {
+      throw new Error(
+        'XLSX export requires the "xlsx" package. Please install it: npm install xlsx'
+      );
+    }
     // eslint-disable-next-line security/detect-object-injection
     const wsData = [headers, ...data.map((row) => keys.map((k) => row[k]))];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
@@ -93,10 +109,29 @@ export async function exportData(
   }
 
   if (format === "pdf") {
-    // Use Function indirection to fully bypass Vite/Rollup static import analysis.
-    const dynImport = new Function('m', 'return import(m)');
-    const { default: jsPDF }   = await dynImport('jspdf');
-    const { default: autoTable } = await dynImport('jspdf-autotable');
+    interface JsPdfDoc {
+      text: (text: string, x: number, y: number) => void;
+      save: (filename: string) => void;
+    }
+    type JsPdfConstructor = new (orientation?: string) => JsPdfDoc;
+    type AutoTableFunction = (doc: unknown, options: Record<string, unknown>) => void;
+
+    let jsPDF: JsPdfConstructor;
+    let autoTable: AutoTableFunction;
+    try {
+      const jsPdfPkg = "jspdf";
+      const autoTablePkg = "jspdf-autotable";
+      const [jsPDFModule, autoTableModule] = await Promise.all([
+        import(/* @vite-ignore */ jsPdfPkg) as Promise<{ default?: JsPdfConstructor } & JsPdfConstructor>,
+        import(/* @vite-ignore */ autoTablePkg) as Promise<{ default?: AutoTableFunction } & AutoTableFunction>,
+      ]);
+      jsPDF = jsPDFModule.default || jsPDFModule;
+      autoTable = autoTableModule.default || autoTableModule;
+    } catch {
+      throw new Error(
+        'PDF export requires "jspdf" and "jspdf-autotable" packages. Please install them: npm install jspdf jspdf-autotable'
+      );
+    }
     const orientation = options.pdfOrientation ?? "landscape";
     const doc = new jsPDF(orientation);
     const title = options.pdfTitle ?? filename.replace(/_/g, " ").toUpperCase();

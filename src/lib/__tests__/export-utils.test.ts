@@ -309,35 +309,41 @@ describe('downloadFromBackend', () => {
 
 // ─── exportData — XLSX ───────────────────────────────────────────────────────
 
-describe('exportData — XLSX', () => {
-  const writeFileMock = vi.fn();
-  const xlsxStub = {
-    utils: {
-      aoa_to_sheet: vi.fn(() => ({})),
-      book_new: vi.fn(() => ({})),
-      book_append_sheet: vi.fn(),
-    },
-    writeFile: writeFileMock,
-  };
-  let origFn: FunctionConstructor;
+let shouldXlsxFail = false;
+let shouldPdfFail = false;
 
+const writeFileMock = vi.fn();
+const xlsxStub = {
+  utils: {
+    aoa_to_sheet: vi.fn(() => ({})),
+    book_new: vi.fn(() => ({})),
+    book_append_sheet: vi.fn(),
+  },
+  writeFile: writeFileMock,
+};
+
+vi.mock('xlsx', () => ({
+  get default() {
+    if (shouldXlsxFail) throw new Error('Package xlsx not found');
+    return xlsxStub;
+  },
+  get utils() {
+    if (shouldXlsxFail) throw new Error('Package xlsx not found');
+    return xlsxStub.utils;
+  },
+  get writeFile() {
+    return writeFileMock;
+  },
+}));
+
+describe('exportData — XLSX', () => {
   beforeEach(() => {
+    shouldXlsxFail = false;
     writeFileMock.mockClear();
     xlsxStub.utils.aoa_to_sheet.mockClear();
     xlsxStub.utils.book_new.mockClear();
     xlsxStub.utils.book_append_sheet.mockClear();
-    origFn = globalThis.Function as FunctionConstructor;
-    // Intercept new Function('m','return import(m)') to stub the xlsx dynamic import
-    vi.stubGlobal('Function', function (...args: string[]) {
-      if (args.length === 2 && args[0] === 'm' && args[1] === 'return import(m)') {
-        return (mod: string) =>
-          mod === 'xlsx' ? Promise.resolve(xlsxStub) : Promise.resolve({});
-      }
-      return new origFn(...args);
-    });
   });
-
-  afterEach(() => { vi.unstubAllGlobals(); });
 
   it('calls XLSX.writeFile for xlsx format', async () => {
     await exportData(sampleData, 'test-xlsx', 'xlsx');
@@ -357,38 +363,45 @@ describe('exportData — XLSX', () => {
       expect.arrayContaining([expect.arrayContaining(['id', 'name', 'price', 'qty'])])
     );
   });
+
+  it('throws a clean error if xlsx package is not available', async () => {
+    shouldXlsxFail = true;
+    await expect(exportData(sampleData, 'fail-xlsx', 'xlsx')).rejects.toThrow(
+      'XLSX export requires the "xlsx" package. Please install it: npm install xlsx'
+    );
+  });
 });
 
 // ─── exportData — PDF ────────────────────────────────────────────────────────
 
-describe('exportData — PDF', () => {
-  const saveMock = vi.fn();
-  const textMock = vi.fn();
-  const jsPDFInstance = { text: textMock, save: saveMock };
-  const autoTableMock = vi.fn();
-  let origFn: FunctionConstructor;
+const saveMock = vi.fn();
+const textMock = vi.fn();
+const jsPDFInstance = { text: textMock, save: saveMock };
+const autoTableMock = vi.fn();
 
+vi.mock('jspdf', () => ({
+  get default() {
+    if (shouldPdfFail) throw new Error('Package jspdf not found');
+    return function MockJsPDF() {
+      return jsPDFInstance;
+    };
+  },
+}));
+
+vi.mock('jspdf-autotable', () => ({
+  get default() {
+    if (shouldPdfFail) throw new Error('Package jspdf-autotable not found');
+    return autoTableMock;
+  },
+}));
+
+describe('exportData — PDF', () => {
   beforeEach(() => {
+    shouldPdfFail = false;
     saveMock.mockClear();
     textMock.mockClear();
     autoTableMock.mockClear();
-    origFn = globalThis.Function as FunctionConstructor;
-    vi.stubGlobal('Function', function (...args: string[]) {
-      if (args.length === 2 && args[0] === 'm' && args[1] === 'return import(m)') {
-        return (mod: string) => {
-          if (mod === 'jspdf') {
-            const MockJsPDF = function() { return jsPDFInstance; };
-            return Promise.resolve({ default: MockJsPDF });
-          }
-          if (mod === 'jspdf-autotable') return Promise.resolve({ default: autoTableMock });
-          return Promise.resolve({});
-        };
-      }
-      return new origFn(...args);
-    });
   });
-
-  afterEach(() => { vi.unstubAllGlobals(); });
 
   it('calls doc.save for pdf format', async () => {
     await exportData(sampleData, 'test-pdf', 'pdf');
@@ -426,5 +439,12 @@ describe('exportData — PDF', () => {
   it('auto-generates title from filename when pdfTitle is omitted', async () => {
     await exportData(sampleData, 'quarterly_report', 'pdf');
     expect(textMock).toHaveBeenCalledWith('QUARTERLY REPORT', expect.any(Number), expect.any(Number));
+  });
+
+  it('throws a clean error if pdf packages are not available', async () => {
+    shouldPdfFail = true;
+    await expect(exportData(sampleData, 'fail-pdf', 'pdf')).rejects.toThrow(
+      'PDF export requires "jspdf" and "jspdf-autotable" packages. Please install them: npm install jspdf jspdf-autotable'
+    );
   });
 });

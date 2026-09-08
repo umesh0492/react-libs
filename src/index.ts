@@ -121,6 +121,7 @@ export * from "./components/ui/feedback/banner";
 export * from "./components/ui/feedback/copy-button";
 export * from "./components/ui/feedback/empty";
 export * from "./components/ui/feedback/empty-state";
+export * from "./components/ui/feedback/error-boundary";
 export * from "./components/ui/feedback/error-state";
 export * from "./components/ui/feedback/impersonation-banner";
 export * from "./components/ui/feedback/loading-state";

@@ -13,8 +13,9 @@ export interface FileItem {
   error?: string;
 }
 
-export interface FileUploadProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface FileUploadProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   value?: FileItem[];
+  defaultValue?: FileItem[];
   onChange?: (files: FileItem[]) => void;
   accept?: string;
   maxSize?: number; // in bytes
@@ -30,7 +31,8 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
   (
     {
       className,
-      value = [],
+      value: valueProp,
+      defaultValue,
       onChange,
       accept,
       maxSize = 10 * 1024 * 1024, // 10MB default
@@ -44,12 +46,26 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
     },
     ref
   ) => {
+    const isControlled = valueProp !== undefined;
+    const [uncontrolledValue, setUncontrolledValue] = React.useState<FileItem[]>(defaultValue ?? []);
+    const value = isControlled ? valueProp : uncontrolledValue;
+
     const inputRef = React.useRef<HTMLInputElement>(null);
     const createdUrlsRef = React.useRef<Set<string>>(new Set());
     const [isDragging, setIsDragging] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
     const activeError = externalError || errorMessage;
+
+    const updateFiles = React.useCallback(
+      (nextFiles: FileItem[]) => {
+        if (!isControlled) {
+          setUncontrolledValue(nextFiles);
+        }
+        onChange?.(nextFiles);
+      },
+      [isControlled, onChange]
+    );
 
     const processFiles = React.useCallback(
       (newRawFiles: FileList | File[]) => {
@@ -91,9 +107,9 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
         }
 
         const updated = multiple ? [...value, ...validFiles] : validFiles;
-        onChange?.(updated);
+        updateFiles(updated);
       },
-      [value, onChange, maxSize, maxFiles, multiple]
+      [value, updateFiles, maxSize, maxFiles, multiple]
     );
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -129,7 +145,7 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
         URL.revokeObjectURL(itemToRemove.previewUrl);
       }
       const updated = value.filter((f) => f.id !== id);
-      onChange?.(updated);
+      updateFiles(updated);
     };
 
     // When value changes, revoke any created URLs that are no longer present
@@ -156,6 +172,19 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
 
     return (
       <div ref={ref} className={cn("w-full space-y-3", className)} {...props}>
+        <input
+          ref={inputRef}
+          type="file"
+          aria-label={label}
+          accept={accept}
+          multiple={multiple}
+          disabled={disabled}
+          onChange={handleFileInputChange}
+          className="sr-only"
+          tabIndex={-1}
+          data-testid="file-upload-input"
+        />
+
         <div
           onClick={() => !disabled && inputRef.current?.click()}
           onDragOver={handleDragOver}
@@ -178,18 +207,6 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
             activeError && "border-destructive/50 hover:border-destructive"
           )}
         >
-          <input
-            ref={inputRef}
-            type="file"
-            accept={accept}
-            multiple={multiple}
-            disabled={disabled}
-            onChange={handleFileInputChange}
-            className="sr-only"
-            tabIndex={-1}
-            data-testid="file-upload-input"
-          />
-
           <div className="p-3 bg-muted rounded-full mb-3 text-muted-foreground">
             <UploadCloud className="h-6 w-6" />
           </div>
@@ -198,15 +215,37 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
           {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
         </div>
 
+        {/* Live status announcement for screen readers */}
+        {(() => {
+          const fileCountSuffix = value.length === 1 ? "" : "s";
+          const liveAnnouncement = value.length > 0
+            ? `${value.length} file${fileCountSuffix} uploaded.`
+            : "No files uploaded.";
+          return (
+            <div
+              aria-live="polite"
+              aria-atomic="true"
+              className="sr-only"
+              role="status"
+            >
+              {liveAnnouncement}
+            </div>
+          );
+        })()}
+
         {activeError && (
-          <div className="flex items-center gap-1.5 text-xs text-destructive">
+          <div
+            role="alert"
+            aria-live="polite"
+            className="flex items-center gap-1.5 text-xs text-destructive"
+          >
             <AlertCircle className="h-3.5 w-3.5 shrink-0" />
             <span>{activeError}</span>
           </div>
         )}
 
         {value.length > 0 && (
-          <ul className="space-y-2 pt-1" aria-label="Uploaded files">
+          <ul className="space-y-2 pt-1" aria-label="Uploaded files" aria-live="polite">
             {value.map((item) => (
               <li
                 key={item.id}

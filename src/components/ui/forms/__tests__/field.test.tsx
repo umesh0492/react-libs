@@ -173,4 +173,47 @@ describe('Field Component Suite', () => {
     expect(screen.getByText('Legal entity name as registered.')).toBeInTheDocument();
     expect(screen.getByText('Name is required')).toBeInTheDocument();
   });
+
+  // ─── ForwardRef tests ────────────────────────────────────────────────────────
+  it('forwards refs correctly to all underlying elements', () => {
+    const fieldRef = React.createRef<HTMLDivElement>();
+    const fieldSetRef = React.createRef<HTMLFieldSetElement>();
+    const legendRef = React.createRef<HTMLLegendElement>();
+    const groupRef = React.createRef<HTMLDivElement>();
+    const contentRef = React.createRef<HTMLDivElement>();
+    const labelRef = React.createRef<HTMLLabelElement>();
+    const titleRef = React.createRef<HTMLDivElement>();
+    const descRef = React.createRef<HTMLParagraphElement>();
+    const separatorRef = React.createRef<HTMLDivElement>();
+    const errorRef = React.createRef<HTMLDivElement>();
+
+    render(
+      <FieldSet ref={fieldSetRef}>
+        <FieldLegend ref={legendRef}>Legend</FieldLegend>
+        <FieldGroup ref={groupRef}>
+          <Field ref={fieldRef}>
+            <FieldLabel ref={labelRef} htmlFor="input-id">Label</FieldLabel>
+            <FieldTitle ref={titleRef}>Title</FieldTitle>
+            <FieldContent ref={contentRef}>
+              <input id="input-id" />
+              <FieldDescription ref={descRef}>Description</FieldDescription>
+            </FieldContent>
+            <FieldSeparator ref={separatorRef}>or</FieldSeparator>
+            <FieldError ref={errorRef}>Error message</FieldError>
+          </Field>
+        </FieldGroup>
+      </FieldSet>
+    );
+
+    expect(fieldSetRef.current).toBeInstanceOf(HTMLFieldSetElement);
+    expect(legendRef.current).toBeInstanceOf(HTMLLegendElement);
+    expect(groupRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(fieldRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(labelRef.current).toBeInstanceOf(HTMLLabelElement);
+    expect(titleRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(contentRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(descRef.current).toBeInstanceOf(HTMLParagraphElement);
+    expect(separatorRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(errorRef.current).toBeInstanceOf(HTMLDivElement);
+  });
 });

@@ -311,4 +311,26 @@ describe('ChartContainer — id and CSS variable injection', () => {
     // The container uses data-chart="chart-my-chart" (the 'chart-' prefix is added)
     expect(container.querySelector('[data-chart="chart-my-chart"]')).toBeInTheDocument();
   });
+
+  it('catches rendering failures and renders custom fallback via ErrorBoundary', () => {
+    const CrashingComponent = () => {
+      throw new Error('Recharts internal render crash');
+    };
+
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(
+      <ChartContainer
+        config={mockConfig}
+        fallback={<div data-testid="chart-error">Chart could not be loaded</div>}
+      >
+        <CrashingComponent />
+      </ChartContainer>
+    );
+
+    expect(screen.getByTestId('chart-error')).toBeInTheDocument();
+    expect(screen.getByText('Chart could not be loaded')).toBeInTheDocument();
+
+    spy.mockRestore();
+  });
 });

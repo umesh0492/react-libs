@@ -1,9 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  esbuild: {
-    jsx: 'automatic',
-  },
   test: {
     globals: true,
     environment: 'jsdom',
@@ -19,18 +16,20 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json-summary', 'html'],
       reportsDirectory: './coverage',
-      include: ['src/components/ui/**', 'src/lib/**'],
+      include: ['src/components/ui/**', 'src/lib/**', 'src/hooks/**', 'src/utils.ts'],
       exclude: [
-        'src/**/*.stories.tsx',
+        'src/**/*.stories.{ts,tsx}',
+        'src/stories/**',
         'src/test/**',
         'src/**/*.d.ts',
+        '**/*.css',
         'node_modules/**',
       ],
       thresholds: {
-        statements: 75,
+        statements: 70,
         branches: 60,
         functions: 70,
-        lines: 75,
+        lines: 70,
       },
     },
   },

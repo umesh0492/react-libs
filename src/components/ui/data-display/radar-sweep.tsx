@@ -25,8 +25,15 @@ export function RadarSweep({
   isScanning = true,
   statusText = "AI Radar Active",
   className,
+  "aria-label": ariaLabel,
   ...props
 }: RadarSweepProps) {
+  const countSuffix = blips.length === 1 ? "" : "s";
+  const defaultStatus = statusText
+    ? `${statusText}, ${blips.length} target${countSuffix} detected`
+    : "Radar sweep display";
+  const accessibleLabel = ariaLabel || defaultStatus;
+
   const getBlipColor = (tone?: string) => {
     switch (tone) {
       case "emerald":
@@ -52,6 +59,8 @@ export function RadarSweep({
       {...props}
     >
       <div
+        role="img"
+        aria-label={accessibleLabel}
         className="relative overflow-hidden rounded-full border border-indigo-500/20 bg-slate-950/80 shadow-2xl backdrop-blur-md"
         style={{ width: size, height: size }}
       >

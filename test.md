@@ -1,7 +1,7 @@
 # react-lib — Testing Reference
 
 > **Canonical guide** for writing, debugging, and maintaining tests in `@umesh0492/react-libs`.
-> Current state: **118 test files · 584 tests · 0 failures · ≥86% coverage**.
+> Current state: **120 test files · 721+ tests · 0 failures · ≥75% coverage**.
 
 ---
 
@@ -92,23 +92,25 @@ npm run perf
 
 ## 3. Coverage Policy
 
-Coverage is enforced by Vitest `thresholds` in `vite.config.ts`. **Dropping below any threshold fails CI.**
+Coverage is enforced by Vitest `thresholds` in `vitest.config.ts`. **Dropping below any threshold fails CI.**
 
 | Metric | Threshold | Current |
 |---|---|---|
-| Statements | **70%** | ≥86% ✅ |
-| Branches | **60%** | ≥64% ✅ |
-| Functions | **60%** | ≥82% ✅ |
-| Lines | **70%** | ≥86% ✅ |
+| Statements | **70%** | ~74% ✅ |
+| Branches | **60%** | ~63% ✅ |
+| Functions | **70%** | ~73% ✅ |
+| Lines | **75%** | ~76% ✅ |
 
 ### Coverage by Domain
 
 | Domain | Statements | Branches | Functions | Lines |
 |---|---|---|---|---|
-| `navigation` | 95.25% | 82.44% | 92.3% | 95.61% |
-| `overlays` | 95.35% | 76.19% | 83.33% | 95.33% |
-| `layout` | 100% | 88.88% | 100% | 100% |
-| `lib` | 81.81% | 86.01% | 85.18% | 81.3% |
+| `lib` (pure utils & formatters) | 96.58% | 90.60% | 94.73% | 97.14% |
+| `overlays` | 93.72% | 73.68% | 82.25% | 93.72% |
+| `navigation` | 92.44% | 84.42% | 93.33% | 92.48% |
+| `layout` | 82.35% | 30.00% | 64.70% | 82.35% |
+| `forms` | 76.58% | 62.14% | 80.14% | 78.22% |
+| `analytics` | 67.01% | 63.55% | 62.02% | 71.01% |
 
 ### Coverage Exclude Rules
 
@@ -540,7 +542,7 @@ Checkout → Setup Node → Verify tag vs package.json → npm ci → Install Pl
 ### Pre-publish Checklist (manual)
 
 Before creating a tag:
-1. Run `npm run test` — all 584 tests pass
+1. Run `npm run test` — all 120 test files and 721+ tests pass
 2. Run `npx tsc --noEmit` — zero TypeScript errors
 3. Run `npm run build-storybook` — static build succeeds
 4. Run `npm run perf` — regenerate performance data

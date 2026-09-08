@@ -1,12 +1,20 @@
-# Include build artifacts
-!dist/**
-!dist
+# Source maps (excluded to reduce npm package size)
+**/*.map
+*.map
+dist/**/*.map
+
 
 # Test files and configs
 **/__tests__/**
 **/*.test.*
 src/test/**
 vitest-kbd.json
+*-output.txt
+*_results.txt
+test_output.txt
+lint-output.txt
+lint_results.txt
+
 
 # Storybook files
 **/*.stories.*

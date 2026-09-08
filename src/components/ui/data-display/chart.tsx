@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
+"use client";
+
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
+import type { TooltipPayloadEntry, LegendPayload } from "recharts"
 
 import { cn } from "../../../lib/utils"
+import { ErrorBoundary, type FallbackRender } from "../feedback/error-boundary"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -34,15 +36,19 @@ function useChart() {
   return context
 }
 
+export type ChartContainerProps = React.ComponentProps<"div"> & {
+  config: ChartConfig
+  children: React.ComponentProps<
+    typeof RechartsPrimitive.ResponsiveContainer
+  >["children"]
+  fallback?: React.ReactNode | FallbackRender
+  onError?: (error: Error, errorInfo: React.ErrorInfo) => void
+}
+
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    config: ChartConfig
-    children: React.ComponentProps<
-      typeof RechartsPrimitive.ResponsiveContainer
-    >["children"]
-  }
->(({ id, className, children, config, ...props }, ref) => {
+  ChartContainerProps
+>(({ id, className, children, config, fallback, onError, ...props }, ref) => {
   const uniqueId = React.useId()
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
 
@@ -59,9 +65,11 @@ const ChartContainer = React.forwardRef<
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer>
-          {children}
-        </RechartsPrimitive.ResponsiveContainer>
+        <ErrorBoundary fallback={fallback} onError={onError}>
+          <RechartsPrimitive.ResponsiveContainer>
+            {children}
+          </RechartsPrimitive.ResponsiveContainer>
+        </ErrorBoundary>
       </div>
     </ChartContext.Provider>
   )
@@ -70,7 +78,8 @@ ChartContainer.displayName = "Chart"
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme || config.color
+    ([, itemConfig]) =>
+      Boolean(("theme" in itemConfig && itemConfig.theme) || ("color" in itemConfig && itemConfig.color))
   )
 
   if (!colorConfig.length) {
@@ -87,10 +96,13 @@ ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
     const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
+      ("theme" in itemConfig && itemConfig.theme
+        ? // eslint-disable-next-line security/detect-object-injection
+          (itemConfig.theme as Record<string, string>)[theme]
+        : undefined) || ("color" in itemConfig ? itemConfig.color : undefined)
     return color ? `  --color-${key}: ${color};` : null
   })
+  .filter(Boolean)
   .join("\n")}
 }
 `
@@ -103,16 +115,35 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
+export interface ChartTooltipContentProps
+  extends Omit<React.ComponentProps<"div">, "color"> {
+  active?: boolean
+  payload?: TooltipPayloadEntry[]
+  className?: string
+  indicator?: "line" | "dot" | "dashed"
+  hideLabel?: boolean
+  hideIndicator?: boolean
+  label?: React.ReactNode
+  labelFormatter?: (
+    label: React.ReactNode,
+    payload: TooltipPayloadEntry[]
+  ) => React.ReactNode
+  labelClassName?: string
+  formatter?: (
+    value: unknown,
+    name: unknown,
+    item: TooltipPayloadEntry,
+    index: number,
+    payload: unknown
+  ) => React.ReactNode
+  color?: string
+  nameKey?: string
+  labelKey?: string
+}
+
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-    React.ComponentProps<"div"> & {
-      hideLabel?: boolean
-      hideIndicator?: boolean
-      indicator?: "line" | "dot" | "dashed"
-      nameKey?: string
-      labelKey?: string
-    }
+  ChartTooltipContentProps
 >(
   (
     {
@@ -187,15 +218,20 @@ const ChartTooltipContent = React.forwardRef<
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
           {payload
-            .filter((item) => item.type !== "none")
+            .filter((item) => item && item.type !== "none")
             .map((item, index) => {
               const key = `${nameKey || item.name || item.dataKey || "value"}`
               const itemConfig = getPayloadConfigFromPayload(config, item, key)
-              const indicatorColor = color || item.payload.fill || item.color
+              const indicatorColor = color || item.payload?.fill || item.color
+
+              const itemKey =
+                (typeof item.dataKey === "function" ? undefined : item.dataKey) ||
+                item.name ||
+                index
 
               return (
                 <div
-                  key={item.dataKey}
+                  key={itemKey}
                   className={cn(
                     "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                     indicator === "dot" && "items-center"
@@ -241,7 +277,7 @@ const ChartTooltipContent = React.forwardRef<
                             {itemConfig?.label || item.name}
                           </span>
                         </div>
-                        {item.value && (
+                        {item.value !== undefined && item.value !== null && (
                           <span className="font-mono font-medium tabular-nums text-foreground">
                             {item.value.toLocaleString()}
                           </span>
@@ -261,13 +297,17 @@ ChartTooltipContent.displayName = "ChartTooltip"
 
 const ChartLegend = RechartsPrimitive.Legend
 
+export interface ChartLegendContentProps
+  extends React.ComponentProps<"div"> {
+  payload?: Array<LegendPayload & { id?: string | number; [key: string]: unknown }>
+  verticalAlign?: "top" | "middle" | "bottom"
+  hideIcon?: boolean
+  nameKey?: string
+}
+
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean
-      nameKey?: string
-    }
+  ChartLegendContentProps
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
@@ -289,14 +329,18 @@ const ChartLegendContent = React.forwardRef<
         )}
       >
         {payload
-          .filter((item) => item.type !== "none")
-          .map((item) => {
+          .filter((item) => item && item.type !== "none")
+          .map((item, index) => {
             const key = `${nameKey || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
+            const itemKey =
+              item.value ||
+              (typeof item.dataKey === "function" ? undefined : item.dataKey) ||
+              index
 
             return (
               <div
-                key={item.value}
+                key={itemKey}
                 className={cn(
                   "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
                 )}
@@ -333,26 +377,28 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
-      ? payload.payload
+    typeof (payload as { payload?: unknown }).payload === "object" &&
+    (payload as { payload?: unknown }).payload !== null
+      ? ((payload as { payload?: unknown }).payload as Record<string, unknown>)
       : undefined
 
   let configLabelKey: string = key
 
   if (
     key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
+    // eslint-disable-next-line security/detect-object-injection
+    typeof (payload as Record<string, unknown>)[key] === "string"
   ) {
-    configLabelKey = payload[key as keyof typeof payload] as string
+    // eslint-disable-next-line security/detect-object-injection
+    configLabelKey = (payload as Record<string, unknown>)[key] as string
   } else if (
     payloadPayload &&
     key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+    // eslint-disable-next-line security/detect-object-injection
+    typeof payloadPayload[key] === "string"
   ) {
-    configLabelKey = payloadPayload[
-      key as keyof typeof payloadPayload
-    ] as string
+    // eslint-disable-next-line security/detect-object-injection
+    configLabelKey = payloadPayload[key] as string
   }
 
   return configLabelKey in config
