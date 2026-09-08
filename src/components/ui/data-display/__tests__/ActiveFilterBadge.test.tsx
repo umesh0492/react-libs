@@ -1,20 +1,35 @@
-import { describe, it, expect } from 'vitest';
-import * as Module from '../ActiveFilterBadge';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import * as React from 'react';
+import { ActiveFilterBadge } from '../ActiveFilterBadge';
 
-describe('ActiveFilterBadge component hierarchy', () => {
-    it('should export core ui modules reliably without syntax failure', () => {
-        expect(Module).toBeDefined();
-        expect(Object.keys(Module).length).toBeGreaterThanOrEqual(0);
-    });
+describe('ActiveFilterBadge component', () => {
+  it('renders label and handles onClear callback', () => {
+    const handleClear = vi.fn();
+    render(<ActiveFilterBadge label="Status: Active" onClear={handleClear} />);
 
-    it('should natively scaffold generic rendering boundaries successfully', async () => {
-        try {
-            // Evaluates generic exports to verify parsing syntax boundaries safely
-            const exportedEntities = Object.values(Module).filter(val => typeof val === 'function' || typeof val === 'object');
-            expect(exportedEntities).toBeDefined();
-        } catch (error) {
-            // Swallowing rigid react prop crashers to ensure DOM parsing coverage maintains
-            console.warn('Smoke test isolated rigid prop boundaries', error);
-        }
-    });
+    expect(screen.getByText('Showing: Status: Active')).toBeInTheDocument();
+
+    const clearButton = screen.getByRole('button', { name: /clear filter/i });
+    expect(clearButton).toBeInTheDocument();
+
+    fireEvent.click(clearButton);
+    expect(handleClear).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns null if label is empty', () => {
+    const { container } = render(<ActiveFilterBadge label="" onClear={vi.fn()} />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('merges custom className', () => {
+    const { container } = render(
+      <ActiveFilterBadge
+        label="Category: Electronics"
+        onClear={vi.fn()}
+        className="custom-filter-class"
+      />
+    );
+    expect(container.firstChild).toHaveClass('custom-filter-class');
+  });
 });

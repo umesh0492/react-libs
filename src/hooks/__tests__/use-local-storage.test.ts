@@ -83,4 +83,23 @@ describe("useLocalStorage", () => {
 
     expect(result.current[0]).toBe("from-external-tab");
   });
+
+  it("maintains stable setValue identity across re-renders with fresh inline initialValue references", () => {
+    const { result, rerender } = renderHook(
+      ({ initVal }: { initVal: string[] }) => useLocalStorage("list-key", initVal),
+      { initialProps: { initVal: [] } }
+    );
+
+    const firstSetValue = result.current[1];
+
+    // Rerender with a completely new inline array literal
+    rerender({ initVal: [] });
+    const secondSetValue = result.current[1];
+
+    expect(secondSetValue).toBe(firstSetValue);
+
+    // Rerender again
+    rerender({ initVal: [] });
+    expect(result.current[1]).toBe(firstSetValue);
+  });
 });

@@ -24,6 +24,46 @@ export interface AnalyticsProviderProps {
   engine?: AnalyticsEngine;
 }
 
+/* eslint-disable security/detect-object-injection */
+function areArraysEqual<T>(a?: T[], b?: T[], compare?: (x: T, y: T) => boolean): boolean {
+  if (a === b) return true;
+  if (!a || !b) return (a?.length ?? 0) === (b?.length ?? 0);
+  if (a.length !== b.length) return false;
+  return a.every((val, idx) => (compare ? compare(val, b[idx] as T) : val === b[idx]));
+}
+
+function areMetadataEqual(
+  a?: Record<string, unknown>,
+  b?: Record<string, unknown>
+): boolean {
+  if (a === b) return true;
+  return JSON.stringify(a || {}) === JSON.stringify(b || {});
+}
+
+function isConfigEqual(prev?: AnalyticsConfig, next?: AnalyticsConfig): boolean {
+  if (prev === next) return true;
+  if (!prev || !next) return false;
+  if (
+    prev.appId !== next.appId ||
+    prev.batchSize !== next.batchSize ||
+    prev.flushIntervalMs !== next.flushIntervalMs ||
+    prev.sessionTimeoutMs !== next.sessionTimeoutMs ||
+    prev.maxOfflineQueue !== next.maxOfflineQueue ||
+    prev.storagePrefix !== next.storagePrefix ||
+    prev.autoTrackDom !== next.autoTrackDom ||
+    prev.autoTrackPages !== next.autoTrackPages ||
+    prev.onError !== next.onError
+  ) {
+    return false;
+  }
+  if (!areArraysEqual(prev.adapters, next.adapters)) return false;
+  if (!areArraysEqual(prev.maskPatterns, next.maskPatterns, (x, y) => x?.toString() === y?.toString())) {
+    return false;
+  }
+  return areMetadataEqual(prev.globalMetadata, next.globalMetadata);
+}
+/* eslint-enable security/detect-object-injection */
+
 export function AnalyticsProvider({
   children,
   config,
@@ -33,14 +73,20 @@ export function AnalyticsProvider({
     () => externalEngine || getAnalyticsEngine()
   );
 
+  const [activeConfig, setActiveConfig] = React.useState<AnalyticsConfig | undefined>(config);
+
+  if (!isConfigEqual(activeConfig, config)) {
+    setActiveConfig(config);
+  }
+
   React.useEffect(() => {
     if (externalEngine) {
       setEngineInstance(externalEngine);
       return;
     }
 
-    if (config) {
-      const engine = initAnalytics(config);
+    if (activeConfig) {
+      const engine = initAnalytics(activeConfig);
       setEngineInstance(engine);
 
       return () => {
@@ -48,7 +94,7 @@ export function AnalyticsProvider({
         setEngineInstance(null);
       };
     }
-  }, [externalEngine, config]);
+  }, [externalEngine, activeConfig]);
 
   const value = React.useMemo<AnalyticsContextValue>(() => {
     return {

@@ -247,10 +247,10 @@ export const ComponentDirectory: Story = {
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }}>
             {[
-              { label: 'v0.4.1', accent: true },
+              { label: 'v0.4.2', accent: true },
               { label: '70+ components' },
-              { label: '779 tests' },
-              { label: '≥75% coverage' },
+              { label: '797 tests' },
+              { label: '≥80% coverage' },
               { label: '100% passing' },
               { label: 'Storybook 10' },
               { label: 'Tailwind v4' },

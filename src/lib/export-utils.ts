@@ -7,8 +7,8 @@
  * For large/server-side exports, use downloadFileSecurely() (or downloadFromBackend()) instead to stream
  * the file through the platform's Express proxy.
  *
- * Dependencies (peer): xlsx, jspdf, jspdf-autotable
- * These are already present in client-web and admin-web.
+ * Optional Peer Dependencies: xlsx, jspdf, jspdf-autotable
+ * These packages are optional and only required when exporting to XLSX or PDF.
  */
 
 export type ExportFormat = "csv" | "xlsx" | "pdf";

@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PERF_P95_THRESHOLD: 750
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -75,29 +74,7 @@ jobs:
         with:
           path: storybook-static
 
-  # # ── 2. AI Code Review (PRs only) ──────────────────────────────────────────
-  # ai-review:
-  #   if: github.event_name == 'pull_request'
-  #   runs-on: self-hosted
-  #   permissions:
-  #     contents: read
-  #     pull-requests: write
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  # 
-  #     - name: AI PR Reviewer (Powered by Gemini Free Tier)
-  #       uses: google-gemini/gemini-review-action@v1
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-  #       with:
-  #         model: 'gemini-1.5-flash'
-  #         review_comment_languge: en-US
-
-  # ── 3. Deploy (main only, after CI passes) ──────────────────────────────────
+  # ── 2. Deploy (main only, after CI passes) ──────────────────────────────────
   deploy:
     needs: validate
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

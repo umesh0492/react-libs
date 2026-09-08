@@ -35,7 +35,7 @@ export interface RoleEmptyStateProps {
  * contextual CTA button, and a slide-out help Sheet with video/docs links.
  *
  * Designed to be fully portable: all role-specific text is supplied via props.
- * In client-web, wrap it once per role in a `RoleEmptyState` factory component
+ * In consuming applications, wrap it once per role in a `RoleEmptyState` factory component
  * that reads `useAuth` and calls this with the appropriate props.
  */
 export function RoleEmptyState({
