@@ -1,4 +1,6 @@
-import { useState, useCallback, useEffect } from "react"
+"use client";
+
+import { useState, useCallback, useEffect, useRef } from "react"
 
 /**
  * useLocalStorage — typed localStorage state that syncs across tabs.
@@ -21,29 +23,35 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   }, [key, initialValue])
 
   const [storedValue, setStoredValue] = useState<T>(readValue)
+  const storedValueRef = useRef<T>(storedValue)
+
+  useEffect(() => {
+    storedValueRef.current = storedValue
+  }, [storedValue])
 
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       try {
-        setStoredValue((prev) => {
-          const newValue =
-            typeof value === "function" ? (value as (prev: T) => T)(prev) : value
+        const current = typeof window === "undefined" ? storedValueRef.current : readValue()
+        const newValue =
+          typeof value === "function" ? (value as (prev: T) => T)(current) : value
 
-          if (typeof window !== "undefined") {
-            try {
-              window.localStorage.setItem(key, JSON.stringify(newValue))
-              window.dispatchEvent(new Event("local-storage"))
-            } catch (err) {
-              console.warn(`useLocalStorage: could not persist "${key}"`, err)
-            }
+        setStoredValue(newValue)
+        storedValueRef.current = newValue
+
+        if (typeof window !== "undefined") {
+          try {
+            window.localStorage.setItem(key, JSON.stringify(newValue))
+            window.dispatchEvent(new Event("local-storage"))
+          } catch (err) {
+            console.warn(`useLocalStorage: could not persist "${key}"`, err)
           }
-          return newValue
-        })
+        }
       } catch (err) {
         console.warn(`useLocalStorage: could not set "${key}"`, err)
       }
     },
-    [key]
+    [key, readValue]
   )
 
   // Sync across tabs & within-window events

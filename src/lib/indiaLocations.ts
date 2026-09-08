@@ -1,21 +1,89 @@
 /**
- * indiaLocations.ts
- * Reference data for Indian states and major cities (ISO 3166-2:IN).
+ * @file indiaLocations.ts
+ * Reference location datasets and regional helper utilities.
+ * 
+ * Provides optional reference data for Indian administrative subdivisions (ISO 3166-2:IN)
+ * and generic helper utilities for building cascade state/city select controls.
+ * Applications targeting other countries or customized geographies can utilize the generic
+ * `RegionState`, `RegionCity`, and helper functions (`filterCitiesByState`, `toStateOptions`).
  * 
  * Usage:
- *   import { INDIA_STATES, getCitiesForState } from "@umesh0492/react-libs";
+ *   import { INDIA_STATES, getCitiesForState, filterCitiesByState } from "@umesh0492/react-libs";
  */
 
-export interface IndiaState {
-  code: string;   // ISO 3166-2:IN code
+/**
+ * Generic administrative region/state definition.
+ */
+export interface RegionState {
+  /** Standard region code (e.g. ISO 3166-2 division code). */
+  code: string;
+  /** Human-readable region name. */
   name: string;
 }
 
-export interface IndiaCity {
+/**
+ * Generic city or locality subdivision definition.
+ */
+export interface RegionCity {
+  /** Locality or city name. */
   name: string;
+  /** Parent state/division code. */
   stateCode: string;
 }
 
+/**
+ * Option format compatible with Select, AsyncSelect, and FilterSelect components.
+ */
+export interface RegionOption {
+  value: string;
+  label: string;
+}
+
+/** Legacy alias for backwards compatibility. */
+export type IndiaState = RegionState;
+/** Legacy alias for backwards compatibility. */
+export type IndiaCity = RegionCity;
+
+/**
+ * Generic utility to filter localities/cities by parent division code, sorted alphabetically.
+ */
+export function filterCitiesByState<T extends RegionCity>(cities: T[], stateCode: string): T[] {
+  if (!stateCode) return [];
+  return cities
+    .filter((c) => c.stateCode === stateCode)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Generic utility to convert region/state arrays into Select-compatible options.
+ */
+export function toStateOptions<T extends RegionState>(
+  states: T[],
+  placeholder = "Select State"
+): RegionOption[] {
+  return [
+    { value: "", label: placeholder },
+    ...states.map((s) => ({ value: s.code, label: s.name })),
+  ];
+}
+
+/**
+ * Generic utility to convert locality/city arrays into Select-compatible options.
+ */
+export function toCityOptions<T extends RegionCity>(
+  cities: T[],
+  placeholder = "Select City"
+): RegionOption[] {
+  return [
+    { value: "", label: placeholder },
+    ...cities.map((c) => ({ value: c.name, label: c.name })),
+  ];
+}
+
+/**
+ * Reference dataset of Indian states and Union Territories (ISO 3166-2:IN).
+ * Provided as an optional regional reference dataset.
+ */
 export const INDIA_STATES: IndiaState[] = [
   { code: "AP", name: "Andhra Pradesh" },
   { code: "AR", name: "Arunachal Pradesh" },
@@ -56,6 +124,10 @@ export const INDIA_STATES: IndiaState[] = [
   { code: "PY", name: "Puducherry" },
 ];
 
+/**
+ * Reference dataset of major commercial and industrial cities in India.
+ * Provided as an optional regional reference dataset.
+ */
 export const INDIA_CITIES: IndiaCity[] = [
   // Maharashtra
   { name: "Mumbai", stateCode: "MH" },
@@ -174,24 +246,15 @@ export const INDIA_CITIES: IndiaCity[] = [
 
 /** Returns cities filtered by state code, sorted alphabetically. */
 export function getCitiesForState(stateCode: string): IndiaCity[] {
-  if (!stateCode) return [];
-  return INDIA_CITIES
-    .filter(c => c.stateCode === stateCode)
-    .sort((a, b) => a.name.localeCompare(b.name));
+  return filterCitiesByState(INDIA_CITIES, stateCode);
 }
 
 /** Returns FilterSelect-compatible option objects for all states. */
-export function getStateOptions() {
-  return [
-    { value: "", label: "Select State" },
-    ...INDIA_STATES.map(s => ({ value: s.code, label: s.name })),
-  ];
+export function getStateOptions(placeholder = "Select State"): RegionOption[] {
+  return toStateOptions(INDIA_STATES, placeholder);
 }
 
 /** Returns FilterSelect-compatible option objects for cities in a given state. */
-export function getCityOptions(stateCode: string) {
-  return [
-    { value: "", label: "Select City" },
-    ...getCitiesForState(stateCode).map(c => ({ value: c.name, label: c.name })),
-  ];
+export function getCityOptions(stateCode: string, placeholder = "Select City"): RegionOption[] {
+  return toCityOptions(getCitiesForState(stateCode), placeholder);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@umesh0492/react-libs",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Production-grade React 19 component library with Tailwind CSS v4 & Radix UI primitives.",
   "keywords": [
     "react",
@@ -56,6 +56,7 @@
   ],
   "files": [
     "dist",
+    "!dist/**/*.map",
     "src/styles"
   ],
   "scripts": {

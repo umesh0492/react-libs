@@ -52,4 +52,19 @@ describe("withAuditTrail Telemetry HOC", () => {
 
     setGlobalAuditLogger(null);
   });
+
+  it("forwards ref to the wrapped component", () => {
+    const TestComponent = React.forwardRef<
+      HTMLButtonElement,
+      React.ButtonHTMLAttributes<HTMLButtonElement>
+    >((props, ref) => <button ref={ref} {...props}>Ref Button</button>);
+
+    const AuditedComponent = withAuditTrail(TestComponent);
+    const ref = React.createRef<HTMLButtonElement>();
+
+    render(<AuditedComponent ref={ref} actionName="TEST_REF" />);
+
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+    expect(ref.current?.textContent).toBe("Ref Button");
+  });
 });

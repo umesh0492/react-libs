@@ -137,3 +137,32 @@ describe('getCityOptions', () => {
     expect(mumbai?.label).toBe('Mumbai');
   });
 });
+
+describe('Generic Region Helpers', () => {
+  it('filterCitiesByState filters and sorts cities', async () => {
+    const { filterCitiesByState } = await import('../indiaLocations');
+    const customCities = [
+      { name: 'Austin', stateCode: 'TX' },
+      { name: 'Dallas', stateCode: 'TX' },
+      { name: 'Los Angeles', stateCode: 'CA' },
+    ];
+    const tx = filterCitiesByState(customCities, 'TX');
+    expect(tx).toHaveLength(2);
+    expect(tx[0].name).toBe('Austin');
+    expect(tx[1].name).toBe('Dallas');
+  });
+
+  it('toStateOptions and toCityOptions transform regions with customizable placeholders', async () => {
+    const { toStateOptions, toCityOptions } = await import('../indiaLocations');
+    const states = [{ code: 'CA', name: 'California' }];
+    const stateOpts = toStateOptions(states, 'Choose Province');
+    expect(stateOpts[0]).toEqual({ value: '', label: 'Choose Province' });
+    expect(stateOpts[1]).toEqual({ value: 'CA', label: 'California' });
+
+    const cities = [{ name: 'San Francisco', stateCode: 'CA' }];
+    const cityOpts = toCityOptions(cities, 'Choose Locality');
+    expect(cityOpts[0]).toEqual({ value: '', label: 'Choose Locality' });
+    expect(cityOpts[1]).toEqual({ value: 'San Francisco', label: 'San Francisco' });
+  });
+});
+

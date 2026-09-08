@@ -8,26 +8,35 @@ import { cn } from "../../../lib/utils";
 export interface ProofOfWorkItem {
   id?: string;
   title: string;
-  type: "github" | "live_project" | "certificate" | "architecture";
+  type?: "github" | "live_project" | "certificate" | "architecture" | string;
   description?: string;
   linkUrl?: string;
-  score?: number; // e.g. 98/100
+  /** Custom call-to-action link label. Defaults to "View Artifact". */
+  linkLabel?: string;
+  /** Numeric score or rating (e.g., 96). Rendered with maxScore if metricLabel is not specified. */
+  score?: number;
+  /** Maximum scale for score (e.g., 100 or 5). Defaults to 100. */
+  maxScore?: number;
+  /** Explicit metric text badge (e.g., "98/100", "Top 1%", "Grade A"). Overrides score display. */
+  metricLabel?: string;
+  /** Whether the verification mark should be displayed beside the title. */
   verified?: boolean;
   tags?: string[];
+  /** Optional custom icon to replace the default category icon. */
+  icon?: React.ReactNode;
 }
 
 export interface ProofOfWorkCardProps extends React.HTMLAttributes<HTMLDivElement> {
   item: ProofOfWorkItem;
-  onOpen?: (item: ProofOfWorkItem) => void;
 }
 
 export function ProofOfWorkCard({
   item,
-  onOpen: _onOpen,
   className,
   ...props
 }: ProofOfWorkCardProps) {
   const getIcon = () => {
+    if (item.icon) return item.icon;
     switch (item.type) {
       case "github":
         return <GitPullRequest className="h-4 w-4 text-purple-500" />;
@@ -37,6 +46,8 @@ export function ProofOfWorkCard({
         return <ShieldCheck className="h-4 w-4 text-emerald-500" />;
     }
   };
+
+  const metricBadge = item.metricLabel ?? (item.score !== undefined ? `${item.score}/${item.maxScore ?? 100}` : null);
 
   return (
     <Card className={cn("p-4 space-y-2.5 transition-hover hover:border-indigo-400 dark:hover:border-indigo-500", className)} {...props}>
@@ -52,17 +63,19 @@ export function ProofOfWorkCard({
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 inline shrink-0" />
               )}
             </h4>
-            <span className="text-[11px] font-medium text-slate-400 capitalize">
-              {item.type.replace("_", " ")}
-            </span>
+            {item.type ? (
+              <span className="text-[11px] font-medium text-slate-400 capitalize">
+                {item.type.replace(/_/g, " ")}
+              </span>
+            ) : null}
           </div>
         </div>
 
-        {item.score !== undefined && (
+        {metricBadge ? (
           <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
-            {item.score}/100
+            {metricBadge}
           </span>
-        )}
+        ) : null}
       </div>
 
       {item.description ? (
@@ -90,7 +103,7 @@ export function ProofOfWorkCard({
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
           >
-            <span>View Artifact</span>
+            <span>{item.linkLabel ?? "View Artifact"}</span>
             <ExternalLink className="h-3 w-3" />
           </a>
         )}
@@ -98,3 +111,8 @@ export function ProofOfWorkCard({
     </Card>
   );
 }
+
+/** Generic alias for ProofOfWorkCard with customizable metrics. */
+export type MetricVerificationItem = ProofOfWorkItem;
+export type MetricVerificationCardProps = ProofOfWorkCardProps;
+export const MetricVerificationCard = ProofOfWorkCard;

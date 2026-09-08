@@ -40,13 +40,21 @@ export function MatchScoreGauge({
     grade = "B";
   }
 
+  const roundedScore = Math.round(clamped);
+
   return (
     <div
+      role="meter"
+      aria-valuenow={roundedScore}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={props["aria-label"] || label || "Match Score"}
       className={cn("inline-flex flex-col items-center justify-center text-center", className)}
       {...props}
     >
       <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="transform -rotate-90">
+          <title>{`${label}: ${roundedScore}%`}</title>
           <circle
             className="text-slate-100 dark:text-slate-800"
             strokeWidth={strokeWidth}

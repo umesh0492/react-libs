@@ -428,4 +428,93 @@ describe('useSidebar hook', () => {
     
     expect(rail).toBeInTheDocument();
   });
+
+  describe('Sidebar forwardRef support', () => {
+    it('forwards refs correctly across composite sidebar components', () => {
+      const providerRef = React.createRef<HTMLDivElement>();
+      const sidebarRef = React.createRef<HTMLDivElement>();
+      const headerRef = React.createRef<HTMLDivElement>();
+      const contentRef = React.createRef<HTMLDivElement>();
+      const footerRef = React.createRef<HTMLDivElement>();
+      const insetRef = React.createRef<HTMLElement>();
+      const inputRef = React.createRef<HTMLInputElement>();
+      const groupRef = React.createRef<HTMLDivElement>();
+      const groupLabelRef = React.createRef<HTMLDivElement>();
+      const groupActionRef = React.createRef<HTMLButtonElement>();
+      const groupContentRef = React.createRef<HTMLDivElement>();
+      const menuRef = React.createRef<HTMLUListElement>();
+      const menuItemRef = React.createRef<HTMLLIElement>();
+      const menuButtonRef = React.createRef<HTMLButtonElement>();
+      const menuActionRef = React.createRef<HTMLButtonElement>();
+      const menuBadgeRef = React.createRef<HTMLDivElement>();
+      const menuSkeletonRef = React.createRef<HTMLDivElement>();
+      const menuSubRef = React.createRef<HTMLUListElement>();
+      const menuSubItemRef = React.createRef<HTMLLIElement>();
+      const menuSubButtonRef = React.createRef<HTMLAnchorElement>();
+      const triggerRef = React.createRef<HTMLButtonElement>();
+      const railRef = React.createRef<HTMLButtonElement>();
+      const separatorRef = React.createRef<HTMLDivElement>();
+
+      render(
+        <SidebarProvider ref={providerRef}>
+          <Sidebar ref={sidebarRef} collapsible="none">
+            <SidebarHeader ref={headerRef}>
+              <SidebarInput ref={inputRef} placeholder="Search..." />
+            </SidebarHeader>
+            <SidebarSeparator ref={separatorRef} />
+            <SidebarContent ref={contentRef}>
+              <SidebarGroup ref={groupRef}>
+                <SidebarGroupLabel ref={groupLabelRef}>Platform</SidebarGroupLabel>
+                <SidebarGroupAction ref={groupActionRef} aria-label="Action" />
+                <SidebarGroupContent ref={groupContentRef}>
+                  <SidebarMenu ref={menuRef}>
+                    <SidebarMenuItem ref={menuItemRef}>
+                      <SidebarMenuButton ref={menuButtonRef}>Overview</SidebarMenuButton>
+                      <SidebarMenuAction ref={menuActionRef} aria-label="More" />
+                      <SidebarMenuBadge ref={menuBadgeRef}>5</SidebarMenuBadge>
+                    </SidebarMenuItem>
+                    <SidebarMenuSkeleton ref={menuSkeletonRef} />
+                    <SidebarMenuSub ref={menuSubRef}>
+                      <SidebarMenuSubItem ref={menuSubItemRef}>
+                        <SidebarMenuSubButton ref={menuSubButtonRef} href="#">Sub</SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter ref={footerRef}>Footer</SidebarFooter>
+            <SidebarRail ref={railRef} />
+          </Sidebar>
+          <SidebarInset ref={insetRef}>
+            <SidebarTrigger ref={triggerRef} />
+          </SidebarInset>
+        </SidebarProvider>
+      );
+
+      expect(providerRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(sidebarRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(headerRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(contentRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(footerRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(insetRef.current).toBeInstanceOf(HTMLElement);
+      expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
+      expect(groupRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(groupLabelRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(groupActionRef.current).toBeInstanceOf(HTMLButtonElement);
+      expect(groupContentRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(menuRef.current).toBeInstanceOf(HTMLUListElement);
+      expect(menuItemRef.current).toBeInstanceOf(HTMLLIElement);
+      expect(menuButtonRef.current).toBeInstanceOf(HTMLButtonElement);
+      expect(menuActionRef.current).toBeInstanceOf(HTMLButtonElement);
+      expect(menuBadgeRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(menuSkeletonRef.current).toBeInstanceOf(HTMLDivElement);
+      expect(menuSubRef.current).toBeInstanceOf(HTMLUListElement);
+      expect(menuSubItemRef.current).toBeInstanceOf(HTMLLIElement);
+      expect(menuSubButtonRef.current).toBeInstanceOf(HTMLAnchorElement);
+      expect(triggerRef.current).toBeInstanceOf(HTMLButtonElement);
+      expect(railRef.current).toBeInstanceOf(HTMLButtonElement);
+      expect(separatorRef.current).toBeInstanceOf(HTMLDivElement);
+    });
+  });
 });

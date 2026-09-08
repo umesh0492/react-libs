@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { getAnalyticsEngine, initAnalytics, AnalyticsEngine } from "../engine";
 import type { AnalyticsConfig, AnalyticsEvent, PageContext } from "../types";
@@ -27,9 +29,26 @@ export function AnalyticsProvider({
   config,
   engine: externalEngine,
 }: AnalyticsProviderProps) {
-  const [engineInstance] = React.useState<AnalyticsEngine | null>(() => {
-    return externalEngine || getAnalyticsEngine() || (config ? initAnalytics(config) : null);
-  });
+  const [engineInstance, setEngineInstance] = React.useState<AnalyticsEngine | null>(
+    () => externalEngine || getAnalyticsEngine()
+  );
+
+  React.useEffect(() => {
+    if (externalEngine) {
+      setEngineInstance(externalEngine);
+      return;
+    }
+
+    if (config) {
+      const engine = initAnalytics(config);
+      setEngineInstance(engine);
+
+      return () => {
+        engine.destroy();
+        setEngineInstance(null);
+      };
+    }
+  }, [externalEngine, config]);
 
   const value = React.useMemo<AnalyticsContextValue>(() => {
     return {

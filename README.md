@@ -5,7 +5,7 @@
 
 [![Version](https://img.shields.io/npm/v/@umesh0492/react-libs)](https://www.npmjs.com/package/@umesh0492/react-libs)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#testing)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A598%25-blue)](#testing)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A575%25-brightgreen)](#testing)
 [![React](https://img.shields.io/badge/react-19-blue)](https://react.dev)
 [![Tailwind](https://img.shields.io/badge/tailwind-v4-38bdf8)](https://tailwindcss.com)
 [![Storybook](https://img.shields.io/badge/storybook-10.x-ff4785)](https://umesh0492.github.io/react-libs)
@@ -17,7 +17,7 @@
 1. [Installation](#installation)
 2. [Quick Start & Imports](#quick-start--imports)
    - [Subpath Reference Table](#subpath-reference-table)
-   - [100% SSR Safety](#100-ssr-safety-in-nextjs-app-router-remix--node)
+   - [SSR Compatibility & Hydration Architecture](#ssr-compatibility--hydration-architecture)
    - [Dedicated Client Subpath for PdfViewer](#dedicated-client-subpath-for-pdfviewer)
    - [Dual ESM & CommonJS Support](#dual-esm--commonjs-support)
 3. [Styling & CSS Delivery](#styling--css-delivery)
@@ -61,22 +61,22 @@ No complex path mapping or bundler alias configurations are required in your app
 
 The library exposes dedicated entry points for UI components, server-safe utilities, client-only features, analytics, hooks, and stylesheets:
 
-| Subpath / Export | Module Formats | SSR / RSC Safe | Purpose & Contents |
+| Subpath / Export | Module Formats | SSR / RSC Compatibility | Purpose & Contents |
 |---|---|---|---|
-| `@umesh0492/react-libs` | ESM (`import`), CJS (`require`) | **100% SSR-Safe** (`'use client'`) | Primary UI component library (70+ components, primitives, forms, dialogs, charts, and hooks). |
-| `@umesh0492/react-libs/utils` | ESM (`import`), CJS (`require`) | **100% RSC / Server-Safe** | Pure utilities, formatters, validators, masking, and `cn`. Zero DOM/React dependencies, safe in Next.js Server Components, Actions, and Edge workers. |
-| `@umesh0492/react-libs/analytics` | ESM (`import`), CJS (`require`) | **100% SSR-Safe** | Pluggable behavioral analytics tracking engine, DOM auto-tracking, batching pipeline, and adapters. |
+| `@umesh0492/react-libs` | ESM (`import`), CJS (`require`) | **Client Components** (`'use client'`) | Primary UI component library (70+ components, primitives, forms, dialogs, charts, and hooks). SSR-compatible with browser APIs guarded inside lifecycle hooks. |
+| `@umesh0492/react-libs/utils` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Pure utility helpers, formatters, validators, masking, and `cn`. Zero DOM and zero React dependencies; safe in Next.js Server Components, Server Actions, Route Handlers, and Edge runtimes. |
+| `@umesh0492/react-libs/analytics` | ESM (`import`), CJS (`require`) | **Client & SSR-Safe** | Pluggable behavioral analytics tracking engine, DOM auto-tracking, batching pipeline, and destination adapters. |
 | `@umesh0492/react-libs/pdf` | ESM (`import`), CJS (`require`) | **Client-Only** (`'use client'`) | Dedicated client subpath for `PdfViewer`. Isolated from root to prevent Node SSR from executing browser-only PDF workers (`pdfjs-dist`). |
-| `@umesh0492/react-libs/hooks/use-toast` | ESM (`import`), CJS (`require`) | **100% SSR-Safe** | Standalone imperative toast notification hook (`useToast`, `toast`). |
+| `@umesh0492/react-libs/hooks/use-toast` | ESM (`import`), CJS (`require`) | **Client Hook** (`'use client'`) | Standalone imperative toast notification hook (`useToast`, `toast`). |
 | `@umesh0492/react-libs/styles/theme.css` | CSS | N/A | Design system theme variables and color tokens for Tailwind CSS v4 projects (`@import`). |
 | `@umesh0492/react-libs/dist/style.css` | CSS | N/A | Standalone pre-compiled stylesheet with all Tailwind utility classes and design tokens (for Tailwind v3, Vite, Webpack, or plain CSS). |
 
-### 100% SSR Safety in Next.js App Router, Remix & Node
+### SSR Compatibility & Hydration Architecture
 
-The primary package entry point (`@umesh0492/react-libs`) is engineered to be **100% SSR-safe**:
-- **Zero Module-Level DOM Access**: No browser globals (`window`, `document`, `navigator`, `localStorage`) are evaluated during module evaluation or import.
-- **Full Framework Compatibility**: Fully verified and compatible with **Next.js App Router** (React Server Components / RSC), Next.js Pages Router, **Remix**, **Gatsby**, **Astro**, and headless **Node.js** SSR environments.
-- **Client Effects Isolation**: All interactive browser logic is securely scoped inside `useEffect` or client-side event handlers.
+The primary package entry point (`@umesh0492/react-libs`) is engineered for broad SSR and RSC compatibility:
+- **Zero Module-Level DOM Access**: No browser globals (`window`, `document`, `navigator`, `localStorage`) are evaluated during module evaluation or import, preventing Node.js SSR crashes.
+- **Framework Compatibility**: Verified with **Next.js App Router** (client components), Next.js Pages Router, **Remix**, **Gatsby**, **Astro**, and headless **Node.js** SSR environments.
+- **Client Effects Isolation**: All interactive browser logic (event listeners, observers, measurements) is scoped inside `useEffect` or client-side event handlers to avoid hydration mismatches.
 
 ### Dedicated Client Subpath for PdfViewer
 
@@ -122,6 +122,8 @@ const { initAnalytics } = require("@umesh0492/react-libs/analytics");
 ```
 
 ### Server-Safe Pure Utilities Subpath (`/utils`)
+
+`@umesh0492/react-libs/utils` provides pure helper functions with **zero DOM and zero React dependencies**. It is guaranteed to execute safely inside React Server Components, Server Actions, Route Handlers, Node.js scripts, and Edge workers:
 
 ```tsx
 import { cn, formatCurrency, formatDate, isValidEmail, maskEmail } from "@umesh0492/react-libs/utils";
@@ -219,7 +221,7 @@ Add `.theme-orange` (or customized brand classes) to switch accent branding seam
 > Interactive documentation & stories: [Storybook Playground](https://umesh0492.github.io/react-libs) · Comprehensive guide: [WIKI.md](./WIKI.md)
 
 > [!NOTE]
-> **100% SSR-Safe**: Root `@umesh0492/react-libs` components and formatters are 100% SSR-safe in Next.js App Router (React Server Components), Remix, and Node.js server environments. Browser-only components such as `PdfViewer` are exported through dedicated client subpaths (`@umesh0492/react-libs/pdf`) to prevent server runtime issues.
+> **SSR Compatibility**: Root `@umesh0492/react-libs` UI components are tagged with `'use client'` directives and guard browser APIs to avoid server hydration mismatches in Next.js App Router and Remix. Pure utilities under `@umesh0492/react-libs/utils` run safely in server contexts with zero DOM/React dependencies. Browser-only components such as `PdfViewer` are exported through dedicated client subpaths (`@umesh0492/react-libs/pdf`) to prevent server runtime issues.
 
 All standard UI components are directly importable from `@umesh0492/react-libs` (with client-only subpaths noted):
 
@@ -413,7 +415,7 @@ export function InvoiceViewer() {
 }
 ```
 
-> **Isolation Note**: `PdfViewer` is exported from `@umesh0492/react-libs/pdf` to keep the root `@umesh0492/react-libs` bundle 100% SSR-safe for Node.js, Next.js App Router, and Remix server runtimes.
+> **Isolation Note**: `PdfViewer` is exported from `@umesh0492/react-libs/pdf` to keep browser-only PDF workers (`pdfjs-dist`) isolated from root imports, ensuring server-side rendering in Node.js, Next.js, and Remix does not crash on missing canvas or web worker APIs.
 
 ---
 
@@ -545,8 +547,8 @@ npm publish --access public
 ## Architecture & Accessibility
 
 - **Radix UI Primitives**: Built upon headless, fully accessible primitives managing focus traps, ARIA attributes, and keyboard navigation according to WCAG 2.1 AA specifications.
-- **100% SSR Safety**: The root package contains zero browser-global evaluation during module initialization, making it fully safe for Next.js App Router (React Server Components), Remix, and Node.js SSR environments. Browser-only components like `PdfViewer` reside in isolated client subpaths.
-- **Dual ESM & CommonJS**: Full dual module support (`import` and `require`) with pre-configured TypeScript declaration maps (`.d.ts`).
+- **SSR Compatibility**: Root UI components avoid top-level browser globals during module evaluation, guarding interactive code within client hooks and event handlers. Pure utilities in `@umesh0492/react-libs/utils` feature zero DOM and zero React dependencies for native Server Component execution. Browser-only components like `PdfViewer` reside in isolated client subpaths.
+- **Dual ESM & CommonJS**: Full dual module support (`import` and `require`) with TypeScript declaration files (`.d.ts` and `.d.cts`) and subpath type mappings across modern module loaders.
 - **Static Zero-Runtime CSS Delivery**: CSS tokens and component styles compile into static stylesheets (`theme.css` and `dist/style.css`), eliminating runtime `<style>` injection and satisfying strict Content Security Policies (`CSP`).
 - **Tree-Shaking**: Pure ES modules allow modern bundlers (Vite, Rollup, Webpack, Turbopack) to eliminate unused components and utilities from consumer bundles.
 

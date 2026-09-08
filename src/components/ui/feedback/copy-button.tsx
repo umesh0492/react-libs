@@ -84,6 +84,9 @@ export const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
           <Copy className="h-4 w-4" />
         )}
         {showText && <span className="ml-1.5">{hasCopied ? copiedText : defaultText}</span>}
+        <span className="sr-only" aria-live="polite" aria-atomic="true">
+          {hasCopied ? copiedText : ""}
+        </span>
       </Button>
     );
   }

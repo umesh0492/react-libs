@@ -38,6 +38,11 @@ docs/performance-report.md
 graphify-out/
 *.graphify*
 vitest-kbd.json
+*-output.txt
+*_results.txt
+test_output.txt
+lint-output.txt
+lint_results.txt
 
 
 # Secrets

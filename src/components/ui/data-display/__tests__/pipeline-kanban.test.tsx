@@ -35,4 +35,43 @@ describe("PipelineKanban", () => {
       "screened"
     );
   });
+
+  it("properly renders explicit column count and custom scoreLabel", () => {
+    const customCols: KanbanColumn[] = [
+      {
+        id: "active",
+        title: "In Review",
+        count: 42,
+        items: [
+          {
+            id: "t1",
+            title: "Security Audit Task",
+            scoreLabel: "High",
+            tag: "P0",
+          },
+        ],
+      },
+    ];
+
+    render(<PipelineKanban columns={customCols} />);
+
+    expect(screen.getByText("42")).toBeInTheDocument();
+    expect(screen.getByText("High")).toBeInTheDocument();
+    expect(screen.getByText("P0")).toBeInTheDocument();
+  });
+
+  it("renders custom empty message when column has no items", () => {
+    const emptyCol: KanbanColumn[] = [
+      {
+        id: "done",
+        title: "Completed",
+        items: [],
+        emptyMessage: "No tasks finished yet",
+      },
+    ];
+
+    render(<PipelineKanban columns={emptyCol} />);
+
+    expect(screen.getByText("No tasks finished yet")).toBeInTheDocument();
+  });
 });

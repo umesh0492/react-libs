@@ -38,6 +38,14 @@ export function ImageViewer({
   const [rotation, setRotation] = React.useState(0)
   const [isLoading, setIsLoading] = React.useState(true)
   const [imageSrc, setImageSrc] = React.useState<string>("")
+  const imgRef = React.useRef<HTMLImageElement>(null)
+
+  React.useEffect(() => {
+    if (imgRef.current?.complete) {
+      setIsLoading(false)
+      onLoadSuccess?.()
+    }
+  }, [imageSrc, onLoadSuccess])
 
   React.useEffect(() => {
     setCurrentScale(scale)
@@ -145,6 +153,7 @@ export function ImageViewer({
                 className="flex justify-center items-center origin-center"
               >
                 <img
+                  ref={imgRef}
                   src={imageSrc}
                   alt={alt}
                   onLoad={handleImageLoad}

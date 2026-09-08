@@ -41,12 +41,20 @@ export function ProgressRing({
   const color = colorOverride ?? autoColor;
   const bgColor = getProgressBgColor(clamped);
 
+  const roundedPercentage = Math.round(clamped);
+
   return (
     <div
+      role="progressbar"
+      aria-valuenow={roundedPercentage}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={props["aria-label"] || "Progress"}
       className={cn("relative inline-flex items-center justify-center", className)}
       {...props}
     >
       <svg width={size} height={size} className="transform -rotate-90">
+        <title>{`Progress: ${roundedPercentage}%`}</title>
         <circle
           className={bgColor}
           strokeWidth={strokeWidth}

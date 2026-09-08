@@ -9,6 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCaption,
 } from "./table"
 import { Skeleton } from "../feedback/skeleton"
 import { cn } from "../../../lib/utils"
@@ -33,7 +34,7 @@ export interface DataTablePaginationProps {
   onPageChange: (page: number) => void
 }
 
-export interface DataTableProps<T> {
+export interface DataTableProps<T> extends React.HTMLAttributes<HTMLDivElement> {
   columns: DataTableColumn<T>[]
   data: T[]
   /** Row key extractor — defaults to index if not provided */
@@ -53,6 +54,8 @@ export interface DataTableProps<T> {
   hoverable?: boolean
   /** Callback when a row is clicked */
   onRowClick?: (row: T) => void
+  /** Optional table caption */
+  caption?: string
 }
 
 function SortIcon({ active, direction }: { active: boolean; direction: SortDirection }) {
@@ -88,30 +91,36 @@ function getAriaSort(
   sortDirection: SortDirection | undefined,
   isSortable: boolean
 ): "ascending" | "descending" | "none" | undefined {
+  if (!isSortable) return undefined
   if (sortKey === colKey) {
     if (sortDirection === "asc") return "ascending"
     if (sortDirection === "desc") return "descending"
     return "none"
   }
-  return isSortable ? "none" : undefined
+  return "none"
 }
 
-export function DataTable<T extends Record<string, unknown>>({
-  columns,
-  data,
-  rowKey,
-  isLoading = false,
-  emptyMessage = "No results found.",
-  emptyIcon,
-  skeletonRows = 8,
-  pagination,
-  sortKey,
-  sortDirection,
-  onSort,
-  className,
-  hoverable = true,
-  onRowClick,
-}: DataTableProps<T>) {
+function DataTableInternal<T extends Record<string, unknown>>(
+  {
+    columns,
+    data,
+    rowKey,
+    isLoading = false,
+    emptyMessage = "No results found.",
+    emptyIcon,
+    skeletonRows = 8,
+    pagination,
+    sortKey,
+    sortDirection,
+    onSort,
+    className,
+    hoverable = true,
+    onRowClick,
+    caption,
+    ...props
+  }: DataTableProps<T>,
+  ref: React.ForwardedRef<HTMLDivElement>
+) {
   function handleSort(key: string) {
     if (!onSort) return
     if (sortKey !== key) {
@@ -128,9 +137,10 @@ export function DataTable<T extends Record<string, unknown>>({
     : 0
 
   return (
-    <div className={cn("w-full", className)}>
+    <div ref={ref} className={cn("w-full", className)} {...props}>
       <div className="rounded-md border">
-        <Table>
+        <Table aria-busy={isLoading}>
+          {caption ? <TableCaption>{caption}</TableCaption> : null}
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               {columns.map((col) => {
@@ -140,33 +150,26 @@ export function DataTable<T extends Record<string, unknown>>({
                 return (
                   <TableHead
                     key={col.key}
-                    tabIndex={isSortable ? 0 : undefined}
                     aria-sort={sortState}
-                    className={cn(
-                      col.headerClassName,
-                      isSortable && "cursor-pointer select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    )}
-                    onClick={isSortable ? () => handleSort(col.key) : undefined}
-                    onKeyDown={
-                      isSortable
-                        ? (e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              handleSort(col.key);
-                            }
-                          }
-                        : undefined
-                    }
+                    className={col.headerClassName}
                   >
-                    <div className="flex items-center">
-                      {col.header}
-                      {isSortable && (
+                    {isSortable ? (
+                      <button
+                        type="button"
+                        onClick={() => handleSort(col.key)}
+                        className="inline-flex items-center gap-1 font-medium hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded select-none cursor-pointer text-left"
+                      >
+                        <span>{col.header}</span>
                         <SortIcon
                           active={sortKey === col.key}
                           direction={sortKey === col.key ? (sortDirection ?? null) : null}
                         />
-                      )}
-                    </div>
+                      </button>
+                    ) : (
+                      <div className="flex items-center">
+                        {col.header}
+                      </div>
+                    )}
                   </TableHead>
                 );
               })}
@@ -312,4 +315,10 @@ export function DataTable<T extends Record<string, unknown>>({
     </div>
   )
 }
+
+export const DataTable = React.forwardRef(DataTableInternal) as <T extends Record<string, unknown>>(
+  props: DataTableProps<T> & React.RefAttributes<HTMLDivElement>
+) => React.ReactElement | null;
+
+(DataTable as { displayName?: string }).displayName = "DataTable";
 

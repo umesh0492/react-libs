@@ -15,6 +15,7 @@ export default defineConfig([
       js: "'use client';",
     },
     injectStyle: false,
+    external: ['xlsx', 'jspdf', 'jspdf-autotable'],
   },
   {
     entry: {
