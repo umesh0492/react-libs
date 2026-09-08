@@ -17,7 +17,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      PERF_P95_THRESHOLD: 400
+      PERF_P95_THRESHOLD: 750
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout Code

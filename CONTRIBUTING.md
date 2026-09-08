@@ -258,12 +258,12 @@ Publishing is triggered automatically by pushing a version tag. **Do not run `np
 npm run test
 
 # 2. Bump version (patch | minor | major)
-npm version patch    # e.g. 1.0.19 → 1.0.20
+npm version patch    # e.g. 0.4.1 → 0.4.2
 
 # 3. Commit & tag
 git add package.json package-lock.json
-git commit -m "chore: bump react-lib to 1.0.20"
-git tag v1.0.20
+git commit -m "chore: bump @umesh0492/react-libs to 0.4.2"
+git tag v0.4.2
 
 # 4. Push — CI runs + auto-publishes
 git push && git push --tags
@@ -272,11 +272,11 @@ git push && git push --tags
 ### What publish.yml Does
 
 1. Verifies tag version matches `package.json`
-2. Installs dependencies + Playwright
-3. Runs full type check + test suite + Storybook build
-4. Configures npm auth with `GH_PACKAGE_TOKEN`
+2. Installs dependencies
+3. Runs full type check + test suite + Storybook build + package build
+4. Configures npm auth with `NPM_TOKEN`
 5. Verifies auth via `npm whoami`
-6. Publishes to GitHub Packages
+6. Publishes to npm registry with `--access public --tag latest --provenance`
 
 ### After Publishing
 

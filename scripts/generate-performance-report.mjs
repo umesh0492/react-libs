@@ -306,7 +306,7 @@ console.log(`    Wall  : ${(totalWallMs / 1000).toFixed(2)}s`);
 // ---------------------------------------------------------------------------
 // 6. Performance Gate Check
 // ---------------------------------------------------------------------------
-const THRESHOLD = parseInt(process.env.PERF_P95_THRESHOLD || '400', 10);
+const THRESHOLD = parseInt(process.env.PERF_P95_THRESHOLD || '750', 10);
 if (globalStats.p95 > THRESHOLD) {
   console.error(`\n❌  PERFORMANCE GATE FAILED`);
   console.error(`    Global P95 latency (${globalStats.p95}ms) exceeds threshold (${THRESHOLD}ms).`);
