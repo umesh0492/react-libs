@@ -80,6 +80,18 @@ const SidebarProvider = React.forwardRef<
   const [_open, _setOpen] = React.useState(defaultOpen)
   const open = openProp ?? _open
 
+  // Sync state from sidebar_state cookie on client mount to eliminate SSR flash
+  React.useEffect(() => {
+    if (typeof document !== "undefined") {
+      const match = document.cookie.match(
+        new RegExp(`(?:^|; )${SIDEBAR_COOKIE_NAME}=([^;]*)`)
+      )
+      if (match && match[1]) {
+        _setOpen(match[1] === "true")
+      }
+    }
+  }, [])
+
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       if (setOpenProp) {

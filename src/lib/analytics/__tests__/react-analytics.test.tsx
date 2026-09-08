@@ -100,4 +100,43 @@ describe("React Analytics Integration", () => {
     expect(pageEvent?.page.path).toBe("/app/dashboard");
     engine.destroy();
   });
+
+  it("does not re-initialize or destroy engine when config is an inline object on parent re-renders", () => {
+    let capturedEngine1: any = null;
+    let capturedEngine2: any = null;
+
+    function ConsumerComponent({ pass }: { pass: number }) {
+      const { engine } = useAnalytics();
+      if (pass === 1) capturedEngine1 = engine;
+      if (pass === 2) capturedEngine2 = engine;
+      return <div>Pass: {pass}</div>;
+    }
+
+    function Parent({ pass }: { pass: number }) {
+      return (
+        <AnalyticsProvider
+          config={{
+            appId: "stable-app",
+            autoTrackDom: false,
+            autoTrackPages: false,
+          }}
+        >
+          <ConsumerComponent pass={pass} />
+        </AnalyticsProvider>
+      );
+    }
+
+    const { rerender } = render(<Parent pass={1} />);
+    expect(capturedEngine1).toBeTruthy();
+
+    const destroySpy = vi.spyOn(capturedEngine1, "destroy");
+
+    rerender(<Parent pass={2} />);
+
+    expect(capturedEngine2).toBe(capturedEngine1);
+    expect(destroySpy).not.toHaveBeenCalled();
+
+    destroySpy.mockRestore();
+    capturedEngine1?.destroy();
+  });
 });

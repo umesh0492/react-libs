@@ -5,7 +5,7 @@
 
 [![Version](https://img.shields.io/npm/v/@umesh0492/react-libs)](https://www.npmjs.com/package/@umesh0492/react-libs)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#testing)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A575%25-brightgreen)](#testing)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](#testing)
 [![React](https://img.shields.io/badge/react-19-blue)](https://react.dev)
 [![Tailwind](https://img.shields.io/badge/tailwind-v4-38bdf8)](https://tailwindcss.com)
 [![Storybook](https://img.shields.io/badge/storybook-10.x-ff4785)](https://umesh0492.github.io/react-libs)

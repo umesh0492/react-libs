@@ -193,11 +193,16 @@ const Carousel = React.forwardRef<
         <div
           ref={ref}
           onKeyDownCapture={handleKeyDown}
-          className={cn("relative", className)}
+          className={cn("relative focus-visible:outline-hidden", className)}
           role="region"
           aria-roledescription="carousel"
+          aria-label={props["aria-label"] || "Carousel"}
+          tabIndex={props.tabIndex ?? 0}
           {...props}
         >
+          <span className="sr-only" aria-live="polite" aria-atomic="true">
+            {`Slide ${selectedIndex + 1} of ${scrollSnaps.length || 1}`}
+          </span>
           {children}
         </div>
       </CarouselContext.Provider>
@@ -367,6 +372,7 @@ const CarouselDots = React.forwardRef<
             type="button"
             onClick={() => scrollTo(i)}
             aria-label={`Go to slide ${i + 1}`}
+            aria-current={isActive ? "true" : undefined}
             className={cn(
               "rounded-full transition-all duration-200",
               isHorizontal ? "h-1.5" : "w-1.5",

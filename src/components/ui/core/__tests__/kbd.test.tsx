@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { Kbd, KbdGroup } from '../kbd';
+import { Kbd, KbdGroup, KbdShortcut } from '../kbd';
 
 describe('Kbd Component', () => {
   it('renders a keyboard key', () => {
@@ -60,5 +60,28 @@ describe('Kbd Component', () => {
   it('renders Kbd with Escape key', () => {
     render(<Kbd>Esc</Kbd>);
     expect(screen.getByText('Esc')).toBeInTheDocument();
+  });
+
+  describe('KbdShortcut', () => {
+    it('renders shortcut with ⌘ modifier when meta is true on mac', () => {
+      render(<KbdShortcut keys={["K"]} meta os="mac" />);
+      expect(screen.getByText('⌘')).toBeInTheDocument();
+      expect(screen.getByText('K')).toBeInTheDocument();
+      expect(screen.getByText('+')).toBeInTheDocument();
+    });
+
+    it('renders shortcut with Ctrl modifier when meta is true on windows', () => {
+      render(<KbdShortcut keys={["Shift", "P"]} meta os="windows" />);
+      expect(screen.getByText('Ctrl')).toBeInTheDocument();
+      expect(screen.getByText('Shift')).toBeInTheDocument();
+      expect(screen.getByText('P')).toBeInTheDocument();
+      expect(screen.getAllByText('+')).toHaveLength(2);
+    });
+
+    it('renders keys without modifier when meta is false', () => {
+      render(<KbdShortcut keys={["Enter"]} />);
+      expect(screen.getByText('Enter')).toBeInTheDocument();
+      expect(screen.queryByText('+')).toBeNull();
+    });
   });
 });

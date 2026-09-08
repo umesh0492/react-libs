@@ -1,7 +1,7 @@
 # react-libs — Testing Reference
 
 > **Canonical guide** for writing, debugging, and maintaining tests in `@umesh0492/react-libs`.
-> Current state: **123 test files · 779 tests · 0 failures · ≥75% coverage**.
+> Current state: **124 test files · 797 tests · 0 failures · ≥80% coverage**.
 
 ---
 
@@ -96,10 +96,10 @@ Coverage is enforced by Vitest `thresholds` in `vitest.config.ts`. **Dropping be
 
 | Metric | Threshold | Current |
 |---|---|---|
-| Statements | **70%** | ~74% ✅ |
-| Branches | **60%** | ~63% ✅ |
-| Functions | **70%** | ~73% ✅ |
-| Lines | **75%** | ~76% ✅ |
+| Statements | **80%** | ~81% ✅ |
+| Branches | **70%** | ~71% ✅ |
+| Functions | **80%** | ~81% ✅ |
+| Lines | **80%** | ~83% ✅ |
 
 ### Coverage by Domain
 
@@ -147,7 +147,7 @@ npm run perf
 | P99 < 500ms | 🟡 Acceptable | Long-tail under 500ms |
 | P99 > 500ms | 🔴 Investigate | Check async timeouts or heavy renders |
 
-**Current suite (v0.4.1):** P50 ≈ 14ms · P95 ≈ 580ms · P99 ≈ 980ms · Wall time ≈ 49s (full suite with axe accessibility verification)
+**Current suite (v0.4.2):** P50 ≈ 14ms · P95 ≈ 580ms · P99 ≈ 980ms · Wall time ≈ 52s (full suite with axe accessibility verification)
 
 ---
 
@@ -542,7 +542,7 @@ Checkout → Setup Node → Verify tag vs package.json → npm ci → Install Pl
 ### Pre-publish Checklist (manual)
 
 Before creating a tag:
-1. Run `npm run test` — all 120 test files and 721+ tests pass
+1. Run `npm run test` — all 124 test files and 797+ tests pass
 2. Run `npx tsc --noEmit` — zero TypeScript errors
 3. Run `npm run build-storybook` — static build succeeds
 4. Run `npm run perf` — regenerate performance data
@@ -558,6 +558,5 @@ Before creating a tag:
 | Recharts SVG in JSDOM | Known — SVG may not compose in headless | Assert `[data-chart]` container, not SVG elements |
 | `aria-valuenow` on Radix Progress | Not auto-set by Radix | Assert indicator CSS class `[class*="bg-primary"]` |
 | `StatusBadge` unknown statuses | Falls back to raw lowercase | Assert exact lowercase string |
-| `export-utils.ts` FileReader paths | FileReader mock needed for blob lines 74–104 | Lines excluded from branch threshold |
 | `@joshwooding/vite-plugin-react-docgen-typescript` | Warns on vite@8 peer — no functional impact | Will resolve when `@storybook/react-vite` updates the dep |
 | `ChartLegendContent` payload prop | TS requires it; Recharts injects at runtime | Pass typed `stubPayload` in unit tests (see §5) |

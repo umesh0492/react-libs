@@ -12,6 +12,20 @@ import { FileUpload } from "../forms/file-upload";
 import { MatchScoreGauge } from "../data-display/match-score-gauge";
 import { RadarSweep } from "../data-display/radar-sweep";
 import { MetricTicker } from "../data-display/metric-ticker";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselDots,
+} from "../data-display/carousel";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../data-display/accordion";
 
 describe("Accessibility (a11y) Automated Tests - Axe Violations", () => {
   it("MultiSelect has 0 accessibility violations in closed and open states", async () => {
@@ -110,6 +124,49 @@ describe("Accessibility (a11y) Automated Tests - Axe Violations", () => {
   it("MatchScoreGauge has 0 accessibility violations", async () => {
     const { container } = render(
       <MatchScoreGauge score={94} label="Match Score" />
+    );
+
+    const results = await axe.run(container);
+    expect(results.violations).toEqual([]);
+  });
+
+  it("Carousel has 0 accessibility violations with slides and controls", async () => {
+    const { container } = render(
+      <Carousel aria-label="Featured projects">
+        <CarouselContent>
+          <CarouselItem>Slide 1 Content</CarouselItem>
+          <CarouselItem>Slide 2 Content</CarouselItem>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+        <CarouselDots />
+      </Carousel>
+    );
+
+    const results = await axe.run(container);
+    expect(results.violations).toEqual([]);
+  });
+
+  it("RadarSweep has 0 accessibility violations", async () => {
+    const { container } = render(
+      <RadarSweep
+        statusText="Systems Normal"
+        blips={[{ id: "1", x: 50, y: 50, label: "Server Alpha" }]}
+      />
+    );
+
+    const results = await axe.run(container);
+    expect(results.violations).toEqual([]);
+  });
+
+  it("Accordion has 0 accessibility violations", async () => {
+    const { container } = render(
+      <Accordion type="single" collapsible>
+        <AccordionItem value="faq-1">
+          <AccordionTrigger>What is this library?</AccordionTrigger>
+          <AccordionContent>A production-ready React component library.</AccordionContent>
+        </AccordionItem>
+      </Accordion>
     );
 
     const results = await axe.run(container);

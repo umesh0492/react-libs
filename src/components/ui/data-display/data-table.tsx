@@ -100,6 +100,18 @@ function getAriaSort(
   return "none"
 }
 
+function renderCellValue(value: unknown): React.ReactNode {
+  if (value == null) return "—"
+  if (typeof value === "string" || typeof value === "number") return value
+  if (typeof value === "boolean") return String(value)
+  if (React.isValidElement(value)) return value
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
+}
+
 function DataTableInternal<T extends Record<string, unknown>>(
   {
     columns,
@@ -226,7 +238,7 @@ function DataTableInternal<T extends Record<string, unknown>>(
                     <TableCell key={col.key} className={col.className}>
                       {col.cell
                         ? col.cell(row, i)
-                        : (row[col.key] as React.ReactNode) ?? "—"}
+                        : renderCellValue(row[col.key])}
                     </TableCell>
                   ))}
                 </TableRow>

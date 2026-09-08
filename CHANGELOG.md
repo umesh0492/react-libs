@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-09-08
+
+### ⚛️ Hook Referential Stability & Runtime Memory Safety
+- **`AnalyticsProvider`**:
+  - Fixed re-initialization bug where passing an inline config object caused `useEffect` dependency churn, destroying and re-patching `window.history` on every render.
+  - Implemented `isConfigEqual` deep comparison helper and `useMemo` caching to guarantee engine stability regardless of caller reference identity.
+- **`useLocalStorage`**:
+  - Fixed hook identity churn: decoupled `readValue` and `setValue` from `initialValue` reference changes using `initialValueRef`.
+  - Inline default values like `useLocalStorage("key", [])` now retain 100% referential stability across re-renders without re-binding storage event listeners.
+
+### 📦 Packaging, Dependencies & Build Hygiene
+- **Direct `axe-core` Dependency**:
+  - Added `axe-core: ^4.11.1` to `devDependencies`, eliminating transitive hoisting risks during clean `npm ci`.
+- **Optional Peer Dependencies**:
+  - Formally declared `xlsx: ">=0.18.0"`, `jspdf: ">=2.5.0"`, and `jspdf-autotable: ">=3.8.0"` in `peerDependencies` with `peerDependenciesMeta` marking them `optional: true`.
+- **Dependency Cleanup**:
+  - Removed obsolete `@types/react-pdf` (`^5.0.7`) which conflicted with `react-pdf` v10 built-in types.
+- **Deterministic Clean Builds**:
+  - Resolved `tsup` concurrent-config race condition by executing deterministic pre-clean (`fs.rmSync('dist', ...)`) via `npm run build` script.
+  - Eliminated leaked hash `.d.ts` artifacts; verified with `@arethetypeswrong/cli` (`attw --pack .`) passing 100% green across all resolution modes (node10, node16 CJS/ESM, bundler).
+- **CI Workflow Polish**:
+  - Removed fake `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24` environment flag and pruned commented action blocks in `.github/workflows/ci.yml`.
+
+### ♿ Accessibility (a11y) & SSR Enhancements
+- **`Carousel`**: Added accessible `aria-label`, `tabIndex={0}` keyboard navigation, live region announcement for slide progression, and `aria-current` on navigation dots.
+- **`Sidebar`**: Added client-side cookie synchronization on mount for `sidebar_state`.
+- **`Chart`**: Memoized `ChartContext` value with `React.useMemo` to prevent descendant re-render churn.
+- **`DataTable`**: Implemented `renderCellValue` safe helper function to eliminate unsound ReactNode casts.
+
+### 🧪 Genuine Test Coverage & Restored Quality Thresholds
+- **Padding Elimination**: Replaced assertion-free padding in `comprehensive-matrix.test.tsx` with real interactive event assertions and `axe.run` validation.
+- **Expanded Axe Coverage**: Extended `accessibility.test.tsx` to cover `Carousel`, `RadarSweep`, and `Accordion` (24/24 tests passing with zero violations).
+- **New Component Suites**: Added comprehensive unit test suites for `use-debounce`, `spinner`, `status-badge`, `ActiveFilterBadge`, `language-toggle`, `role-empty-state`, `empty-state`, `skeleton-list`, `resizable`, and `kbd`.
+- **Restored Thresholds**: Elevated Vitest coverage enforcement back to `≥80%` statements, `≥70%` branches, `≥80%` functions, and `≥80%` lines (achieved 81.1% statements, 71.8% branches, 81.2% functions, 83.4% lines across 124 test files and 797 passing tests).
+
 ## [0.4.1] - 2026-09-08
 
 ### ⚛️ React 19 Runtime Correctness & Hook Hygiene

@@ -1,20 +1,40 @@
 import { describe, it, expect } from 'vitest';
-import * as Module from '../resizable';
+import { render, screen } from '@testing-library/react';
+import * as React from 'react';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '../resizable';
 
-describe('resizable component hierarchy', () => {
-    it('should export core ui modules reliably without syntax failure', () => {
-        expect(Module).toBeDefined();
-        expect(Object.keys(Module).length).toBeGreaterThanOrEqual(0);
-    });
+describe('Resizable components', () => {
+  it('renders horizontal ResizablePanelGroup with panels and handle', () => {
+    render(
+      <ResizablePanelGroup direction="horizontal" className="h-64">
+        <ResizablePanel defaultSize={50}>
+          <div>Panel One</div>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={50}>
+          <div>Panel Two</div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    );
 
-    it('should natively scaffold generic rendering boundaries successfully', async () => {
-        try {
-            // Evaluates generic exports to verify parsing syntax boundaries safely
-            const exportedEntities = Object.values(Module).filter(val => typeof val === 'function' || typeof val === 'object');
-            expect(exportedEntities).toBeDefined();
-        } catch (error) {
-            // Swallowing rigid react prop crashers to ensure DOM parsing coverage maintains
-            console.warn('Smoke test isolated rigid prop boundaries', error);
-        }
-    });
+    expect(screen.getByText('Panel One')).toBeInTheDocument();
+    expect(screen.getByText('Panel Two')).toBeInTheDocument();
+  });
+
+  it('renders vertical ResizablePanelGroup with handle', () => {
+    render(
+      <ResizablePanelGroup direction="vertical" className="h-64">
+        <ResizablePanel defaultSize={40}>
+          <div>Top Panel</div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={60}>
+          <div>Bottom Panel</div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    );
+
+    expect(screen.getByText('Top Panel')).toBeInTheDocument();
+    expect(screen.getByText('Bottom Panel')).toBeInTheDocument();
+  });
 });

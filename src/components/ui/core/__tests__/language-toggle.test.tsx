@@ -1,20 +1,37 @@
-import { describe, it, expect } from 'vitest';
-import * as Module from '../language-toggle';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import * as React from 'react';
+import { LanguageToggle } from '../language-toggle';
 
-describe('language-toggle component hierarchy', () => {
-    it('should export core ui modules reliably without syntax failure', () => {
-        expect(Module).toBeDefined();
-        expect(Object.keys(Module).length).toBeGreaterThanOrEqual(0);
-    });
+describe('LanguageToggle component', () => {
+  it('renders current language code and accessible label in trigger', () => {
+    render(<LanguageToggle language="en" setLanguage={vi.fn()} />);
+    const button = screen.getByRole('button', { name: /language: english/i });
+    expect(button).toBeInTheDocument();
+    expect(screen.getByText('EN')).toBeInTheDocument();
+  });
 
-    it('should natively scaffold generic rendering boundaries successfully', async () => {
-        try {
-            // Evaluates generic exports to verify parsing syntax boundaries safely
-            const exportedEntities = Object.values(Module).filter(val => typeof val === 'function' || typeof val === 'object');
-            expect(exportedEntities).toBeDefined();
-        } catch (error) {
-            // Swallowing rigid react prop crashers to ensure DOM parsing coverage maintains
-            console.warn('Smoke test isolated rigid prop boundaries', error);
-        }
-    });
+  it('renders Hindi code in trigger when active language is hi', () => {
+    render(<LanguageToggle language="hi" setLanguage={vi.fn()} />);
+    expect(screen.getByText('HI')).toBeInTheDocument();
+  });
+
+  it('opens dropdown menu and selects language on click', async () => {
+    const handleSetLanguage = vi.fn();
+    render(<LanguageToggle language="en" setLanguage={handleSetLanguage} />);
+
+    const trigger = screen.getByRole('button', { name: /language: english/i });
+    fireEvent.pointerDown(trigger);
+    fireEvent.pointerUp(trigger);
+    fireEvent.click(trigger);
+
+    // Menu item for Hindi should be present
+    const hindiItem = await screen.findByText('हिंदी');
+    expect(hindiItem).toBeInTheDocument();
+
+    fireEvent.pointerDown(hindiItem);
+    fireEvent.pointerUp(hindiItem);
+    fireEvent.click(hindiItem);
+    expect(handleSetLanguage).toHaveBeenCalledWith('hi');
+  });
 });

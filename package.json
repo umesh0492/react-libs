@@ -1,6 +1,6 @@
 {
   "name": "@umesh0492/react-libs",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Production-grade React 19 component library with Tailwind CSS v4 & Radix UI primitives.",
   "keywords": [
     "react",
@@ -60,7 +60,7 @@
     "src/styles"
   ],
   "scripts": {
-    "build": "tsup && node scripts/build-css.mjs",
+    "build": "node -e \"fs.rmSync('dist', { recursive: true, force: true })\" && tsup && node scripts/build-css.mjs",
     "prepublishOnly": "npm run build && npm run test",
     "test": "vitest run --coverage",
     "prestorybook": "npm run test",
@@ -129,8 +129,22 @@
   },
   "license": "MIT",
   "peerDependencies": {
+    "jspdf": ">=2.5.0",
+    "jspdf-autotable": ">=3.8.0",
     "react": "^18.2.0 || ^19.0.0",
-    "react-dom": "^18.2.0 || ^19.0.0"
+    "react-dom": "^18.2.0 || ^19.0.0",
+    "xlsx": ">=0.18.0"
+  },
+  "peerDependenciesMeta": {
+    "jspdf": {
+      "optional": true
+    },
+    "jspdf-autotable": {
+      "optional": true
+    },
+    "xlsx": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -197,10 +211,10 @@
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@types/react-pdf": "^5.0.7",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/browser-playwright": "^4.1.2",
     "@vitest/coverage-v8": "^4.1.2",
+    "axe-core": "^4.11.1",
     "eslint": "^9.0.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.0.1",
