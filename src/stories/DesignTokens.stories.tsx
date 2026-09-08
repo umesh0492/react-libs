@@ -18,7 +18,7 @@ const meta = {
           'All design tokens are CSS custom properties in `theme.css` under `@theme inline`. ' +
           'Override them at `:root` in your app CSS to apply your brand — ' +
           'all react-lib components will reflect the change automatically. ' +
-          'See **Introduction → Theming** for multi-tenant setup (partner-portal orange vs. catalog green).',
+          'See **Introduction → Theming** for multi-tenant setup (theme-orange vs. default emerald).',
       },
     },
   },

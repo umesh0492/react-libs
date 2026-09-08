@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react"
 import { Loader2 } from "lucide-react"
 import {
@@ -32,7 +34,7 @@ export interface ConfirmDialogProps {
  * <ConfirmDialog
  *   open={open}
  *   onOpenChange={setOpen}
- *   title="Delete Partner?"
+ *   title="Delete Record?"
  *   description="This action cannot be undone."
  *   variant="destructive"
  *   confirmLabel="Delete"

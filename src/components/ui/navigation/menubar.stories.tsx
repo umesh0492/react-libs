@@ -120,8 +120,8 @@ export const Default: Story = {
   },
 };
 
-/** Partner Portal menubar — domain-specific example. */
-export const PartnerPortal: Story = {
+/** Enterprise workspace menubar — domain-specific example. */
+export const EnterpriseApp: Story = {
   render: () => (
     <Menubar>
       <MenubarMenu>
@@ -169,7 +169,7 @@ export const PartnerPortal: Story = {
     </Menubar>
   ),
   parameters: {
-    docs: { description: { story: 'Partner portal domain — Procurement, Partners, Settings menus with submenus.' } },
+    docs: { description: { story: 'Enterprise workspace — Procurement, Partners, Settings menus with submenus.' } },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

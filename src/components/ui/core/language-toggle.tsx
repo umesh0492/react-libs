@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDown, Globe } from "lucide-react"
 import { Button } from "../forms/button"
 import {

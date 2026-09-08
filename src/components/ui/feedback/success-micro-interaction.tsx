@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable sonarjs/pseudo-random */
 /* eslint-disable design-tokens/no-hardcoded-colors */
 import confetti from "canvas-confetti";

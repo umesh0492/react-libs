@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { TrendingUp, TrendingDown, Minus, AlertTriangle } from "lucide-react";
 import { cn } from "../../../lib/utils";

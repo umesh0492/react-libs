@@ -1,0 +1,74 @@
+name: Bug Report
+description: File a bug report to help us improve @umesh0492/react-libs
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug! Please ensure you have searched existing issues to see if your problem has already been reported.
+
+        *Note: If you have discovered a security vulnerability, please do NOT file a public issue. Follow our [Security Policy](https://github.com/umesh0492/react-libs/blob/main/SECURITY.md) to report it responsibly.*
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the problem in detail...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior. Minimal reproduction code or a StackBlitz/CodeSandbox link is strongly encouraged.
+      placeholder: |
+        1. Import component '...'
+        2. Pass prop '...'
+        3. Trigger action '...'
+        4. See error or unexpected visual state
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: Describe what should have happened instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Recordings / Logs
+      description: If applicable, add screenshots, screen recordings, or terminal logs / stack traces to help explain the issue.
+      placeholder: Paste links, images, or stack traces here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: Environment & System Info
+      description: Please share your environment details to help us diagnose the issue.
+      value: |
+        - @umesh0492/react-libs version: 
+        - React version: 
+        - Framework / Bundler (Vite, Next.js, etc.): 
+        - Tailwind CSS version: 
+        - OS & Browser: 
+        - Node.js version: 
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, workarounds tested, or relevant details.
+    validations:
+      required: false

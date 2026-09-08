@@ -157,7 +157,7 @@ export const Hindi: Story = {
 export const InHeader: Story = {
   render: (args) => (
     <header className="w-[600px] flex items-center justify-between border rounded-lg px-4 py-2 bg-card">
-      <span className="font-semibold text-sm">Partner Portal</span>
+      <span className="font-semibold text-sm">Application Portal</span>
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">v2.1</span>
         <StatefulLanguageToggle {...args} />

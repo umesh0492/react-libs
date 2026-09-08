@@ -1,10 +1,9 @@
 /**
  * indiaLocations.ts
- * Static reference data for Indian states and major cities.
- * This mirrors the data seeded in migration 013_india_locations.sql.
+ * Reference data for Indian states and major cities (ISO 3166-2:IN).
  * 
  * Usage:
- *   import { INDIA_STATES, getCitiesForState } from "@/config/indiaLocations";
+ *   import { INDIA_STATES, getCitiesForState } from "@umesh0492/react-libs";
  */
 
 export interface IndiaState {

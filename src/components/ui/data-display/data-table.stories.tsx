@@ -36,7 +36,7 @@ type Story = StoryObj<typeof meta>;
 
 // ── Sample data ─────────────────────────────────────────────────────────────
 
-type Partner = {
+type RecordItem = {
   id: string;
   name: string;
   category: string;
@@ -45,40 +45,40 @@ type Partner = {
   score: number;
 };
 
-const PARTNERS: Partner[] = [
-  { id: 'VND-001', name: 'Agro Supplies Co.',   category: 'Produce',  status: 'active',    city: 'Delhi',     score: 4.8 },
-  { id: 'VND-002', name: 'Metro Grains Ltd.',   category: 'Grains',   status: 'pending',   city: 'Mumbai',    score: 3.9 },
-  { id: 'VND-003', name: 'South Agrotech',     category: 'Spices',   status: 'active',    city: 'Chennai',   score: 4.5 },
-  { id: 'VND-004', name: 'Punjab Farms',        category: 'Dairy',    status: 'inactive',  city: 'Ludhiana',  score: 3.2 },
-  { id: 'VND-005', name: 'Deccan Organic',      category: 'Organic',  status: 'active',    city: 'Pune',      score: 4.7 },
-  { id: 'VND-006', name: 'Sunrise Traders',     category: 'Spices',   status: 'suspended', city: 'Hyderabad', score: 2.8 },
-  { id: 'VND-007', name: 'GreenLeaf Exports',   category: 'Produce',  status: 'active',    city: 'Bangalore', score: 4.6 },
-  { id: 'VND-008', name: 'Coastal Fisheries',   category: 'Seafood',  status: 'active',    city: 'Kochi',     score: 4.3 },
+const SAMPLE_RECORDS: RecordItem[] = [
+  { id: 'REC-001', name: 'Acme Corporation',   category: 'Cloud Services', status: 'active',    city: 'New York',      score: 4.8 },
+  { id: 'REC-002', name: 'Globex Industries',  category: 'Hardware',       status: 'pending',   city: 'San Francisco', score: 3.9 },
+  { id: 'REC-003', name: 'Initech Software',   category: 'Developer Tools',status: 'active',    city: 'Austin',        score: 4.5 },
+  { id: 'REC-004', name: 'Starlight Media',    category: 'Media',          status: 'inactive',  city: 'Los Angeles',   score: 3.2 },
+  { id: 'REC-005', name: 'Nexus Technologies', category: 'Security',       status: 'active',    city: 'Seattle',       score: 4.7 },
+  { id: 'REC-006', name: 'Soylent Solutions',  category: 'Analytics',      status: 'suspended', city: 'Chicago',       score: 2.8 },
+  { id: 'REC-007', name: 'Umbrella Systems',   category: 'Cloud Services', status: 'active',    city: 'Boston',        score: 4.6 },
+  { id: 'REC-008', name: 'Massive Dynamics',   category: 'Robotics',       status: 'active',    city: 'Denver',        score: 4.3 },
 ];
 
 // Generate 20 rows for pagination demo
-const MANY_PARTNERS: Partner[] = Array.from({ length: 20 }, (_, i) => ({
-  ...PARTNERS[i % PARTNERS.length],
-  id: `VND-${String(i + 1).padStart(3, '0')}`,
-  name: `${PARTNERS[i % PARTNERS.length].name} ${i >= 8 ? `(${Math.floor(i / 8) + 1})` : ''}`.trim(),
+const MANY_RECORDS: RecordItem[] = Array.from({ length: 20 }, (_, i) => ({
+  ...SAMPLE_RECORDS[i % SAMPLE_RECORDS.length],
+  id: `REC-${String(i + 1).padStart(3, '0')}`,
+  name: `${SAMPLE_RECORDS[i % SAMPLE_RECORDS.length].name} ${i >= 8 ? `(${Math.floor(i / 8) + 1})` : ''}`.trim(),
 }));
 
-const partnerColumns = [
-  { key: 'id',       header: 'Partner ID',  className: 'font-mono text-xs text-muted-foreground w-24' },
+const recordColumns = [
+  { key: 'id',       header: 'Record ID',  className: 'font-mono text-xs text-muted-foreground w-24' },
   { key: 'name',     header: 'Name',       className: 'font-medium' },
   { key: 'category', header: 'Category' },
   { key: 'city',     header: 'City' },
   {
     key: 'status',
     header: 'Status',
-    cell: (row: Partner) => <StatusBadge status={row.status as any} size="sm" />,
+    cell: (row: RecordItem) => <StatusBadge status={row.status as any} size="sm" />,
   },
   {
     key: 'score',
     header: 'Score',
     sortable: true,
     className: 'text-right tabular-nums',
-    cell: (row: Partner) => (
+    cell: (row: RecordItem) => (
       <span className={row.score >= 4.5 ? 'text-emerald-600 font-medium' : row.score < 3.5 ? 'text-red-500' : ''}>
         {row.score.toFixed(1)}
       </span>
@@ -92,16 +92,16 @@ const partnerColumns = [
 export const Default: Story = {
   render: () => (
     <DataTable
-      columns={partnerColumns}
-      data={PARTNERS}
+      columns={recordColumns}
+      data={SAMPLE_RECORDS}
       rowKey={(r) => r.id}
-      emptyMessage="No partners found."
+      emptyMessage="No records found."
     />
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText('Partner ID')).toBeInTheDocument();
-    expect(canvas.getByText('Agro Supplies Co.')).toBeInTheDocument();
+    expect(canvas.getByText('Record ID')).toBeInTheDocument();
+    expect(canvas.getByText('Acme Corporation')).toBeInTheDocument();
   },
 };
 
@@ -119,10 +119,10 @@ export const WithPagination: Story = {
     const [sortDir, setSortDir] = React.useState<'asc' | 'desc' | null>(null);
 
     const sorted = React.useMemo(() => {
-      if (!sortKey || !sortDir) return MANY_PARTNERS;
-      return [...MANY_PARTNERS].sort((a, b) => {
-        const av = a[sortKey as keyof Partner];
-        const bv = b[sortKey as keyof Partner];
+      if (!sortKey || !sortDir) return MANY_RECORDS;
+      return [...MANY_RECORDS].sort((a, b) => {
+        const av = a[sortKey as keyof RecordItem];
+        const bv = b[sortKey as keyof RecordItem];
         if (typeof av === 'number' && typeof bv === 'number')
           return sortDir === 'asc' ? av - bv : bv - av;
         return 0;
@@ -137,7 +137,7 @@ export const WithPagination: Story = {
           Pagination is always <strong>single-row</strong>: record count left, ← pages → right.
         </p>
         <DataTable
-          columns={partnerColumns}
+          columns={recordColumns}
           data={pageData}
           rowKey={(r) => r.id}
           sortKey={sortKey}
@@ -146,7 +146,7 @@ export const WithPagination: Story = {
           pagination={{
             page,
             pageSize: PAGE_SIZE,
-            total: MANY_PARTNERS.length,
+            total: MANY_RECORDS.length,
             onPageChange: setPage,
           }}
         />
@@ -181,7 +181,7 @@ export const WithPagination: Story = {
 export const Loading: Story = {
   render: () => (
     <DataTable
-      columns={partnerColumns}
+      columns={recordColumns}
       data={[]}
       isLoading
       skeletonRows={6}
@@ -200,14 +200,14 @@ export const Loading: Story = {
 export const Empty: Story = {
   render: () => (
     <DataTable
-      columns={partnerColumns}
+      columns={recordColumns}
       data={[]}
-      emptyMessage="No partners match your search. Try removing filters."
+      emptyMessage="No records match your search. Try removing filters."
     />
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/no partners match/i)).toBeInTheDocument();
+    expect(canvas.getByText(/no records match/i)).toBeInTheDocument();
   },
 };
 
@@ -218,10 +218,10 @@ export const Sortable: Story = {
     const [sortDir, setSortDir] = React.useState<'asc' | 'desc' | null>('desc');
 
     const sortedData = React.useMemo(() => {
-      if (!sortKey || !sortDir) return PARTNERS;
-      return [...PARTNERS].sort((a, b) => {
-        const av = a[sortKey as keyof Partner];
-        const bv = b[sortKey as keyof Partner];
+      if (!sortKey || !sortDir) return SAMPLE_RECORDS;
+      return [...SAMPLE_RECORDS].sort((a, b) => {
+        const av = a[sortKey as keyof RecordItem];
+        const bv = b[sortKey as keyof RecordItem];
         if (typeof av === 'number' && typeof bv === 'number')
           return sortDir === 'asc' ? av - bv : bv - av;
         return 0;
@@ -230,7 +230,7 @@ export const Sortable: Story = {
 
     return (
       <DataTable
-        columns={partnerColumns}
+        columns={recordColumns}
         data={sortedData}
         rowKey={(r) => r.id}
         sortKey={sortKey}
@@ -251,8 +251,8 @@ export const ClickableRows: Story = {
     return (
       <div className="space-y-3">
         <DataTable
-          columns={partnerColumns}
-          data={PARTNERS.slice(0, 4)}
+          columns={recordColumns}
+          data={SAMPLE_RECORDS.slice(0, 4)}
           rowKey={(r) => r.id}
           onRowClick={(row) => setClicked(row.id as string)}
         />

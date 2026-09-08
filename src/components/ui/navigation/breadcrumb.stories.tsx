@@ -50,11 +50,11 @@ export const Default: Story = {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="#">Partners</BreadcrumbLink>
+          <BreadcrumbLink href="#">Organizations</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Agro Supplies Co.</BreadcrumbPage>
+          <BreadcrumbPage>Acme Corporation</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -62,7 +62,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     expect(canvas.getByRole('navigation', { name: 'breadcrumb' })).toBeInTheDocument();
-    expect(canvas.getByText('Agro Supplies Co.')).toHaveAttribute('aria-current', 'page');
+    expect(canvas.getByText('Acme Corporation')).toHaveAttribute('aria-current', 'page');
   },
 };
 
@@ -80,11 +80,11 @@ export const WithEllipsis: Story = {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="#">Purchase Orders</BreadcrumbLink>
+          <BreadcrumbLink href="#">Invoices</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>PO-2025-0421</BreadcrumbPage>
+          <BreadcrumbPage>INV-2026-0421</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
@@ -109,7 +109,7 @@ export const CustomSeparator: Story = {
           <Slash className="h-3.5 w-3.5" />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
-          <BreadcrumbPage>Basmati Rice</BreadcrumbPage>
+          <BreadcrumbPage>Compute Engine XL</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

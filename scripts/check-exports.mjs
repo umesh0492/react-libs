@@ -32,11 +32,18 @@ function getFiles(dir, allFiles = []) {
 const componentFiles = getFiles(UI_DIR);
 const entryContent = readFileSync(ENTRY_FILE, 'utf8');
 
+// Subpath exemptions (e.g. dedicated subpaths / client-only components)
+const SUBPATH_EXEMPTIONS = ['components/ui/data-display/pdf-viewer'];
+
 const missing = [];
 
 for (const file of componentFiles) {
   const relPath = relative(join(ROOT, 'src'), file).replace(/\.tsx$/, '');
   const fileName = file.split('/').pop().replace(/\.tsx$/, '');
+  
+  if (SUBPATH_EXEMPTIONS.includes(relPath)) {
+    continue;
+  }
   
   // Check for export * from './path' or export { name } from './path'
   const exportPattern = new RegExp(`from\\s+['"]\\.\\/${relPath}['"]`, 'i');

@@ -14,9 +14,9 @@ describe("PaymentLedger", () => {
       {
         key: "1",
         date: "2026-08-01",
-        description: "PO-2026-001 Goods Received",
+        description: "INV-2026-001 Services Rendered",
         type: "DR",
-        amount: 50000,
+        amount: 1000,
         status: "BILLED",
       },
       {
@@ -38,7 +38,7 @@ describe("PaymentLedger", () => {
       />
     );
 
-    expect(screen.getByText("PO-2026-001 Goods Received")).toBeInTheDocument();
+    expect(screen.getByText("INV-2026-001 Services Rendered")).toBeInTheDocument();
     expect(screen.getByText("Debit Note DN-001")).toBeInTheDocument();
     expect(screen.getByText("Net Outstanding")).toBeInTheDocument();
   });

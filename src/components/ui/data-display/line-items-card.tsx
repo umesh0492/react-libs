@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { formatCurrency } from "../../../lib/formatters";
 import { cn } from "../../../lib/utils";

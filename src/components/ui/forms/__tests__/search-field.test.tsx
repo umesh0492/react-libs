@@ -6,12 +6,12 @@ import { SearchField } from "../search-field";
 describe("SearchField", () => {
   it("renders with placeholder and handles onChange", () => {
     const handleChange = vi.fn();
-    render(<SearchField value="" onChange={handleChange} placeholder="Search suppliers..." />);
+    render(<SearchField value="" onChange={handleChange} placeholder="Search items..." />);
 
-    const input = screen.getByPlaceholderText("Search suppliers...");
+    const input = screen.getByPlaceholderText("Search items...");
     expect(input).toBeInTheDocument();
 
-    fireEvent.change(input, { target: { value: "Mahavir" } });
+    fireEvent.change(input, { target: { value: "Sample Query" } });
     expect(handleChange).toHaveBeenCalled();
   });
 

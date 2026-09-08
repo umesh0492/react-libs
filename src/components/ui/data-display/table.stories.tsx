@@ -42,35 +42,35 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const PARTNERS = [
-  { id: 'VND-001', name: 'Agro Supplies Co.', category: 'Produce',       status: 'active',   due: '₹1,24,500' },
-  { id: 'VND-002', name: 'Metro Grains Ltd.', category: 'Grains',        status: 'pending',  due: '₹87,200' },
-  { id: 'VND-003', name: 'South Agrotech',     category: 'Spices',        status: 'active',   due: '₹2,08,750' },
-  { id: 'VND-004', name: 'Punjab Farms',      category: 'Dairy',         status: 'inactive', due: '₹0' },
-  { id: 'VND-005', name: 'Deccan Organic',    category: 'Organic',       status: 'suspended', due: '₹56,300' },
+const INVOICES = [
+  { id: 'INV-001', name: 'Acme Corporation',   category: 'Enterprise Cloud', status: 'active',    due: '$12,450' },
+  { id: 'INV-002', name: 'Globex Industries',  category: 'Hardware',         status: 'pending',   due: '$8,720' },
+  { id: 'INV-003', name: 'Initech Software',   category: 'Developer Tools',  status: 'active',    due: '$20,875' },
+  { id: 'INV-004', name: 'Starlight Media',    category: 'Media Streaming',  status: 'inactive',  due: '$0' },
+  { id: 'INV-005', name: 'Nexus Technologies', category: 'Security Services',status: 'suspended', due: '$5,630' },
 ];
 
 /**
- * Standard partner list table.
+ * Standard data list table.
  * Notice:
- * - Muted header background (bg-muted/30) ← fix
- * - Soft border lines (border-border/60) ← fix
+ * - Muted header background (bg-muted/30)
+ * - Soft border lines (border-border/60)
  */
 export const Default: Story = {
   render: () => (
     <Table>
-      <TableCaption>Partner registry — FY 2025–26</TableCaption>
+      <TableCaption>Invoice summary — Q3 Operations</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>Partner ID</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Category</TableHead>
+          <TableHead>Invoice ID</TableHead>
+          <TableHead>Client</TableHead>
+          <TableHead>Service Category</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Outstanding Due</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {PARTNERS.map((v) => (
+        {INVOICES.map((v) => (
           <TableRow key={v.id}>
             <TableCell className="font-mono text-xs text-muted-foreground">{v.id}</TableCell>
             <TableCell className="font-medium">{v.name}</TableCell>
@@ -85,7 +85,7 @@ export const Default: Story = {
       <TableFooter>
         <TableRow>
           <TableCell colSpan={4}>Total Outstanding</TableCell>
-          <TableCell className="text-right font-semibold tabular-nums">₹4,76,750</TableCell>
+          <TableCell className="text-right font-semibold tabular-nums">$47,675</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
@@ -95,7 +95,7 @@ export const Default: Story = {
     expect(canvas.getByRole('table')).toBeInTheDocument();
     expect(canvas.getAllByRole('row').length).toBeGreaterThanOrEqual(6);
     // Header should be present
-    expect(canvas.getByText('Partner ID')).toBeInTheDocument();
+    expect(canvas.getByText('Invoice ID')).toBeInTheDocument();
   },
 };
 
@@ -104,7 +104,7 @@ export const Default: Story = {
  */
 export const WithSelection: Story = {
   render: () => {
-    const [selected, setSelected] = React.useState<Set<string>>(new Set(['VND-002']));
+    const [selected, setSelected] = React.useState<Set<string>>(new Set(['INV-002']));
     const toggle = (id: string) => setSelected(s => {
       const next = new Set(s);
       next.has(id) ? next.delete(id) : next.add(id);
@@ -115,13 +115,13 @@ export const WithSelection: Story = {
         <TableHeader>
           <TableRow>
             <TableHead className="w-10" aria-hidden="true"></TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead>Client</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Due</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {PARTNERS.map(v => (
+          {INVOICES.map(v => (
             <TableRow
               key={v.id}
               data-state={selected.has(v.id) ? 'selected' : undefined}
@@ -151,16 +151,16 @@ export const Minimal: Story = {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>SKU</TableHead>
-          <TableHead>Product</TableHead>
-          <TableHead className="text-right">Price (₹/kg)</TableHead>
+          <TableHead>Resource ID</TableHead>
+          <TableHead>Service Plan</TableHead>
+          <TableHead className="text-right">Rate ($/mo)</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {[
-          { sku: 'SKU-101', name: 'Basmati Rice', price: '92.00' },
-          { sku: 'SKU-102', name: 'Toor Dal',     price: '145.50' },
-          { sku: 'SKU-103', name: 'Turmeric',     price: '310.00' },
+          { sku: 'RES-101', name: 'Compute Instance XL',  price: '92.00' },
+          { sku: 'RES-102', name: 'Postgres High-Avail', price: '145.50' },
+          { sku: 'RES-103', name: 'Global CDN Ingress',   price: '310.00' },
         ].map(p => (
           <TableRow key={p.sku}>
             <TableCell className="font-mono text-xs text-muted-foreground">{p.sku}</TableCell>

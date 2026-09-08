@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-09-08
+
+### 🚀 React Server Components (RSC) Architecture & Dedicated Subpaths
+- **Dedicated `@umesh0492/react-libs/utils` Subpath**: Introduced pure utility entrypoint exporting `cn`, formatters (`formatCurrency`, `formatDate`, etc.), validators (`isValidEmail`, `isValidPhone`, etc.), and masking utilities. Zero DOM or React hook dependencies.
+- **RSC Dual-Bundle Isolation**: Configured dual `tsup` compilation pipelines. Client UI components are tagged with the `'use client';` directive, while `@umesh0492/react-libs/utils` and `@umesh0492/react-libs/analytics` are compiled without directives, allowing pure functions to execute safely inside Next.js Server Components, Server Actions, Route Handlers, and Edge runtimes.
+- **Full TypeScript Export Matrix**: Added `./utils` to `package.json` `"exports"` and `"typesVersions"`. Fully verified with `@arethetypeswrong/cli` with zero errors across `node10`, `node16 (cjs)`, `node16 (esm)`, and `bundler`.
+
+### 🌐 Open-Source Domain & Brand Neutralization
+- **Repository-Wide Brand Neutrality**: Completely eliminated all references and dependencies to proprietary projects (`Vendor Portal`, `Inventory`, `DeliverIT`, `Momentum`, `UrbanHarvest`).
+- **Agnostic SaaS Mock Data**: Neutralized all fixtures and storybook examples across 15+ stories (`DataTable`, `Table`, `Card`, `ScrollArea`, `Sheet`, `Drawer`, `ContextMenu`, `AlertDialog`, `Dialog`, `Breadcrumb`, `Sonner`, `Chart`, `Carousel`, `PaymentLedger`) with universal enterprise fixtures (`Acme Corporation`, `Globex Industries`, `INV-*`, `REC-*`).
+- **Internal Alias Eradication**: Replaced legacy internal monorepo aliases (`@ui/...`) in `WIKI.md`, `CONTRIBUTING.md`, and `Introduction.stories.tsx` with standard package imports (`@umesh0492/react-libs`).
+- **Storage Sanitization**: Cleaned proprietary storage credential keys in `blob-storage.ts` (`dit_base_url` → generic storage config) and added SSR guards to `downloadFileFromStorage`.
+- **PaymentLedger Compatibility**: Added generic `reference_id`, `reference_number`, and `onReferenceClick` props alongside legacy `grn_*` properties for complete backwards compatibility.
+
+### 🛡️ CI/CD & Supply Chain Provenance Hardening
+- **SLSA Provenance Attestation**: Enabled `--provenance` in `.github/workflows/publish.yml` and configured `"publishConfig": { "access": "public", "provenance": true }` in `package.json` for cryptographic build and package attestations on npm.
+- **Automated Type Matrix Gate**: Added `@arethetypeswrong/cli` check to `.github/workflows/ci.yml` to prevent type resolution regressions across modern module loaders.
+- **Comprehensive Test Gate**: Upgraded CI to execute the full Vitest test suite with strict coverage enforcement on every push.
+
+### 📚 Documentation
+- **React 18 & 19 Peer Dependencies**: Documented dual compatibility with React 18.2+ and React 19.x in `README.md`.
+- **Server Components Guide**: Added RSC and Server Action usage documentation for `@umesh0492/react-libs/utils`.
+- **Complete Wiki Recipes**: Standardized all component cookbook examples in `WIKI.md` to public package imports.
+
+---
+
 ## [0.3.0] - 2026-09-07
 
 ### 🔒 Security & Bug Fixes

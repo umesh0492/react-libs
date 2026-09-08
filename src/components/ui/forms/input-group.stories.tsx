@@ -339,7 +339,7 @@ export const TextareaWithBlockLabel: Story = {
 
 export const DisabledWithAddon: Story = {
   args: {
-    inputAriaLabel: "Partner portal domain",
+    inputAriaLabel: "Enterprise portal domain",
     inputDefaultValue: "portal.enterprise.io",
     widthClassName: "w-[320px]",
   },
@@ -371,7 +371,7 @@ export const InvalidState: Story = {
   args: {
     helperText: "Use lowercase letters, numbers, or hyphens only.",
     inputAriaLabel: "Subdomain",
-    inputDefaultValue: "partner portal",
+    inputDefaultValue: "enterprise portal",
     suffixText: ".enterprise.io",
     widthClassName: "w-[320px]",
   },

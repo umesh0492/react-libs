@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { exportData, exportToCSV, downloadFromBackend } from '../export-utils';
+import { exportData, exportToCSV, downloadFromBackend, downloadFileSecurely } from '../export-utils';
 
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
@@ -20,6 +20,8 @@ beforeEach(() => {
   createObjectURLMock.mockClear();
   revokeObjectURLMock.mockClear();
   clickMock.mockClear();
+  appendChildMock.mockClear();
+  removeChildMock.mockClear();
 
   // Override createElement so returned <a> has a spy on click
   vi.spyOn(document, 'createElement').mockImplementation((tag) => {
@@ -165,7 +167,7 @@ describe('downloadFromBackend', () => {
 
   it('throws if no token in localStorage', async () => {
     await expect(
-      downloadFromBackend('http://localhost/api/export/partners', 'partners')
+      downloadFromBackend('http://localhost/api/export/users', 'users')
     ).rejects.toThrow('Not authenticated');
   });
 
@@ -195,12 +197,112 @@ describe('downloadFromBackend', () => {
 
   it('works with no extra queryParams', async () => {
     localStorageMock.setItem('auth_jwt', 'jwt-token');
-    await downloadFromBackend('http://localhost/api/export/partners', 'partners');
+    await downloadFromBackend('http://localhost/api/export/users', 'users');
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost/api/export/partners?',
+      'http://localhost/api/export/users?',
       expect.objectContaining({
         headers: { 'Authorization': 'Bearer jwt-token' }
       })
+    );
+  });
+
+  it('is aliased to downloadFileSecurely', () => {
+    expect(downloadFileSecurely).toBe(downloadFromBackend);
+  });
+
+  it('prepends apiBase when endpoint is relative', async () => {
+    localStorageMock.setItem('auth_jwt', 'jwt-token');
+    await downloadFileSecurely(
+      '/api/export/users',
+      'users',
+      {},
+      'auth_jwt',
+      undefined,
+      'https://api.example.com'
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.com/api/export/users?',
+      expect.objectContaining({
+        headers: { 'Authorization': 'Bearer jwt-token' }
+      })
+    );
+  });
+
+  it('supports apiBase as fifth parameter if AbortSignal is omitted', async () => {
+    localStorageMock.setItem('auth_jwt', 'jwt-token');
+    await downloadFileSecurely(
+      '/api/export/users',
+      'users',
+      { type: 'all' },
+      'auth_jwt',
+      'https://api.example.com'
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.com/api/export/users?type=all',
+      expect.objectContaining({
+        headers: { 'Authorization': 'Bearer jwt-token' }
+      })
+    );
+  });
+
+  it('does not prepend apiBase if endpoint already starts with http/https', async () => {
+    localStorageMock.setItem('auth_jwt', 'jwt-token');
+    await downloadFileSecurely(
+      'https://custom.backend.org/export',
+      'data',
+      {},
+      'auth_jwt',
+      undefined,
+      'https://api.example.com'
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://custom.backend.org/export?',
+      expect.objectContaining({
+        headers: { 'Authorization': 'Bearer jwt-token' }
+      })
+    );
+  });
+
+  it('uses endpoint directly if relative and apiBase is omitted', async () => {
+    localStorageMock.setItem('auth_jwt', 'jwt-token');
+    await downloadFileSecurely('/api/export/relative', 'relative');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/export/relative?',
+      expect.objectContaining({
+        headers: { 'Authorization': 'Bearer jwt-token' }
+      })
+    );
+  });
+
+  it('falls back to "jwt" localStorage key if tokenKey is missing', async () => {
+    localStorageMock.setItem('jwt', 'fallback-jwt-token');
+    await downloadFileSecurely('/api/export/fallback', 'fallback');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/export/fallback?',
+      expect.objectContaining({
+        headers: { 'Authorization': 'Bearer fallback-jwt-token' }
+      })
+    );
+  });
+
+  it('guards DOM methods and cleans up element and URL object', async () => {
+    localStorageMock.setItem('auth_jwt', 'jwt-token');
+    await downloadFileSecurely('/api/export/dom-test', 'file.pdf');
+    expect(createObjectURLMock).toHaveBeenCalledTimes(1);
+    expect(appendChildMock).toHaveBeenCalledTimes(1);
+    expect(clickMock).toHaveBeenCalledTimes(1);
+    expect(removeChildMock).toHaveBeenCalledTimes(1);
+    expect(revokeObjectURLMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('throws error when server responds with non-OK status', async () => {
+    localStorageMock.setItem('auth_jwt', 'jwt-token');
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      statusText: 'Internal Server Error',
+    });
+    await expect(downloadFileSecurely('/api/export/fail', 'fail.csv')).rejects.toThrow(
+      'Download failed: Internal Server Error'
     );
   });
 });
@@ -322,7 +424,7 @@ describe('exportData — PDF', () => {
   });
 
   it('auto-generates title from filename when pdfTitle is omitted', async () => {
-    await exportData(sampleData, 'partner_report', 'pdf');
-    expect(textMock).toHaveBeenCalledWith('PARTNER REPORT', expect.any(Number), expect.any(Number));
+    await exportData(sampleData, 'quarterly_report', 'pdf');
+    expect(textMock).toHaveBeenCalledWith('QUARTERLY REPORT', expect.any(Number), expect.any(Number));
   });
 });

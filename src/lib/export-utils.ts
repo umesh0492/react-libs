@@ -4,7 +4,7 @@
  * Client-side CSV, XLSX, and PDF export from in-memory data arrays.
  * Framework-agnostic — no React dependencies.
  *
- * For large/server-side exports, use downloadFromBackend() instead to stream
+ * For large/server-side exports, use downloadFileSecurely() (or downloadFromBackend()) instead to stream
  * the file through the platform's Express proxy.
  *
  * Dependencies (peer): xlsx, jspdf, jspdf-autotable
@@ -32,11 +32,11 @@ export interface ExportOptions {
  * Export data from an in-memory array to CSV, XLSX, or PDF.
  *
  * @example
- * exportData(orders, "purchase-orders", "xlsx", {
+ * exportData(records, "records-report", "xlsx", {
  *   columns: [
- *     { header: "PO Number", key: "poNumber" },
- *     { header: "Partner",    key: "partnerName" },
- *     { header: "Amount",    key: "totalAmount" },
+ *     { header: "ID",        key: "id" },
+ *     { header: "Name",      key: "name" },
+ *     { header: "Amount",    key: "amount" },
  *   ]
  * })
  */
@@ -114,28 +114,46 @@ export async function exportData(
 }
 
 /**
- * Download a file from the backend via the Express proxy.
- * The token is passed as a query param so Chrome's `download` attribute works.
+ * Download a file from the backend securely via fetch with Authorization header.
+ * Framework-neutral — does not assume Vite or any specific bundler.
  *
  * @example
- * await downloadFromBackend("/api/export/partners", "partners", { status: "active" })
+ * await downloadFileSecurely("/api/export/data", "data_export", { status: "active" })
  */
-export async function downloadFromBackend(
+export async function downloadFileSecurely(
+  endpoint: string,
+  filename: string,
+  queryParams?: Record<string, string>,
+  tokenKey?: string,
+  signal?: AbortSignal,
+  apiBase?: string
+): Promise<void>;
+export async function downloadFileSecurely(
+  endpoint: string,
+  filename: string,
+  queryParams?: Record<string, string>,
+  tokenKey?: string,
+  apiBase?: string
+): Promise<void>;
+export async function downloadFileSecurely(
   endpoint: string,
   filename: string,
   queryParams: Record<string, string> = {},
   tokenKey = "auth_jwt",
-  signal?: AbortSignal
+  signalOrApiBase?: AbortSignal | string,
+  apiBaseParam?: string
 ): Promise<void> {
-  const token = localStorage.getItem(tokenKey) || localStorage.getItem("jwt") || "";
+  const signal = signalOrApiBase instanceof AbortSignal ? signalOrApiBase : undefined;
+  const apiBase = typeof signalOrApiBase === "string" ? signalOrApiBase : apiBaseParam;
+
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem(tokenKey) || localStorage.getItem("jwt") || ""
+      : "";
   if (!token) throw new Error("Not authenticated — please log in again.");
-  
-  // Resolve absolute backend URL in production since window.location routes internally
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const meta = import.meta as any;
-  const _env = (meta?.env || {}) as Record<string, string | boolean>;
-  const apiBase = _env.PROD ? (_env.VITE_API_URL || "") : "";
-  const fullEndpoint = endpoint.startsWith("http") ? endpoint : `${apiBase}${endpoint}`;
+
+  const base = apiBase ?? "";
+  const fullEndpoint = endpoint.startsWith("http") ? endpoint : `${base}${endpoint}`;
 
   // SECURE DOWNLOAD: Use fetch with Authorization header to avoid token leakage in logs/history
   const response = await fetch(`${fullEndpoint}?${new URLSearchParams(queryParams).toString()}`, {
@@ -147,17 +165,20 @@ export async function downloadFromBackend(
   if (!response.ok) throw new Error(`Download failed: ${response.statusText}`);
 
   const blob = await response.blob();
-  const downloadUrl = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = downloadUrl;
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  
-  // Cleanup
-  link.remove();
-  window.URL.revokeObjectURL(downloadUrl);
+  if (typeof window !== "undefined" && typeof document !== "undefined") {
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+  }
 }
+
+/** Backward-compatible alias for downloadFileSecurely */
+export const downloadFromBackend = downloadFileSecurely;
 
 /** Backward-compatible shorthand */
 export function exportToCSV(data: Record<string, unknown>[], filename: string): void {

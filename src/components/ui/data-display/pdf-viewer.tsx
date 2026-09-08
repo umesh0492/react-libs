@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react"
 import { Document, Page, pdfjs } from "react-pdf"
 import { Loader2, ChevronLeft, ChevronRight, Download, FileWarning, ZoomIn, ZoomOut, RotateCw, Maximize, Printer } from "lucide-react"
@@ -9,10 +11,12 @@ import { Card } from "../layout/card"
 import { cn } from "../../../lib/utils"
 
 // Explicit worker setup for modern bundlers (Vite/Webpack 5)
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+if (typeof window !== "undefined") {
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+  ).toString();
+}
 
 export interface PdfViewerProps {
   /** The URL or File object of the PDF to render */

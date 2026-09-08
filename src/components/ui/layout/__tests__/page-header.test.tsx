@@ -5,20 +5,20 @@ import { PageHeader, PageHeaderSkeleton } from '../page-header';
 
 describe('PageHeader', () => {
   it('renders the title as h1', () => {
-    render(<PageHeader title="Partner Management" />);
-    expect(screen.getByRole('heading', { name: /partner management/i })).toBeInTheDocument();
+    render(<PageHeader title="Project Management" />);
+    expect(screen.getByRole('heading', { name: /project management/i })).toBeInTheDocument();
   });
 
   it('renders the description when provided', () => {
-    render(<PageHeader title="Orders" description="Manage all purchase orders" />);
-    expect(screen.getByText('Manage all purchase orders')).toBeInTheDocument();
+    render(<PageHeader title="Orders" description="Manage all active records" />);
+    expect(screen.getByText('Manage all active records')).toBeInTheDocument();
   });
 
   it('renders actions slot when provided', () => {
     render(
-      <PageHeader title="Partners" actions={<button>Add Partner</button>} />
+      <PageHeader title="Projects" actions={<button>Add Project</button>} />
     );
-    expect(screen.getByRole('button', { name: /add partner/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /add project/i })).toBeInTheDocument();
   });
 
   it('does not render description paragraph when description is omitted', () => {

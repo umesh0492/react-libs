@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Search, BookOpen, PlayCircle, FileText as FileTextIcon, ExternalLink } from "lucide-react";
 import type { LucideIcon } from "lucide-react";

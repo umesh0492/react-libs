@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react"
 import { Loader2, ZoomIn, ZoomOut, RotateCw, Maximize, Download, Image as ImageIcon } from "lucide-react"
 

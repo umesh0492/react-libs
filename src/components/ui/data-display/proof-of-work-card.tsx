@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { CheckCircle2, ExternalLink, GitPullRequest, Award, ShieldCheck } from "lucide-react";
 import { Card } from "../layout/card";

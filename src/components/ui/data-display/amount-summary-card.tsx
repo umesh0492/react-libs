@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Coins, Sparkles } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "../layout/card";

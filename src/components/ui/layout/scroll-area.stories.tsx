@@ -106,7 +106,7 @@ export const BothAxes: Story = {
   render: () => (
     <ScrollArea orientation="both" className="h-52 w-72 rounded-md border">
       <div className="p-4" style={{ width: 640 }}>
-        <h4 className="text-sm font-semibold mb-3 whitespace-nowrap">Partner Performance Grid (scroll both ways)</h4>
+        <h4 className="text-sm font-semibold mb-3 whitespace-nowrap">Metric Heatmap Grid (scroll both ways)</h4>
         <div className="grid gap-1.5" style={{ gridTemplateColumns: 'repeat(12, 56px)' }}>
           {Array.from({ length: 72 }, (_, i) => (
             <div key={i} className="h-10 rounded bg-muted/60 text-xs flex items-center justify-center text-muted-foreground">
@@ -122,22 +122,22 @@ export const BothAxes: Story = {
   },
 };
 
-/** Partner list with vertical scroll — realistic side panel. */
-export const PartnerList: Story = {
+/** Organization list with vertical scroll — realistic side panel. */
+export const OrganizationList: Story = {
   render: () => {
-    const partners = [
-      { name: 'Agro Supplies Co.',   code: 'VND-001', status: 'Active' },
-      { name: 'Metro Grains Ltd.',   code: 'VND-002', status: 'Pending' },
-      { name: 'South Agrotech',     code: 'VND-003', status: 'Active' },
-      { name: 'Punjab Farms',        code: 'VND-004', status: 'Inactive' },
-      { name: 'Deccan Organic',      code: 'VND-005', status: 'Active' },
-      { name: 'Sunrise Traders',     code: 'VND-006', status: 'Suspended' },
-      { name: 'GreenLeaf Exports',   code: 'VND-007', status: 'Active' },
-      { name: 'Coastal Fisheries',   code: 'VND-008', status: 'Active' },
+    const organizations = [
+      { name: 'Acme Corporation',   code: 'ORG-001', status: 'Active' },
+      { name: 'Globex Industries',  code: 'ORG-002', status: 'Pending' },
+      { name: 'Initech Software',   code: 'ORG-003', status: 'Active' },
+      { name: 'Starlight Media',    code: 'ORG-004', status: 'Inactive' },
+      { name: 'Nexus Technologies', code: 'ORG-005', status: 'Active' },
+      { name: 'Soylent Solutions',  code: 'ORG-006', status: 'Suspended' },
+      { name: 'Umbrella Systems',   code: 'ORG-007', status: 'Active' },
+      { name: 'Massive Dynamics',   code: 'ORG-008', status: 'Active' },
     ];
     return (
       <ScrollArea className="h-64 w-72 rounded-xl border">
-        {partners.map((v, i) => (
+        {organizations.map((v, i) => (
           <React.Fragment key={v.code}>
             <div className="flex items-center justify-between px-4 py-2.5 hover:bg-muted/40 transition-colors">
               <div>
@@ -150,7 +150,7 @@ export const PartnerList: Story = {
                 v.status === 'Inactive' ? 'text-muted-foreground' : 'text-blue-600'
               }`}>{v.status}</span>
             </div>
-            {i < partners.length - 1 && <Separator />}
+            {i < organizations.length - 1 && <Separator />}
           </React.Fragment>
         ))}
       </ScrollArea>
