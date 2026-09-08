@@ -238,19 +238,19 @@ export const ComponentDirectory: Story = {
         >
           <div style={{ marginBottom: 16 }}>
             <h1 style={{ margin: '0 0 6px', fontSize: 30, fontWeight: 800, letterSpacing: '-0.5px' }}>
-              react-lib
+              @umesh0492/react-libs
             </h1>
             <p style={{ margin: 0, fontSize: 15, color: '#6b7280' }}>
-              <strong style={{ color: '#111827' }}>@umesh0492/react-lib</strong> —
+              <strong style={{ color: '#111827' }}>@umesh0492/react-libs</strong> —
               Shared UI component library for modern enterprise workspaces.
             </p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }}>
             {[
-              { label: 'v1.0.42', accent: true },
-              { label: '75+ components' },
-              { label: '828 tests' },
-              { label: '99% coverage' },
+              { label: 'v0.4.1', accent: true },
+              { label: '70+ components' },
+              { label: '779 tests' },
+              { label: '≥75% coverage' },
               { label: '100% passing' },
               { label: 'Storybook 10' },
               { label: 'Tailwind v4' },
@@ -266,11 +266,11 @@ export const ComponentDirectory: Story = {
 
         {/* ── Stats ── */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
-          <StatCard value="75+" label="Components" sub="Across 7 domains" />
-          <StatCard value="828" label="Tests" sub="Solid 99% Coverage" accent="#16a34a" />
+          <StatCard value="70+" label="Components" sub="Across 7 domains" />
+          <StatCard value="779" label="Tests" sub="Verified ≥75% Coverage" accent="#16a34a" />
           <StatCard value="100%" label="Pass Rate" sub="0 failures" accent="#16a34a" />
-          <StatCard value="6ms" label="P50 Latency" sub="Median test time" />
-          <StatCard value="305ms" label="P95 Latency" sub="95th percentile" />
+          <StatCard value="14ms" label="P50 Latency" sub="Median test time" />
+          <StatCard value="580ms" label="P95 Latency" sub="95th percentile" />
         </div>
 
         {/* ── Installation ── */}
@@ -286,21 +286,10 @@ export const ComponentDirectory: Story = {
           <SectionTitle>📦 Installation</SectionTitle>
 
           <p style={{ fontSize: 13, color: '#6b7280', marginTop: 0, marginBottom: 16 }}>
-            The package is published to GitHub Packages. Add an <code>.npmrc</code> to authenticate:
+            Install from npm:
           </p>
 
           <div style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-              .npmrc
-            </p>
-            <CodeBlock>{`@umesh0492:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=\${GH_PACKAGE_TOKEN}`}</CodeBlock>
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-              Install
-            </p>
             <CodeBlock>{`npm install @umesh0492/react-libs`}</CodeBlock>
           </div>
 
@@ -308,7 +297,7 @@ export const ComponentDirectory: Story = {
             <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
               CSS — import once in your app root (e.g. index.css)
             </p>
-            <CodeBlock>{`@import "@umesh0492/react-libs/src/styles/theme.css";`}</CodeBlock>
+            <CodeBlock>{`@import "@umesh0492/react-libs/styles/theme.css";`}</CodeBlock>
           </div>
 
           <div>

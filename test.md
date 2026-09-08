@@ -1,7 +1,7 @@
-# react-lib — Testing Reference
+# react-libs — Testing Reference
 
 > **Canonical guide** for writing, debugging, and maintaining tests in `@umesh0492/react-libs`.
-> Current state: **120 test files · 721+ tests · 0 failures · ≥75% coverage**.
+> Current state: **123 test files · 779 tests · 0 failures · ≥75% coverage**.
 
 ---
 
@@ -147,7 +147,7 @@ npm run perf
 | P99 < 500ms | 🟡 Acceptable | Long-tail under 500ms |
 | P99 > 500ms | 🔴 Investigate | Check async timeouts or heavy renders |
 
-**Current suite (v1.0.19):** P50 ≈ 4ms · P95 ≈ 195ms · P99 ≈ 840ms · Wall time ≈ 13s
+**Current suite (v0.4.1):** P50 ≈ 14ms · P95 ≈ 580ms · P99 ≈ 980ms · Wall time ≈ 49s (full suite with axe accessibility verification)
 
 ---
 
