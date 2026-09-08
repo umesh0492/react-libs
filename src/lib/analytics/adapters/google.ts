@@ -6,10 +6,8 @@ export interface GoogleAnalyticsAdapterOptions {
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    gtag?: (...args: any[]) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dataLayer?: any[];
+    gtag?: (command: string, ...args: unknown[]) => void;
+    dataLayer?: unknown[][];
   }
 }
 
@@ -21,13 +19,12 @@ export class GoogleAnalyticsAdapter implements AnalyticsAdapter {
     this.measurementId = options.measurementId;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private gtag(...args: any[]): void {
+  private gtag(command: string, ...args: unknown[]): void {
     if (typeof window !== "undefined") {
       if (typeof window.gtag === "function") {
-        window.gtag(...args);
+        window.gtag(command, ...args);
       } else if (Array.isArray(window.dataLayer)) {
-        window.dataLayer.push(args);
+        window.dataLayer.push([command, ...args]);
       }
     }
   }

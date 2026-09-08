@@ -88,7 +88,7 @@ export const MultiSection: Story = {
     const sections = [
       { key: 'contact', title: 'Contact Information', content: 'Email: partner@example.com · Phone: +91 98765 43210' },
       { key: 'bank',    title: 'Bank Details',         content: 'HDFC Bank · A/C: XXXX 4521 · IFSC: HDFC0001234' },
-      { key: 'docs',    title: 'Documents',            content: 'GST Certificate ✓  · PAN ✓  · FSSAI Pending' },
+      { key: 'docs',    title: 'Documents',            content: 'Tax Certificate ✓  · Business License ✓  · Compliance Audit Pending' },
     ];
 
     return (

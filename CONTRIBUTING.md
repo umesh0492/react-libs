@@ -24,9 +24,10 @@ npm ci
 ### Verifying Setup
 
 ```bash
-npm run test            # All 713 tests should pass
+npm run test            # All 845 tests should pass across 126 test suites
 npm run storybook       # Opens http://localhost:6006
 npx tsc --noEmit        # Should produce zero errors
+npm run lint            # Zero ESLint errors with strict hooks rules
 ```
 
 ---
@@ -193,26 +194,30 @@ npm run storybook           # Component visible in Storybook
 
 ---
 
-## 4. Pull Requests & CI
+## 4. Pull Requests & CI Quality Gates
 
 All PRs against `main` trigger **`ci.yml`** automatically:
 
 | CI Step | Failure means |
 |---|---|
-| `npx tsc --noEmit` | TypeScript error introduced |
-| `npm run test` | Unit test or interaction test failed, or coverage dropped below threshold |
+| `npx tsc --noEmit` | TypeScript type error introduced |
+| `npm run lint` | ESLint rule violation (including strict `react-hooks/exhaustive-deps`) |
+| `npm run test` | Unit test, a11y test (`axe-core`), or SSR smoke test failed |
+| `npx @arethetypeswrong/cli --pack .` | Dual-package export type resolution error |
 | `npm run build-storybook` | JSX parse error or broken story import |
 
 ### PR Requirements
 
-- All CI checks green
-- Coverage thresholds maintained (see [test.md](./test.md))
-- New components have both a story and a `__tests__/` file
-- New exports added to `src/index.ts`
+- All CI checks green (Type check, lint, tests, attw).
+- Automated accessibility (`axe-core`) tests passing with 0 violations for new or modified interactive components.
+- SSR smoke test (`src/__tests__/ssr-smoke.test.tsx`) renders without throwing.
+- New components have both a story in `src/stories/` and a `__tests__/` file.
+- Clean separation: core components and `/utils` must be 100% domain-neutral; Indian regional compliance logic belongs in `src/india/`.
+- New exports added to `src/index.ts` (or `src/india/index.ts` for India compliance).
 
 ---
 
-## 5. Code Style
+## 5. Code Style & Testing Rules
 
 ### Imports in Stories
 
@@ -228,6 +233,7 @@ Consumers install `@umesh0492/react-libs` and import components and utilities di
 ```tsx
 import { Button, Card, Dialog } from "@umesh0492/react-libs";
 import { cn, formatCurrency } from "@umesh0492/react-libs/utils";
+import { validateGSTIN, INDIA_STATES } from "@umesh0492/react-libs/india";
 ```
 
 Within the library source code, use relative paths:
@@ -243,7 +249,22 @@ import { Button } from "../../forms/button";
 
 ### Portal Testing Rule
 
-When testing components that use portals (`Tooltip`, `Popover`, `Sheet`, `Dialog`, etc.), always query via `within(document.body)` — never via `within(canvasElement)`. See [test.md §7](./test.md#7-portal-rendered-components-critical) for full patterns.
+When testing components that use portals (`Tooltip`, `Popover`, `Sheet`, `Dialog`, etc.), always query via `within(document.body)` — never via `within(canvasElement)` because portaled elements mount to document body.
+
+### Accessibility Testing Rule
+
+Every interactive component should be tested with `axe-core`:
+
+```tsx
+import { render } from "@testing-library/react";
+import axe from "axe-core";
+
+it("has no accessibility violations", async () => {
+  const { container } = render(<MyComponent />);
+  const results = await axe.run(container);
+  expect(results.violations).toHaveLength(0);
+});
+```
 
 ---
 
@@ -258,12 +279,12 @@ Publishing is triggered automatically by pushing a version tag. **Do not run `np
 npm run test
 
 # 2. Bump version (patch | minor | major)
-npm version patch    # e.g. 0.4.1 → 0.4.2
+npm version minor    # e.g. 0.4.3 → 0.5.0
 
 # 3. Commit & tag
 git add package.json package-lock.json
-git commit -m "chore: bump @umesh0492/react-libs to 0.4.2"
-git tag v0.4.2
+git commit -m "chore: bump @umesh0492/react-libs to 0.5.0"
+git tag v0.5.0
 
 # 4. Push — CI runs + auto-publishes
 git push && git push --tags
@@ -284,5 +305,5 @@ Update the version in consuming apps:
 
 ```bash
 # In consuming web portals
-npm install @umesh0492/react-lib@1.0.42
+npm install @umesh0492/react-libs@latest
 ```

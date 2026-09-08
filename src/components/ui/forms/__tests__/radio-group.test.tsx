@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RadioGroup, RadioGroupItem } from '../radio-group';
 import { Label } from '../label';
-import React from 'react';
 
 describe('RadioGroup Composite Keyboard Bindings', () => {
 

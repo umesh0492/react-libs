@@ -50,7 +50,7 @@ export function ProofOfWorkCard({
   const metricBadge = item.metricLabel ?? (item.score !== undefined ? `${item.score}/${item.maxScore ?? 100}` : null);
 
   return (
-    <Card className={cn("p-4 space-y-2.5 transition-hover hover:border-indigo-400 dark:hover:border-indigo-500", className)} {...props}>
+    <Card className={cn("p-4 space-y-2.5 transition-all duration-200 hover:border-indigo-400 dark:hover:border-indigo-500", className)} {...props}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">

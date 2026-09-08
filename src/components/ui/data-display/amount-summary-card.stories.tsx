@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import * as React from "react";
 import { AmountSummaryCard } from "./amount-summary-card";
 
 const meta: Meta<typeof AmountSummaryCard> = {
@@ -17,9 +16,11 @@ type Story = StoryObj<typeof AmountSummaryCard>;
 export const Default: Story = {
   args: {
     baseAmount: 145000,
-    gstAmount: 26100,
-    tdsPercentage: 2,
-    isIntraState: true,
+    taxes: [
+      { label: "State Tax", amount: 13050 },
+      { label: "Local Tax", amount: 13050 },
+    ],
+    withholdingPercentage: 2,
     transportCost: 3500,
   },
   render: (args) => (
@@ -32,9 +33,9 @@ export const Default: Story = {
 export const UrgentPriority: Story = {
   args: {
     baseAmount: 320000,
-    gstAmount: 57600,
-    tdsPercentage: 2,
-    isIntraState: false,
+    taxAmount: 57600,
+    taxLabel: "VAT (18%)",
+    withholdingPercentage: 2,
     isUrgent: true,
   },
   render: (args) => (

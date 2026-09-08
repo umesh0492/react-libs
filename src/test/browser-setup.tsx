@@ -100,7 +100,7 @@ beforeAll(() => {
     };
 
     // 8. Accelerate requestAnimationFrame
-    const originalRAF = window.requestAnimationFrame;
+    
     (window as any).requestAnimationFrame = (callback: FrameRequestCallback) => {
       return originalSetTimeout(() => callback(performance.now()), 0);
     };

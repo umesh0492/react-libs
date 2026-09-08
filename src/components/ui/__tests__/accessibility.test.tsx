@@ -1,5 +1,5 @@
 import * as React from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import axe from "axe-core";
 
@@ -26,6 +26,48 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../data-display/accordion";
+import { Button } from "../forms/button";
+import { Checkbox } from "../forms/checkbox";
+import { Input } from "../forms/input";
+import { Textarea } from "../forms/textarea";
+import { Switch } from "../forms/switch";
+import { Slider } from "../forms/slider";
+import { Toggle } from "../forms/toggle";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../navigation/tabs";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+} from "../navigation/breadcrumb";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from "../navigation/pagination";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "../overlays/dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "../overlays/alert-dialog";
+import { Popover, PopoverTrigger, PopoverContent } from "../core/popover";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "../overlays/tooltip";
 
 describe("Accessibility (a11y) Automated Tests - Axe Violations", () => {
   it("MultiSelect has 0 accessibility violations in closed and open states", async () => {
@@ -473,4 +515,174 @@ describe("Accessibility Feature Verifications", () => {
       expect(liveRegion).toHaveTextContent("Copied!");
     });
   });
+
+  describe("Interactive Core Primitives Axe Tests", () => {
+    it("Button has 0 accessibility violations", async () => {
+      const { container } = render(<Button>Click me</Button>);
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Checkbox with label has 0 accessibility violations", async () => {
+      const { container } = render(
+        <label>
+          <Checkbox aria-label="Accept terms and conditions" />
+          <span>Accept terms and conditions</span>
+        </label>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Input with aria-label has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Input placeholder="Enter email" aria-label="Email address" type="email" />
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Textarea with aria-label has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Textarea placeholder="Enter feedback" aria-label="User feedback" />
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Switch with aria-label has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Switch aria-label="Enable notifications" />
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Slider with aria-label has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Slider defaultValue={[50]} max={100} step={1} aria-label="Volume level" />
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Toggle with aria-label has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Toggle aria-label="Toggle italic formatting">Italic</Toggle>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Tabs has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Tabs defaultValue="account">
+          <TabsList aria-label="Manage account settings">
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="password">Password</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">Account details here.</TabsContent>
+          <TabsContent value="password">Password change here.</TabsContent>
+        </Tabs>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Breadcrumb has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Settings</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Pagination has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationLink href="#1" isActive>1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#2">2</PaginationLink>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Dialog structure has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Dialog open>
+          <DialogContent>
+            <DialogTitle>Confirm Action</DialogTitle>
+            <DialogDescription>Are you sure you want to proceed?</DialogDescription>
+            <Button>Confirm</Button>
+          </DialogContent>
+        </Dialog>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("AlertDialog structure has 0 accessibility violations", async () => {
+      const { container } = render(
+        <AlertDialog open>
+          <AlertDialogContent>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogContent>
+        </AlertDialog>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Popover structure has 0 accessibility violations", async () => {
+      const { container } = render(
+        <Popover open>
+          <PopoverTrigger asChild>
+            <Button>Open Popover</Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <p>Popover content description.</p>
+          </PopoverContent>
+        </Popover>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+
+    it("Tooltip has 0 accessibility violations", async () => {
+      const { container } = render(
+        <TooltipProvider>
+          <Tooltip open>
+            <TooltipTrigger asChild>
+              <Button>Hover me</Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span>Helpful tooltip text</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+      const results = await axe.run(container);
+      expect(results.violations).toEqual([]);
+    });
+  });
 });
+

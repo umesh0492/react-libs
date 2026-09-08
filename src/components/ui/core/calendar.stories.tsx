@@ -35,7 +35,7 @@ function SingleCalendarStory(args: CalendarStoryArgs) {
       {selected && (
         <p className="mt-2 text-center text-sm text-muted-foreground">
           Selected:{" "}
-          {selected.toLocaleDateString("en-IN", { dateStyle: "medium" })}
+          {selected.toLocaleDateString("en-US", { dateStyle: "medium" })}
         </p>
       )}
     </div>

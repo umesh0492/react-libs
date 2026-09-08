@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Form,
@@ -15,10 +14,8 @@ import {
 // Helper: renders a minimal valid react-hook-form form with all sub-components
 function TestForm({
   defaultValues = { username: '' },
-  triggerValidation = false,
 }: {
   defaultValues?: Record<string, string>;
-  triggerValidation?: boolean;
 }) {
   const form = useForm({ defaultValues });
 

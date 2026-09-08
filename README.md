@@ -59,17 +59,18 @@ No complex path mapping or bundler alias configurations are required in your app
 
 ### Subpath Reference Table
 
-The library exposes dedicated entry points for UI components, server-safe utilities, client-only features, analytics, hooks, and stylesheets:
+The library exposes dedicated entry points for UI components, server-safe utilities, client-only features, domain compliance, analytics, hooks, and stylesheets:
 
 | Subpath / Export | Module Formats | SSR / RSC Compatibility | Purpose & Contents |
 |---|---|---|---|
-| `@umesh0492/react-libs` | ESM (`import`), CJS (`require`) | **Client Components** (`'use client'`) | Primary UI component library (70+ components, primitives, forms, dialogs, charts, and hooks). SSR-compatible with browser APIs guarded inside lifecycle hooks. |
-| `@umesh0492/react-libs/utils` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Pure utility helpers, formatters, validators, masking, and `cn`. Zero DOM and zero React dependencies; safe in Next.js Server Components, Server Actions, Route Handlers, and Edge runtimes. |
+| `@umesh0492/react-libs` | ESM (`import`), CJS (`require`) | **Client Components** (`'use client'`) | Primary UI component library (70+ components, primitives, forms, dialogs, charts, error boundaries, and hooks). SSR-compatible with browser APIs guarded inside lifecycle hooks. |
+| `@umesh0492/react-libs/utils` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Pure utility helpers, formatters, universal validators, masking, and `cn`. Zero DOM and zero React dependencies; safe in Next.js Server Components, Server Actions, Route Handlers, and Edge runtimes. |
+| `@umesh0492/react-libs/india` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Dedicated domain subpath containing India compliance logic: GSTIN, PAN, IFSC, FSSAI, and Pincode validators, GST tax calculation splits, regional constants (`INDIA_STATES`, `INDIA_CITIES`), and regional cards. |
 | `@umesh0492/react-libs/analytics` | ESM (`import`), CJS (`require`) | **Client & SSR-Safe** | Pluggable behavioral analytics tracking engine, DOM auto-tracking, batching pipeline, and destination adapters. |
 | `@umesh0492/react-libs/pdf` | ESM (`import`), CJS (`require`) | **Client-Only** (`'use client'`) | Dedicated client subpath for `PdfViewer`. Isolated from root to prevent Node SSR from executing browser-only PDF workers (`pdfjs-dist`). |
 | `@umesh0492/react-libs/hooks/use-toast` | ESM (`import`), CJS (`require`) | **Client Hook** (`'use client'`) | Standalone imperative toast notification hook (`useToast`, `toast`). |
+| `@umesh0492/react-libs/style.css` | CSS | N/A | Standalone pre-compiled stylesheet with all Tailwind utility classes and design tokens. |
 | `@umesh0492/react-libs/styles/theme.css` | CSS | N/A | Design system theme variables and color tokens for Tailwind CSS v4 projects (`@import`). |
-| `@umesh0492/react-libs/dist/style.css` | CSS | N/A | Standalone pre-compiled stylesheet with all Tailwind utility classes and design tokens (for Tailwind v3, Vite, Webpack, or plain CSS). |
 
 ### SSR Compatibility & Hydration Architecture
 
@@ -546,16 +547,27 @@ npm publish --access public
 
 ## Architecture & Accessibility
 
-- **Radix UI Primitives**: Built upon headless, fully accessible primitives managing focus traps, ARIA attributes, and keyboard navigation according to WCAG 2.1 AA specifications.
+- **Radix UI Primitives**: Built upon headless, fully accessible primitives managing focus traps, ARIA attributes, and keyboard navigation according to WCAG 2.1 AA specifications. Automated regression tests via `axe-core` verify 0 violations across all interactive widgets.
 - **SSR Compatibility**: Root UI components avoid top-level browser globals during module evaluation, guarding interactive code within client hooks and event handlers. Pure utilities in `@umesh0492/react-libs/utils` feature zero DOM and zero React dependencies for native Server Component execution. Browser-only components like `PdfViewer` reside in isolated client subpaths.
-- **Dual ESM & CommonJS**: Full dual module support (`import` and `require`) with TypeScript declaration files (`.d.ts` and `.d.cts`) and subpath type mappings across modern module loaders.
+- **Dual ESM & CommonJS**: Full dual module support (`import` and `require`) with TypeScript declaration files (`.d.ts` and `.d.cts`) and subpath type mappings across modern module loaders, verified 100% clean with `@arethetypeswrong/cli`.
+- **Domain Subpath Isolation**: Preserves all Indian compliance logic (`@umesh0492/react-libs/india`) while leaving the root package and `/utils` 100% pure and globally domain-neutral.
 - **Static Zero-Runtime CSS Delivery**: CSS tokens and component styles compile into static stylesheets (`theme.css` and `dist/style.css`), eliminating runtime `<style>` injection and satisfying strict Content Security Policies (`CSP`).
 - **Tree-Shaking**: Pure ES modules allow modern bundlers (Vite, Rollup, Webpack, Turbopack) to eliminate unused components and utilities from consumer bundles.
+
+### Architecture Decision Records (ADRs)
+Explore our formal design decisions in [`docs/adr/`](./docs/adr/):
+- [ADR 0001: tsup and Dual Module (ESM/CJS) Publishing Architecture](./docs/adr/0001-tsup-and-dual-module-publishing.md)
+- [ADR 0002: Peer vs Optional Dependencies and Dependency Surface Minimization](./docs/adr/0002-peer-vs-optional-dependencies.md)
+- [ADR 0003: SSR & React Server Components (RSC) Purity Architecture](./docs/adr/0003-ssr-and-react-server-components-architecture.md)
+- [ADR 0004: Accessibility Baseline and Automated WCAG Compliance](./docs/adr/0004-accessibility-baseline-and-wcag-compliance.md)
+- [ADR 0005: Controlled vs Uncontrolled State and Ref Forwarding Convention](./docs/adr/0005-controlled-and-uncontrolled-component-convention.md)
+- [ADR 0006: Domain Subpath Isolation Architecture (@umesh0492/react-libs/india)](./docs/adr/0006-domain-subpath-isolation-architecture.md)
 
 ---
 
 ## Community & Contributing
 
+- **[Migration Guide](./MIGRATION.md)**: Upgrading from v0.4.x to v0.5.0.
 - **[Code of Conduct](./CODE_OF_CONDUCT.md)**: We are committed to providing a friendly, safe, and welcoming environment for all contributors.
 - **[Security Policy](./SECURITY.md)**: Guidelines for reporting security vulnerabilities responsibly.
 - **[Contributing Guide](./CONTRIBUTING.md)**: Step-by-step instructions for adding components, writing tests, and filing pull requests.

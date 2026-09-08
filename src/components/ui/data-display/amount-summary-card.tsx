@@ -10,19 +10,42 @@ import { cn } from "../../../lib/utils";
 export interface AmountSummaryItem {
   totalQuantity?: number | string;
   targetPrice?: number | string;
+  taxRate?: number;
+  /** @deprecated Use `taxRate` instead. */
   tax_rate?: number;
+}
+
+export interface AmountSummaryTaxItem {
+  label: string;
+  amount: number;
+  rate?: number;
+}
+
+export interface AmountSummaryDeductionItem {
+  label: string;
+  amount: number;
+  rate?: number;
 }
 
 export interface AmountSummaryCardProps extends React.HTMLAttributes<HTMLDivElement> {
   baseAmount?: number;
-  gstAmount?: number;
-  cgstAmount?: number;
-  sgstAmount?: number;
-  igstAmount?: number;
-  isIntraState?: boolean;
+  /** Direct single tax amount or list of individual tax components */
+  taxAmount?: number;
+  taxLabel?: string;
+  taxes?: AmountSummaryTaxItem[];
+  shippingCost?: number;
+  /** @deprecated Alias for `shippingCost` */
   transportCost?: number;
+  /** Percentage of tax or withholding deduction */
+  withholdingPercentage?: number;
+  /** @deprecated Alias for `withholdingPercentage` */
   tdsPercentage?: number;
+  /** Custom deductions list */
+  deductions?: AmountSummaryDeductionItem[];
+  /** Flag to indicate urgent processing */
   isUrgent?: boolean;
+  urgentLabel?: string;
+  /** Explicit net payable override */
   netPayable?: number;
   isTaxInclusive?: boolean;
   items?: AmountSummaryItem[];
@@ -33,11 +56,15 @@ export interface AmountSummaryCardProps extends React.HTMLAttributes<HTMLDivElem
 function calculateItemTax(item: AmountSummaryItem, isTaxInclusive: boolean) {
   const qty = Number(item.totalQuantity) || 0;
   const price = Number(item.targetPrice) || 0;
-  const rate = item.tax_rate !== undefined ? Number(item.tax_rate) : 18;
+  const rate = item.taxRate !== undefined
+    ? Number(item.taxRate)
+    : item.tax_rate !== undefined
+      ? Number(item.tax_rate)
+      : 0;
 
   if (isTaxInclusive) {
     const totalPrice = qty * price;
-    const taxPerUnit = price * (rate / (100 + rate));
+    const taxPerUnit = rate > 0 ? price * (rate / (100 + rate)) : 0;
     const totalTax = qty * taxPerUnit;
     return { base: totalPrice - totalTax, totalTax };
   }
@@ -47,83 +74,28 @@ function calculateItemTax(item: AmountSummaryItem, isTaxInclusive: boolean) {
   return { base, totalTax: qty * taxPerUnit };
 }
 
-function calculateItemsTotals(items: AmountSummaryItem[], isTaxInclusive: boolean, isIntraState: boolean) {
+function calculateItemsTotals(items: AmountSummaryItem[], isTaxInclusive: boolean) {
   let calcBase = 0;
-  let calcGst = 0;
-  let calcCgst = 0;
-  let calcSgst = 0;
-  let calcIgst = 0;
+  let calcTax = 0;
 
   for (const item of items) {
     const { base, totalTax } = calculateItemTax(item, isTaxInclusive);
     calcBase += base;
-    calcGst += totalTax;
-
-    if (isIntraState) {
-      calcCgst += totalTax / 2;
-      calcSgst += totalTax / 2;
-    } else {
-      calcIgst += totalTax;
-    }
+    calcTax += totalTax;
   }
 
-  return { calcBase, calcGst, calcCgst, calcSgst, calcIgst };
-}
-
-interface TaxBreakdownProps {
-  showIntraState: boolean;
-  finalCgstAmount: number;
-  finalSgstAmount: number;
-  finalGstAmount: number;
-  finalIgstAmount: number;
-  fmt: (num: number) => string;
-}
-
-function TaxBreakdown({
-  showIntraState,
-  finalCgstAmount,
-  finalSgstAmount,
-  finalGstAmount,
-  finalIgstAmount,
-  fmt,
-}: TaxBreakdownProps) {
-  if (showIntraState) {
-    return (
-      <>
-        <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-          <span className="text-[11px] font-medium text-slate-500">CGST</span>
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-            +{fmt(finalCgstAmount > 0 ? finalCgstAmount : finalGstAmount / 2)}
-          </span>
-        </div>
-        <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-          <span className="text-[11px] font-medium text-slate-500">SGST</span>
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-            +{fmt(finalSgstAmount > 0 ? finalSgstAmount : finalGstAmount / 2)}
-          </span>
-        </div>
-      </>
-    );
-  }
-
-  return (
-    <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-      <span className="text-[11px] font-medium text-slate-500">IGST</span>
-      <span className="font-semibold text-purple-600 dark:text-purple-400">
-        +{fmt(finalIgstAmount > 0 ? finalIgstAmount : finalGstAmount)}
-      </span>
-    </div>
-  );
+  return { calcBase, calcTax };
 }
 
 interface TotalPayableSectionProps {
   isUrgent: boolean;
+  urgentLabel?: string;
   isSm: boolean;
   totalValue: number;
   fmt: (num: number) => string;
 }
 
-function TotalPayableSection({ isUrgent, isSm, totalValue, fmt }: TotalPayableSectionProps) {
+function TotalPayableSection({ isUrgent, urgentLabel, isSm, totalValue, fmt }: TotalPayableSectionProps) {
   return (
     <>
       <div
@@ -157,57 +129,25 @@ function TotalPayableSection({ isUrgent, isSm, totalValue, fmt }: TotalPayableSe
       {isUrgent && (
         <Badge className="bg-rose-500/10 text-rose-600 hover:bg-rose-500/15 border border-rose-500/20 w-full justify-center py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 mt-1">
           <Sparkles className="h-3 w-3 animate-pulse text-rose-500" />
-          <span>Urgent Priority Settlement</span>
+          <span>{urgentLabel ?? "Urgent Priority Settlement"}</span>
         </Badge>
       )}
     </>
   );
 }
 
-function resolveFinalAmounts(
-  baseAmount?: number,
-  gstAmount?: number,
-  cgstAmount?: number,
-  sgstAmount?: number,
-  igstAmount?: number,
-  items?: AmountSummaryItem[],
-  isTaxInclusive = false,
-  isIntraState = false
-) {
-  let finalBaseAmount = baseAmount ?? 0;
-  let finalGstAmount = gstAmount ?? 0;
-  let finalCgstAmount = cgstAmount ?? 0;
-  let finalSgstAmount = sgstAmount ?? 0;
-  let finalIgstAmount = igstAmount ?? 0;
-
-  if (items && items.length > 0) {
-    const computed = calculateItemsTotals(items, isTaxInclusive, isIntraState);
-    if (baseAmount === undefined) finalBaseAmount = computed.calcBase;
-    if (gstAmount === undefined) finalGstAmount = computed.calcGst;
-    if (cgstAmount === undefined) finalCgstAmount = computed.calcCgst;
-    if (sgstAmount === undefined) finalSgstAmount = computed.calcSgst;
-    if (igstAmount === undefined) finalIgstAmount = computed.calcIgst;
-  }
-
-  return {
-    finalBaseAmount,
-    finalGstAmount,
-    finalCgstAmount,
-    finalSgstAmount,
-    finalIgstAmount,
-  };
-}
-
 export function AmountSummaryCard({
   baseAmount,
-  gstAmount,
-  cgstAmount,
-  sgstAmount,
-  igstAmount,
-  isIntraState = false,
-  transportCost = 0,
-  tdsPercentage = 0,
+  taxAmount,
+  taxLabel = "Tax",
+  taxes,
+  shippingCost,
+  transportCost,
+  withholdingPercentage,
+  tdsPercentage,
+  deductions,
   isUrgent = false,
+  urgentLabel,
   netPayable,
   isTaxInclusive = false,
   items,
@@ -216,28 +156,35 @@ export function AmountSummaryCard({
   className,
   ...props
 }: AmountSummaryCardProps) {
-  const {
-    finalBaseAmount,
-    finalGstAmount,
-    finalCgstAmount,
-    finalSgstAmount,
-    finalIgstAmount,
-  } = resolveFinalAmounts(
-    baseAmount,
-    gstAmount,
-    cgstAmount,
-    sgstAmount,
-    igstAmount,
-    items,
-    isTaxInclusive,
-    isIntraState
-  );
+  let finalBaseAmount = baseAmount ?? 0;
+  let finalTaxAmount = taxAmount ?? 0;
 
-  const tdsAmount = finalBaseAmount * (tdsPercentage / 100);
+  if (items && items.length > 0) {
+    const computed = calculateItemsTotals(items, isTaxInclusive);
+    if (baseAmount === undefined) finalBaseAmount = computed.calcBase;
+    if (taxAmount === undefined && (!taxes || taxes.length === 0)) finalTaxAmount = computed.calcTax;
+  }
+
+  const effectiveShipping = shippingCost ?? transportCost ?? 0;
+  const effectiveWithholdingPct = withholdingPercentage ?? tdsPercentage ?? 0;
+  const withholdingAmount = finalBaseAmount * (effectiveWithholdingPct / 100);
+
+  let totalTaxFromList = 0;
+  if (taxes && taxes.length > 0) {
+    totalTaxFromList = taxes.reduce((acc, t) => acc + t.amount, 0);
+  } else {
+    totalTaxFromList = finalTaxAmount;
+  }
+
+  let totalDeductions = withholdingAmount;
+  if (deductions && deductions.length > 0) {
+    totalDeductions += deductions.reduce((acc, d) => acc + d.amount, 0);
+  }
+
   const totalValue =
     netPayable !== undefined
       ? netPayable
-      : finalBaseAmount + finalGstAmount + transportCost - tdsAmount;
+      : finalBaseAmount + totalTaxFromList + effectiveShipping - totalDeductions;
 
   const isSm = size === "sm";
 
@@ -245,11 +192,6 @@ export function AmountSummaryCard({
     if (maskFormatter) return maskFormatter(formatCurrency(num));
     return formatCurrency(num);
   };
-
-  const showIntraState =
-    finalCgstAmount > 0 ||
-    finalSgstAmount > 0 ||
-    (finalIgstAmount === 0 && isIntraState);
 
   return (
     <Card
@@ -280,40 +222,69 @@ export function AmountSummaryCard({
             </span>
           </div>
 
-          {/* Tax Details */}
-          <TaxBreakdown
-            showIntraState={showIntraState}
-            finalCgstAmount={finalCgstAmount}
-            finalSgstAmount={finalSgstAmount}
-            finalGstAmount={finalGstAmount}
-            finalIgstAmount={finalIgstAmount}
-            fmt={fmt}
-          />
-
-          {transportCost > 0 && (
+          {/* Tax Breakdown */}
+          {taxes && taxes.length > 0 ? (
+            taxes.map((tax, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800"
+              >
+                <span className="text-[11px] font-medium text-slate-500">{tax.label}</span>
+                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+                  +{fmt(tax.amount)}
+                </span>
+              </div>
+            ))
+          ) : finalTaxAmount > 0 ? (
             <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-              <span className="text-[11px] font-medium text-slate-500">Logistics Cost</span>
+              <span className="text-[11px] font-medium text-slate-500">{taxLabel}</span>
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+                +{fmt(finalTaxAmount)}
+              </span>
+            </div>
+          ) : null}
+
+          {/* Shipping & Logistics */}
+          {effectiveShipping > 0 && (
+            <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+              <span className="text-[11px] font-medium text-slate-500">Logistics & Shipping</span>
               <span className="font-semibold text-slate-700 dark:text-slate-300">
-                +{fmt(transportCost)}
+                +{fmt(effectiveShipping)}
               </span>
             </div>
           )}
 
-          {tdsPercentage > 0 && (
+          {/* Withholding */}
+          {effectiveWithholdingPct > 0 && (
             <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
               <span className="text-[11px] font-medium text-slate-500">
-                TDS ({tdsPercentage}%)
+                Withholding ({effectiveWithholdingPct}%)
               </span>
               <span className="font-semibold text-rose-600 dark:text-rose-400">
-                -{fmt(tdsAmount)}
+                -{fmt(withholdingAmount)}
               </span>
             </div>
           )}
+
+          {/* Custom Deductions */}
+          {deductions &&
+            deductions.map((d, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800"
+              >
+                <span className="text-[11px] font-medium text-slate-500">{d.label}</span>
+                <span className="font-semibold text-rose-600 dark:text-rose-400">
+                  -{fmt(d.amount)}
+                </span>
+              </div>
+            ))}
         </div>
 
         {/* Total Payable Value Banner */}
         <TotalPayableSection
           isUrgent={isUrgent}
+          urgentLabel={urgentLabel}
           isSm={isSm}
           totalValue={totalValue}
           fmt={fmt}

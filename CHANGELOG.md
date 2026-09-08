@@ -5,6 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-09-08
+
+### 🇮🇳 Dedicated Domain Subpath (`@umesh0492/react-libs/india`)
+- **Complete Domain Subpath Architecture**:
+  - Isolated all regional Indian compliance, taxation, and geographic logic into a dedicated, first-class subpath `@umesh0492/react-libs/india`.
+  - Preserved 100% of battle-tested domain assets: `validateGSTIN`, `validatePAN`, `validatePhoneIN`, `validateIFSC`, `validateFSSAI`, `validatePincode`, `calculateGSTSplit`, `AmountSummaryCardIndia`, `INDIA_STATES`, `INDIA_CITIES`, and scheduled languages list.
+  - Full dual ESM/CJS exports and TypeScript definitions via `package.json` `exports["./india"]` and `typesVersions`.
+  - Core root (`.`) and `/utils` subpaths are 100% domain-neutral with zero domain leakage (`grep` verified).
+
+### ♿ Genuine Automated Accessibility (WCAG 2.1 Level AA)
+- **Automated `axe-core` Test Suite**:
+  - Added automated `axe` accessibility tests in `src/components/ui/__tests__/accessibility.test.tsx` asserting 0 violations across all interactive primitives (`MultiSelect`, `Combobox`, `FileUpload`, `DataTable`, `ProgressRing`, `MatchScoreGauge`, `RadarSweep`, `Stepper`, `CopyButton`).
+- **Semantic ARIA Enhancements**:
+  - Added `role="progressbar"` and `aria-valuenow` / `aria-valuemin` / `aria-valuemax` to `ProgressRing`.
+  - Added `role="meter"` and accessible title to `MatchScoreGauge`.
+  - Added `role="img"` with descriptive label to `RadarSweep`.
+  - Added `<button type="button">` sortable headers, `aria-sort`, `aria-busy={isLoading}`, and table `caption` support to `DataTable`.
+  - Added `aria-live="polite"` feedback regions to `FileUpload` and `CopyButton`.
+  - Replaced static DOM IDs with `React.useId()` across `MultiSelect` and form primitives.
+  - Implemented `@media (prefers-reduced-motion: reduce)` support across animated tickers and micro-interactions.
+
+### 📦 Dependency Surface Minimization & RSC Purity
+- **Trimmed Direct Dependencies to Core Primitives**:
+  - Moved heavy visualization and ecosystem libraries to `peerDependencies` (`optional: true`): `recharts`, `canvas-confetti`, `embla-carousel-react`, `cmdk`, `vaul`, `react-hook-form`, `react-day-picker`, `next-themes`.
+  - Core package installation footprint reduced to minimal UI primitives (`@radix-ui/*`, `clsx`, `tailwind-merge`, `cva`, `lucide-react`).
+- **100% Pure RSC `/utils`**:
+  - Removed browser-dependent export functions (`downloadFileSecurely`, `exportData`) from `/utils` into root (`src/index.ts`).
+  - `@umesh0492/react-libs/utils` is 100% server-safe with zero DOM globals and zero React imports, running cleanly in Node.js, Server Actions, Route Handlers, and Edge runtimes.
+
+### 🛡️ Strict Type System Hardening
+- **Strictest TypeScript Configuration**:
+  - Enabled `"noUnusedLocals": true`, `"noUnusedParameters": true`, and `"noFallthroughCasesInSwitch": true` alongside existing `"noUncheckedIndexedAccess": true`.
+  - Swapped deep Recharts namespace imports for specific named imports (`ResponsiveContainer`, `Tooltip`, `Legend`), eliminating heavyweight recursive type resolution.
+  - Cleaned all `any` usages from public exports and dynamic peer declarations (`export-peers.d.ts`).
+
+### 🧪 Comprehensive Quality Gates & SSR Verification
+- **SSR Smoke Test Suite**:
+  - Added `src/__tests__/ssr-smoke.test.tsx` that executes `ReactDOMServer.renderToString()` on every single visual component in `src/components/ui/`, asserting zero server crashes and zero hydration warnings.
+- **Deterministic Test Harness**:
+  - Removed global timer monkey-patches from `src/test/setup.ts`, using standard Vitest fake timers for deterministic execution.
+- **Automated Verification**:
+  - **126 test suites passed** (126).
+  - **845 tests passed** (845).
+  - Clean `@arethetypeswrong/cli` pass across all subpaths with zero `--ignore-rules`.
+
+### 📚 Architectural Documentation (ADRs)
+- Permanently deleted stale `test.md`.
+- Published 6 formal Architectural Decision Records in `docs/adr/`:
+  - `0001-tsup-and-dual-module-publishing.md`
+  - `0002-peer-vs-optional-dependencies.md`
+  - `0003-ssr-and-react-server-components-architecture.md`
+  - `0004-accessibility-baseline-and-wcag-compliance.md`
+  - `0005-controlled-and-uncontrolled-component-convention.md`
+  - `0006-domain-subpath-isolation-architecture.md`
+- Created comprehensive `MIGRATION.md` for seamless v0.4.x to v0.5.0 upgrading.
+
 ## [0.4.3] - 2026-09-08
 
 ### 🌐 True Domain Neutralization (Purged Project Assumptions)

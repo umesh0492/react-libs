@@ -1,4 +1,3 @@
-import * as React from "react";
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import {
@@ -13,37 +12,19 @@ describe("SalaryRangeDisplay", () => {
     expect(screen.getByText("yr")).toBeInTheDocument();
   });
 
-  it("renders badge variant with custom currency symbol and backwards-compatible lakhs", () => {
+  it("renders badge variant with custom currency symbol and period", () => {
     render(
       <SalaryRangeDisplay
-        minLakhs={24}
-        maxLakhs={36}
-        currencySymbol="₹"
-        period="PA"
+        min={45}
+        max={65}
+        currencySymbol="€"
+        unit="k"
+        period="yr"
         variant="badge"
       />
     );
-    expect(screen.getByText("₹24L - ₹36L")).toBeInTheDocument();
-    expect(screen.getByText("PA")).toBeInTheDocument();
-  });
-
-  it("renders card variant with fixed, variable, and equity components", () => {
-    render(
-      <SalaryRangeDisplay
-        minLakhs={40}
-        maxLakhs={55}
-        currencySymbol="₹"
-        period="PA"
-        variant="card"
-        breakdown={{ fixedLakhs: 35, variableLakhs: 10, esopsLakhs: 8 }}
-      />
-    );
-
-    expect(screen.getByText("Compensation Range")).toBeInTheDocument();
-    expect(screen.getByText("₹40L - ₹55L PA")).toBeInTheDocument();
-    expect(screen.getByText("₹35L")).toBeInTheDocument();
-    expect(screen.getByText("₹10L")).toBeInTheDocument();
-    expect(screen.getByText("₹8L")).toBeInTheDocument();
+    expect(screen.getByText("€45k - €65k")).toBeInTheDocument();
+    expect(screen.getByText("yr")).toBeInTheDocument();
   });
 
   it("renders card variant with generic fixed, variable, and equity breakdown", () => {

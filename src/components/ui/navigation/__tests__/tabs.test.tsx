@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../tabs';
-import React from 'react';
 
 describe('Tabs Component Interaction Routing', () => {
 

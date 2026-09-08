@@ -67,9 +67,18 @@ const Carousel = React.forwardRef<
     },
     ref,
   ) => {
+    const optsRef = React.useRef(opts);
+    const optsMatch =
+      opts === optsRef.current ||
+      (opts && optsRef.current && JSON.stringify(opts) === JSON.stringify(optsRef.current));
+    if (!optsMatch) {
+      optsRef.current = opts;
+    }
+    const stableOpts = optsRef.current;
+
     const [carouselRef, api] = useEmblaCarousel(
       {
-        ...opts,
+        ...stableOpts,
         axis: orientation === "horizontal" ? "x" : "y",
       },
       plugins,
@@ -156,12 +165,12 @@ const Carousel = React.forwardRef<
       () => ({
         carouselRef,
         api,
-        opts,
+        opts: stableOpts,
         showDots,
         showArrows,
         dotsPosition: resolvedDotsPosition,
         orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+          orientation || (stableOpts?.axis === "y" ? "vertical" : "horizontal"),
         scrollPrev,
         scrollNext,
         canScrollPrev,
@@ -173,7 +182,7 @@ const Carousel = React.forwardRef<
       [
         carouselRef,
         api,
-        opts,
+        stableOpts,
         showDots,
         showArrows,
         resolvedDotsPosition,

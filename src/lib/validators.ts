@@ -1,5 +1,5 @@
 /**
- * validators.ts — India-specific field validation patterns & helpers.
+ * @file validators.ts — Universal field validation patterns & helpers.
  *
  * All regex constants are exported so consuming apps can use them in
  * custom form libraries (react-hook-form, zod, yup) or plain validation
@@ -8,64 +8,42 @@
 
 // ─── Regex Patterns ──────────────────────────────────────────────────────────
 
-/** 15-character GSTIN: 2-digit state code + PAN + 1 entity num + Z + 1 checksum */
-export const REGEX_GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[\dA-Z]$/;
-
-/** 10-character PAN: 5 alpha + 4 numeric + 1 alpha */
-export const REGEX_PAN = /^[A-Z]{5}\d{4}[A-Z]$/;
-
-/** Indian mobile number: 10 digits starting with 6–9 */
-export const REGEX_PHONE_IN = /^[6-9]\d{9}$/;
-
-/** Standard email (lenient but safe from backtracking) */
+/** Standard email address (RFC 5322 compatible, safe from ReDoS backtracking) */
 export const REGEX_EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
-/** IFSC code: 4 alpha + 0 + 6 alphanumeric */
-export const REGEX_IFSC = /^[A-Z]{4}0[A-Z\d]{6}$/;
+/** International phone number (E.164 compatible: optional +, 7 to 15 digits) */
+export const REGEX_PHONE = /^\+?[1-9]\d{6,14}$/;
 
-/** Bank account number: 9–18 digits */
-export const REGEX_BANK_ACCOUNT = /^\d{9,18}$/;
+/** Universal postal / ZIP code (3 to 10 alphanumeric characters with optional hyphens/spaces) */
+export const REGEX_POSTAL_CODE = /^[A-Za-z0-9\s-]{3,10}$/;
 
-/** 14-digit FSSAI license number */
-export const REGEX_FSSAI = /^\d{14}$/;
+/** Generic tax identification number (EIN, VAT, ABN, etc.: 6 to 20 alphanumeric characters) */
+export const REGEX_TAX_ID = /^[A-Za-z0-9\s-]{6,20}$/;
 
-/** 6-digit Indian pincode */
-export const REGEX_PINCODE = /^[1-9]\d{5}$/;
+/** International Bank Account / IBAN number (6 to 34 alphanumeric characters) */
+export const REGEX_BANK_ACCOUNT = /^[A-Za-z0-9]{6,34}$/;
+
+/** Bank routing transit code / SWIFT / BIC (4 to 11 alphanumeric characters) */
+export const REGEX_ROUTING_CODE = /^[A-Za-z0-9]{4,11}$/;
+
+/** Web URL (http or https) */
+export const REGEX_URL = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
 
 // ─── Error Messages ───────────────────────────────────────────────────────────
 
 export const VALIDATION_MESSAGES = {
-  gstin:       "Enter a valid 15-character GSTIN (e.g. 27AADCA1234D1Z5)",
-  pan:         "Enter a valid 10-character PAN (e.g. AADCA1234D)",
-  phone:       "Enter a valid 10-digit Indian mobile number",
-  email:       "Enter a valid email address",
-  ifsc:        "Enter a valid IFSC code (e.g. HDFC0001234)",
-  bankAccount: "Account number must be 9–18 digits",
-  fssai:       "FSSAI license must be exactly 14 digits",
-  pincode:     "Enter a valid 6-digit pincode",
+  email: "Enter a valid email address",
+  phone: "Enter a valid international phone number",
+  postalCode: "Enter a valid postal or ZIP code",
+  taxId: "Enter a valid tax identification number",
+  bankAccount: "Enter a valid bank account or IBAN number",
+  routingCode: "Enter a valid routing code or SWIFT/BIC",
+  url: "Enter a valid URL (e.g. https://example.com)",
 } as const;
 
 // ─── Validator Functions ──────────────────────────────────────────────────────
 
 /** Returns undefined if valid, or an error string if invalid. */
-
-export function validateGSTIN(value: string): string | undefined {
-  const v = value.trim().toUpperCase();
-  if (!v) return "GST Number is required";
-  if (!REGEX_GSTIN.test(v)) return VALIDATION_MESSAGES.gstin;
-}
-
-export function validatePAN(value: string): string | undefined {
-  const v = value.trim().toUpperCase();
-  if (!v) return "PAN Number is required";
-  if (!REGEX_PAN.test(v)) return VALIDATION_MESSAGES.pan;
-}
-
-export function validatePhoneIN(value: string): string | undefined {
-  const v = value.trim().replace(/\s/g, "");
-  if (!v) return "Phone number is required";
-  if (!REGEX_PHONE_IN.test(v)) return VALIDATION_MESSAGES.phone;
-}
 
 export function validateEmail(value: string): string | undefined {
   const v = value.trim();
@@ -73,25 +51,39 @@ export function validateEmail(value: string): string | undefined {
   if (!REGEX_EMAIL.test(v)) return VALIDATION_MESSAGES.email;
 }
 
-export function validateIFSC(value: string): string | undefined {
-  const v = value.trim().toUpperCase();
-  if (!v) return "IFSC code is required";
-  if (!REGEX_IFSC.test(v)) return VALIDATION_MESSAGES.ifsc;
+export function validatePhone(value: string): string | undefined {
+  const v = value.trim().replace(/[\s()-]/g, "");
+  if (!v) return "Phone number is required";
+  if (!REGEX_PHONE.test(v)) return VALIDATION_MESSAGES.phone;
+}
+
+export function validatePostalCode(value: string): string | undefined {
+  const v = value.trim();
+  if (!v) return "Postal code is required";
+  if (!REGEX_POSTAL_CODE.test(v)) return VALIDATION_MESSAGES.postalCode;
+}
+
+export function validateTaxId(value: string): string | undefined {
+  const v = value.trim();
+  if (!v) return "Tax ID is required";
+  if (!REGEX_TAX_ID.test(v)) return VALIDATION_MESSAGES.taxId;
 }
 
 export function validateBankAccount(value: string): string | undefined {
-  const v = value.trim();
-  if (!v) return "Account number is required";
+  const v = value.trim().replace(/\s/g, "");
+  if (!v) return "Bank account number is required";
   if (!REGEX_BANK_ACCOUNT.test(v)) return VALIDATION_MESSAGES.bankAccount;
 }
 
-export function validateFSSAI(value: string): string | undefined {
-  if (!value || !value.trim()) return undefined; // optional field
-  if (!REGEX_FSSAI.test(value.trim())) return VALIDATION_MESSAGES.fssai;
+export function validateRoutingCode(value: string): string | undefined {
+  const v = value.trim();
+  if (!v) return "Routing code is required";
+  if (!REGEX_ROUTING_CODE.test(v)) return VALIDATION_MESSAGES.routingCode;
 }
 
-export function validatePincode(value: string): string | undefined {
+export function validateUrl(value: string): string | undefined {
   const v = value.trim();
-  if (!v) return "Pincode is required";
-  if (!REGEX_PINCODE.test(v)) return VALIDATION_MESSAGES.pincode;
+  if (!v) return "URL is required";
+  if (!REGEX_URL.test(v)) return VALIDATION_MESSAGES.url;
 }
+

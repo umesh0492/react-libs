@@ -1,5 +1,4 @@
 // @ts-nocheck
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, userEvent } from "storybook/test";
 import {
@@ -61,7 +60,7 @@ export const Default: Story = {
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Amount</dt>
-            <dd className="font-semibold">₹ 48,000</dd>
+            <dd className="font-semibold">$ 48,000</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Status</dt>
@@ -164,7 +163,7 @@ export const StatCards: Story = {
           change: "+12.4%",
           positive: true,
         },
-        { label: "Revenue", value: "₹ 2.4M", change: "+8.1%", positive: true },
+        { label: "Revenue", value: "$ 2.4M", change: "+8.1%", positive: true },
         { label: "Returns", value: "34", change: "+2.3%", positive: false },
       ].map(({ label, value, change, positive }) => (
         <Card key={label}>
@@ -184,7 +183,7 @@ export const StatCards: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     expect(canvas.getByText("Total Orders")).toBeInTheDocument();
-    expect(canvas.getByText("₹ 2.4M")).toBeInTheDocument();
+    expect(canvas.getByText("$ 2.4M")).toBeInTheDocument();
   },
 };
 

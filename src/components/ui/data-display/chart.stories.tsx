@@ -1,5 +1,4 @@
 // @ts-nocheck
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, waitFor } from 'storybook/test';
 import {

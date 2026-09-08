@@ -41,6 +41,12 @@ export function ProgressRing({
   const color = colorOverride ?? autoColor;
   const bgColor = getProgressBgColor(clamped);
 
+  const isCustomColor = Boolean(
+    colorOverride && /^#|^rgb|^hsl|^var\(/i.test(colorOverride)
+  );
+  const strokeColor = isCustomColor ? colorOverride : "currentColor";
+  const progressCircleClass = isCustomColor ? undefined : color;
+
   const roundedPercentage = Math.round(clamped);
 
   return (
@@ -65,12 +71,12 @@ export function ProgressRing({
           cy={size / 2}
         />
         <circle
-          className={cn(color, "transition-all duration-1000 ease-in-out")}
+          className={cn(progressCircleClass, "transition-all duration-1000 ease-in-out")}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          stroke="currentColor"
+          stroke={strokeColor}
           fill="transparent"
           r={radius}
           cx={size / 2}

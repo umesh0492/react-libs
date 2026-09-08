@@ -1,7 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { Popover, PopoverTrigger, PopoverContent } from '../popover';
-import React from 'react';
 
 describe('Popover Interaction and Portal Focus Map', () => {
 

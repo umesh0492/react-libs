@@ -16,8 +16,8 @@ import { cn } from "../../../lib/utils"
 
 export type SortDirection = "asc" | "desc" | null
 
-export interface DataTableColumn<T> {
-  key: string
+export interface DataTableColumn<T, K extends keyof T = keyof T> {
+  key: (K & string) | (string & {})
   header: string
   /** Render a custom cell for this column */
   cell?: (row: T, index: number) => React.ReactNode

@@ -1,5 +1,4 @@
 // @ts-nocheck
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
 import { EmptyState } from './empty-state';
@@ -121,7 +120,7 @@ export const Borderless: Story = {
       <EmptyState
         icon={<FileX2 className="w-5 h-5" />}
         title="No documents uploaded"
-        description="Upload GST certificate, PAN card, and FSSAI license to complete verification."
+        description="Upload business license, tax certificate, and identity documents to complete verification."
         actionLabel="Upload Documents"
         bordered={false}
       />

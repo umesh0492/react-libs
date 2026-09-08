@@ -39,30 +39,33 @@ export function withAuditTrail<P extends object, Ref = unknown>(
       const { actionName, entityId, entityType, auditLogger, onClick, ...rest } =
         props as WithAuditTrailProps;
 
-      const handleClick = (e: React.MouseEvent) => {
-        const payload: AuditTrailPayload = {
-          actionName,
-          entityType: entityType ?? "Unknown",
-          entityId: entityId ?? undefined,
-          timestamp: new Date().toISOString(),
-        };
+      const handleClick = React.useCallback(
+        (e: React.MouseEvent) => {
+          const payload: AuditTrailPayload = {
+            actionName,
+            entityType: entityType ?? "Unknown",
+            entityId: entityId ?? undefined,
+            timestamp: new Date().toISOString(),
+          };
 
-        const logger = auditLogger || globalAuditLogger;
-        if (logger) {
-          try {
-            const res = logger(payload);
-            if (res instanceof Promise) {
-              res.catch(() => {});
+          const logger = auditLogger || globalAuditLogger;
+          if (logger) {
+            try {
+              const res = logger(payload);
+              if (res instanceof Promise) {
+                res.catch(() => {});
+              }
+            } catch {
+              // Swallow telemetry errors to never block user action
             }
-          } catch {
-            // Swallow telemetry errors to never block user action
           }
-        }
 
-        if (onClick && typeof onClick === "function") {
-          onClick(e);
-        }
-      };
+          if (onClick && typeof onClick === "function") {
+            onClick(e);
+          }
+        },
+        [actionName, entityType, entityId, auditLogger, onClick]
+      );
 
       return <WrappedComponent {...(rest as unknown as P)} ref={ref} onClick={handleClick} />;
     }

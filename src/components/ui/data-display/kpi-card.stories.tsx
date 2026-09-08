@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import * as React from "react";
 import { DollarSign, Users, ShoppingCart, Activity } from "lucide-react";
 import { KPICard } from "./kpi-card";
 
@@ -52,7 +51,7 @@ export const GridMetrics: Story = {
       <KPICard
         title="Total Revenue"
         value="124,500"
-        prefix="₹"
+        prefix="$"
         change={18.2}
         changePeriod="vs last quarter"
         icon={<DollarSign className="h-4 w-4" />}

@@ -926,7 +926,7 @@
       "p99": 18.1
     },
     {
-      "component": "lib/__tests__/india-locations.test.ts",
+      "component": "lib/__tests__/locations.test.ts",
       "count": 24,
       "pass": 24,
       "fail": 0,

@@ -130,22 +130,22 @@ export const WithError: Story = {
   render: (args) => (
     <FieldStoryFrame className="w-[340px]">
       <Field {...args} data-invalid="true">
-        <FieldLabel htmlFor="field-gst">GST Number</FieldLabel>
+        <FieldLabel htmlFor="field-gst">Tax ID</FieldLabel>
         <Input
           id="field-gst"
           aria-describedby="field-gst-error"
           aria-invalid="true"
-          defaultValue="INVALID_GST"
+          defaultValue="INVALID_TAX_ID"
         />
         <FieldError id="field-gst-error">
-          Must be a valid 15-character GST number.
+          Must be a valid tax identification number.
         </FieldError>
       </Field>
     </FieldStoryFrame>
   ),
   play: async ({ canvas }) => {
     expect(canvas.getByRole("alert")).toBeInTheDocument();
-    expect(canvas.getByLabelText("GST Number")).toHaveAttribute(
+    expect(canvas.getByLabelText("Tax ID")).toHaveAttribute(
       "aria-describedby",
       "field-gst-error",
     );
@@ -212,10 +212,10 @@ export const GroupedFields: Story = {
             <Input id="g-name" placeholder="Acme Pvt Ltd" />
           </Field>
           <Field>
-            <FieldLabel htmlFor="g-gst">GST Number</FieldLabel>
+            <FieldLabel htmlFor="g-gst">Tax ID</FieldLabel>
             <Input id="g-gst" placeholder="22AAAAA0000A1Z5" />
             <FieldDescription>
-              15-digit GSTIN issued by the Government of India.
+              Official tax identification number issued by the authority.
             </FieldDescription>
           </Field>
           <Field>
@@ -229,7 +229,7 @@ export const GroupedFields: Story = {
   play: async ({ canvas }) => {
     expect(canvas.getByText("Partner Details")).toBeInTheDocument();
     expect(canvas.getByLabelText("Company Name")).toBeInTheDocument();
-    expect(canvas.getByLabelText("GST Number")).toBeInTheDocument();
+    expect(canvas.getByLabelText("Tax ID")).toBeInTheDocument();
     expect(canvas.getByLabelText("Phone")).toBeInTheDocument();
   },
 };

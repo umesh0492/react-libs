@@ -1,8 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { FilterSelect } from '../filter-select';
-import React from 'react';
 
 // Must mock matchMedia for Radix Select in jsdom
 Object.defineProperty(window, 'matchMedia', {

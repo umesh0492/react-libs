@@ -22,8 +22,8 @@ describe('formatCurrency', () => {
   });
 
   it('formats with custom currency and locale', () => {
-    const inr = formatCurrency(1234.56, 'INR', 'en-IN');
-    expect(inr).toContain('1,234.56');
+    const gbp = formatCurrency(1234.56, 'GBP', 'en-GB');
+    expect(gbp).toContain('1,234.56');
     const eur = formatCurrency(1234.56, 'EUR', 'de-DE');
     expect(eur).toContain('1.234,56');
   });

@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Switch } from '../switch';
-import React from 'react';
 
 describe('Switch Interactive Mapping', () => {
 

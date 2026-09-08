@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react"
-import * as RechartsPrimitive from "recharts"
+import { ResponsiveContainer, Tooltip, Legend } from "recharts"
 import type { TooltipPayloadEntry, LegendPayload } from "recharts"
 
 import { cn } from "../../../lib/utils"
@@ -38,9 +38,7 @@ function useChart() {
 
 export type ChartContainerProps = React.ComponentProps<"div"> & {
   config: ChartConfig
-  children: React.ComponentProps<
-    typeof RechartsPrimitive.ResponsiveContainer
-  >["children"]
+  children: React.ReactElement
   fallback?: React.ReactNode | FallbackRender
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void
 }
@@ -67,9 +65,9 @@ const ChartContainer = React.forwardRef<
       >
         <ChartStyle id={chartId} config={config} />
         <ErrorBoundary fallback={fallback} onError={onError}>
-          <RechartsPrimitive.ResponsiveContainer>
+          <ResponsiveContainer>
             {children}
-          </RechartsPrimitive.ResponsiveContainer>
+          </ResponsiveContainer>
         </ErrorBoundary>
       </div>
     </ChartContext.Provider>
@@ -114,7 +112,7 @@ ${colorConfig
   )
 }
 
-const ChartTooltip = RechartsPrimitive.Tooltip
+const ChartTooltip = Tooltip
 
 export interface ChartTooltipContentProps
   extends Omit<React.ComponentProps<"div">, "color"> {
@@ -296,7 +294,7 @@ const ChartTooltipContent = React.forwardRef<
 )
 ChartTooltipContent.displayName = "ChartTooltip"
 
-const ChartLegend = RechartsPrimitive.Legend
+const ChartLegend = Legend
 
 export interface ChartLegendContentProps
   extends React.ComponentProps<"div"> {
