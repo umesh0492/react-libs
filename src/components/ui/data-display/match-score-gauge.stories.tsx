@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import * as React from "react";
 import { MatchScoreGauge } from "./match-score-gauge";
 
 const meta: Meta<typeof MatchScoreGauge> = {

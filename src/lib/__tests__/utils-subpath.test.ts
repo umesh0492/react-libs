@@ -6,8 +6,8 @@ describe('@umesh0492/react-libs/utils subpath', () => {
     expect(typeof utils.cn).toBe('function');
     expect(typeof utils.formatCurrency).toBe('function');
     expect(typeof utils.formatNumber).toBe('function');
-    expect(typeof utils.validateGSTIN).toBe('function');
-    expect(typeof utils.validatePAN).toBe('function');
+    expect(typeof utils.validateTaxId).toBe('function');
+    expect(typeof utils.validatePostalCode).toBe('function');
     expect(typeof utils.maskSensitiveValue).toBe('function');
   });
 
@@ -26,9 +26,10 @@ describe('@umesh0492/react-libs/utils subpath', () => {
     // formatters work (generic USD / en-US default)
     expect(utils.formatCurrency(150000)).toContain('150,000');
     // validators work
-    expect(utils.validatePAN('ABCDE1234F')).toBeUndefined();
-    expect(utils.validatePAN('invalid')).toBe('Enter a valid 10-character PAN (e.g. AADCA1234D)');
+    expect(utils.validateTaxId('US123456789')).toBeUndefined();
+    expect(utils.validateTaxId('')).toBe('Tax ID is required');
     // masking works
     expect(utils.maskSensitiveValue('SecretValue', { isMasked: true })).toBe('••••••');
   });
 });
+

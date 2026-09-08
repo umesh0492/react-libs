@@ -153,7 +153,7 @@ export const OneLiner: Story = {
       </Alert>
       <Alert variant="warning">
         <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>GSTIN verification pending.</AlertTitle>
+        <AlertTitle>Tax ID verification pending.</AlertTitle>
       </Alert>
     </div>
   ),

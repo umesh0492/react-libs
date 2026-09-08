@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import React from 'react';
+import { render } from '@testing-library/react';
 import { Toaster as SonnerToaster } from '../sonner';
 import { Toaster } from '../toaster';
 
@@ -38,7 +37,7 @@ describe('Toaster (Radix Toast)', () => {
   it('renders ToastViewport in the DOM', () => {
     render(<Toaster />);
     // ToastViewport renders as an ol with role="region"
-    const viewport = document.querySelector('[class*="viewport"]') 
+    document.querySelector('[class*="viewport"]') 
       ?? document.querySelector('ol');
     expect(document.body).toBeInTheDocument();
   });

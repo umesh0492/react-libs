@@ -9,7 +9,7 @@
  */
 
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync, appendFileSync, statSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, appendFileSync, statSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -42,7 +42,7 @@ async function buildCss() {
   try {
     execSync(`${cliCommand} -i "${INPUT_CSS}" -o "${OUTPUT_CSS}" --minify`, {
       cwd: ROOT,
-      stdio: 'inherit',
+      stdio: ['ignore', 'inherit', 'inherit'],
     });
   } catch (error) {
     console.error('❌ Tailwind CLI compilation failed:', error.message);
@@ -60,7 +60,12 @@ async function buildCss() {
     console.log('ℹ️  No dist/index.css found to append.');
   }
 
-  // 3. Verify output
+  // 3. Emit TypeScript declarations and CJS stub for dual module CSS exports
+  writeFileSync(join(DIST_DIR, 'css.d.ts'), 'declare const styles: string;\nexport default styles;\n');
+  writeFileSync(join(DIST_DIR, 'css.d.cts'), 'declare const styles: string;\nexport = styles;\n');
+  writeFileSync(join(DIST_DIR, 'style.cjs'), 'module.exports = "";\n');
+
+  // 4. Verify output
   if (!existsSync(OUTPUT_CSS)) {
     console.error(`❌ Output file ${OUTPUT_CSS} does not exist.`);
     process.exit(1);

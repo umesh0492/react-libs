@@ -10,7 +10,7 @@ import {
 } from '../chart';
 import {
   Bar, BarChart, Line, LineChart,
-  ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  XAxis, YAxis, CartesianGrid,
 } from 'recharts';
 
 vi.mock('recharts', async (importOriginal) => {
@@ -222,7 +222,7 @@ describe('ChartTooltipContent — direct rendering and payload coverage', () => 
     const stubPayload = [
       { name: 'sales', value: 100, payload: { fill: '#000', month: 'Jan', sales: 100 }, dataKey: 'sales', color: '#4f46e5' },
     ];
-    const { container } = render(
+    render(
       <ChartContainer config={mockConfig}>
         <ChartTooltipContent {...({ active: true, payload: stubPayload } as any)} />
       </ChartContainer>

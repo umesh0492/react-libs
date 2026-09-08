@@ -1,5 +1,4 @@
 // @ts-nocheck
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, userEvent, fn } from "storybook/test";
 import { RadioGroup, RadioGroupItem } from "./radio-group";

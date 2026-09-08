@@ -15,7 +15,7 @@ export type AppLocale = "en-US" | "en-GB" | "en-IN" | "de-DE" | "fr-FR" | "ja-JP
  * Format a number as currency. Defaults to USD / en-US, fully configurable to any ISO currency and BCP-47 locale.
  * @example formatCurrency(123456.78) → "$123,456.78"
  * @example formatCurrency(123456.78, "EUR", "de-DE") → "123.456,78 €"
- * @example formatCurrency(123456.78, "INR", "en-IN") → "₹1,23,456.78"
+ * @example formatCurrency(123456.78, "GBP", "en-GB") → "£123,456.78"
  */
 export function formatCurrency(
   amount: NumericValue,
@@ -124,7 +124,7 @@ export function formatRelativeTime(
 export function formatWeight(
   value: NumericValue,
   unit: "kg" | "g" | "mt" | "lb" = "kg",
-  locale = "en-IN"
+  locale = "en-US"
 ): string {
   const num = typeof value === "string" ? parseFloat(value) : value
   if (num == null || isNaN(num)) return "—"
@@ -142,7 +142,7 @@ export function formatWeight(
 export function formatQuantity(
   value: NumericValue,
   unit?: string,
-  locale = "en-IN"
+  locale = "en-US"
 ): string {
   const num = typeof value === "string" ? parseFloat(value) : value
   if (num == null || isNaN(num)) return "—"

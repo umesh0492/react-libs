@@ -1,7 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '../dialog';
-import React from 'react';
 
 // Required for Radix dialogs injecting focus traps globally internally using ResizeObserver natively dynamically
 global.ResizeObserver = class ResizeObserver {

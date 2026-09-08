@@ -11,9 +11,9 @@ type DateRangePickerStoryArgs = React.ComponentProps<
 function formatRangeLabel(range: DateRange | undefined) {
   if (!range?.from) return "No range selected";
   if (!range.to)
-    return `Selected from ${range.from.toLocaleDateString("en-IN")}`;
+    return `Selected from ${range.from.toLocaleDateString("en-US")}`;
 
-  return `${range.from.toLocaleDateString("en-IN")} - ${range.to.toLocaleDateString("en-IN")}`;
+  return `${range.from.toLocaleDateString("en-US")} - ${range.to.toLocaleDateString("en-US")}`;
 }
 
 function CenteredStory({ children }: { children: React.ReactNode }) {

@@ -13,12 +13,6 @@ export interface SalaryRangeBreakdown {
   fixed?: number;
   variable?: number;
   equity?: number;
-  /** @deprecated Use `fixed` instead. */
-  fixedLakhs?: number;
-  /** @deprecated Use `variable` instead. */
-  variableLakhs?: number;
-  /** @deprecated Use `equity` instead. */
-  esopsLakhs?: number;
   items?: MetricRangeBreakdownItem[];
 }
 
@@ -27,11 +21,7 @@ export interface SalaryRangeDisplayProps extends React.HTMLAttributes<HTMLDivEle
   min?: number;
   /** Maximum range value. */
   max?: number;
-  /** @deprecated Use `min` instead. */
-  minLakhs?: number;
-  /** @deprecated Use `max` instead. */
-  maxLakhs?: number;
-  /** Currency symbol prefix (e.g., "$", "€", "£", "₹"). Defaults to "$". */
+  /** Currency symbol prefix (e.g., "$", "€", "£"). Defaults to "$". */
   currencySymbol?: string;
   /** Unit suffix for range values (e.g., "k", "M"). */
   unit?: string;
@@ -76,7 +66,7 @@ function resolveBreakdownItems(
   if (!breakdown) return [];
 
   const list: MetricRangeBreakdownItem[] = [];
-  const fixed = breakdown.fixed ?? breakdown.fixedLakhs;
+  const fixed = breakdown.fixed;
   if (fixed !== undefined) {
     list.push({
       label: "Fixed",
@@ -84,7 +74,7 @@ function resolveBreakdownItems(
       colorClass: "text-slate-800 dark:text-slate-200",
     });
   }
-  const variable = breakdown.variable ?? breakdown.variableLakhs;
+  const variable = breakdown.variable;
   if (variable !== undefined) {
     list.push({
       label: "Variable",
@@ -92,7 +82,7 @@ function resolveBreakdownItems(
       colorClass: "text-indigo-600 dark:text-indigo-400",
     });
   }
-  const equity = breakdown.equity ?? breakdown.esopsLakhs;
+  const equity = breakdown.equity;
   if (equity !== undefined) {
     list.push({
       label: "Equity",
@@ -106,10 +96,8 @@ function resolveBreakdownItems(
 export function SalaryRangeDisplay({
   min,
   max,
-  minLakhs,
-  maxLakhs,
   currencySymbol = "$",
-  unit,
+  unit = "",
   period = "yr",
   label = "Compensation Range",
   breakdown,
@@ -118,13 +106,7 @@ export function SalaryRangeDisplay({
   className,
   ...props
 }: SalaryRangeDisplayProps) {
-  // Resolve effective min, max, and unit (handling legacy lakhs props seamlessly)
-  const isLegacyLakhs = minLakhs !== undefined || maxLakhs !== undefined;
-  const effectiveMin = min ?? minLakhs;
-  const effectiveMax = max ?? maxLakhs;
-  const effectiveUnit = unit ?? (isLegacyLakhs ? "L" : "");
-
-  const formattedRange = formatRangeString(effectiveMin, effectiveMax, currencySymbol, effectiveUnit);
+  const formattedRange = formatRangeString(min, max, currencySymbol, unit);
 
   if (variant === "badge") {
     return (
@@ -141,7 +123,7 @@ export function SalaryRangeDisplay({
     );
   }
 
-  const resolvedItems = resolveBreakdownItems(items, breakdown, currencySymbol, effectiveUnit);
+  const resolvedItems = resolveBreakdownItems(items, breakdown, currencySymbol, unit);
 
   return (
     <div

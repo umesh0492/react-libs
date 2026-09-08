@@ -1,5 +1,4 @@
 // @ts-nocheck
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
 import {
@@ -101,7 +100,7 @@ export const WithForm: Story = {
             <Input id="dlg-partner-name" placeholder="Acme Pvt Ltd" />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="dlg-gst">GST Number</Label>
+            <Label htmlFor="dlg-gst">Tax ID</Label>
             <Input id="dlg-gst" placeholder="22AAAAA0000A1Z5" />
           </div>
           <div className="grid gap-1.5">

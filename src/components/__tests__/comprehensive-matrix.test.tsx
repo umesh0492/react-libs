@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { expect, test, describe, vi } from 'vitest';
-import * as React from 'react';
 import axe from 'axe-core';
 
 import { Button } from '../ui/forms/button';
