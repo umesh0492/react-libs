@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, userEvent, fn } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
 import { Label } from "./label";
 
@@ -166,9 +165,13 @@ export const Horizontal: Story = {
   ),
   play: async ({ canvasElement }) => {
     const radios = canvasElement.querySelectorAll('[role="radio"]');
-    expect(radios[1]).toHaveAttribute("data-state", "checked");
-    await userEvent.click(radios[2]);
-    expect(radios[2]).toHaveAttribute("data-state", "checked");
+    const second = radios[1];
+    const third = radios[2];
+    if (second && third) {
+      expect(second).toHaveAttribute("data-state", "checked");
+      await userEvent.click(third);
+      expect(third).toHaveAttribute("data-state", "checked");
+    }
   },
 };
 

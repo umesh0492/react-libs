@@ -29,13 +29,11 @@ const CLIENT_EXTERNAL = [
 ];
 
 export default defineConfig([
-  // 1. Client Components & Interactive Modules
+  // 1. Client Components & Interactive Modules ('use client' banner)
   {
     entry: {
       index: 'src/index.ts',
-      'hooks/use-toast': 'src/hooks/use-toast.ts',
-      'analytics/index': 'src/lib/analytics/index.ts',
-      'india/index': 'src/india/index.ts',
+      'india/react/index': 'src/india/react/index.ts',
       pdf: 'src/components/ui/data-display/pdf-viewer.tsx',
     },
     format: ['esm', 'cjs'],
@@ -49,10 +47,28 @@ export default defineConfig([
     injectStyle: false,
     external: CLIENT_EXTERNAL,
   },
-  // 2. Pure Utilities (Server/Edge/RSC Safe, Zero Directive)
+  // 2. Dedicated Hook Entry Point (Isolated build eliminates shared DTS chunks e.g. use-toast-[hash].d.ts)
+  {
+    entry: {
+      'hooks/use-toast': 'src/hooks/use-toast.ts',
+    },
+    format: ['esm', 'cjs'],
+    dts: true,
+    sourcemap: true,
+    clean: false,
+    splitting: false,
+    banner: {
+      js: "'use client';",
+    },
+    injectStyle: false,
+    external: CLIENT_EXTERNAL,
+  },
+  // 3. Universal / Server Modules (Pure Utilities, India Pure Domain & Universal Analytics, Zero Directive)
   {
     entry: {
       utils: 'src/utils.ts',
+      'analytics/index': 'src/lib/analytics/index.ts',
+      'india/index': 'src/india/index.ts',
     },
     format: ['esm', 'cjs'],
     dts: true,
@@ -60,12 +76,7 @@ export default defineConfig([
     clean: false,
     splitting: false,
     injectStyle: false,
-    external: [
-      'clsx',
-      'tailwind-merge',
-      'class-variance-authority',
-      'date-fns',
-    ],
+    external: CLIENT_EXTERNAL,
   },
 ]);
 

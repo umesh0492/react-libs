@@ -1,7 +1,6 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent } from 'storybook/test';
-import { Toaster } from './toaster';
+import { Toaster } from './sonner';
 import { toast } from 'sonner';
 import { Button } from '../forms/button';
 

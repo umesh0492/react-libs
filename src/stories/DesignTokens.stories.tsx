@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
@@ -50,24 +49,6 @@ function Swatch({ token, label, description }: { token: string; label: string; d
   );
 }
 
-function SolidSwatch({ bg, border, label, token }: { bg: string; border?: string; label: string; token: string }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 110 }}>
-      <div
-        style={{
-          height: 60,
-          width: '100%',
-          borderRadius: 10,
-          border: border ? `2px solid ${border}` : '1px solid rgba(0,0,0,0.08)',
-          background: bg,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-        }}
-      />
-      <code style={{ fontSize: 11, fontFamily: 'monospace', color: '#374151', lineHeight: 1.4 }}>{token}</code>
-      <span style={{ fontSize: 11, color: '#9ca3af' }}>{label}</span>
-    </div>
-  );
-}
 
 function RadiusSwatch({ token, label }: { token: string; label: string }) {
   return (

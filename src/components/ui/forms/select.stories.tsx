@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, userEvent, waitFor } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 import {
   Select,
   SelectContent,
@@ -139,7 +138,7 @@ export const DisabledWithPreExistingValue: Story = {
     <div className="p-8 w-[240px]">
       <Select {...args} defaultValue="banana">
         <SelectTrigger id="select-disabled" aria-label="banana">
-          <SelectValue placeholder="Banana" value="banana" />
+          <SelectValue placeholder="Banana" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="a">Option A</SelectItem>

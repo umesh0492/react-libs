@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, userEvent } from "storybook/test";
@@ -106,15 +105,20 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-type ToggleGroupStoryProps = React.ComponentProps<typeof ToggleGroup>;
+type ToggleGroupSingleProps = React.ComponentPropsWithoutRef<typeof ToggleGroup> & {
+  type?: "single";
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+};
 
 const AlignmentToggleGroupDemo = ({
   value: controlledValue,
   defaultValue = "center",
   onValueChange,
   ...args
-}: ToggleGroupStoryProps) => {
-  const [value, setValue] = React.useState(controlledValue ?? defaultValue);
+}: ToggleGroupSingleProps) => {
+  const [value, setValue] = React.useState<string>(controlledValue ?? defaultValue);
 
   React.useEffect(() => {
     setValue(controlledValue ?? defaultValue);
@@ -129,7 +133,7 @@ const AlignmentToggleGroupDemo = ({
     <div className="p-4 flex items-center justify-center">
       <ToggleGroup
         {...args}
-        type={args.type}
+        type="single"
         value={value}
         onValueChange={handleValueChange}
       >
@@ -147,13 +151,20 @@ const AlignmentToggleGroupDemo = ({
   );
 };
 
+type ToggleGroupMultipleProps = React.ComponentPropsWithoutRef<typeof ToggleGroup> & {
+  type?: "multiple";
+  value?: string[];
+  defaultValue?: string[];
+  onValueChange?: (value: string[]) => void;
+};
+
 const FormattingToggleGroupDemo = ({
   value: controlledValue,
   defaultValue = [],
   onValueChange,
   ...args
-}: ToggleGroupStoryProps) => {
-  const [value, setValue] = React.useState(controlledValue ?? defaultValue);
+}: ToggleGroupMultipleProps) => {
+  const [value, setValue] = React.useState<string[]>(controlledValue ?? defaultValue);
 
   React.useEffect(() => {
     setValue(controlledValue ?? defaultValue);
@@ -195,7 +206,7 @@ export const Default: Story = {
     type: "single",
     defaultValue: "center",
   },
-  render: (args) => <AlignmentToggleGroupDemo {...args} />,
+  render: (args) => <AlignmentToggleGroupDemo {...(args as ToggleGroupSingleProps)} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // ToggleGroup type="single" renders items as role="radio" inside a radiogroup
@@ -221,7 +232,7 @@ export const MultipleSelection: Story = {
     type: "multiple",
     defaultValue: [],
   },
-  render: (args) => <FormattingToggleGroupDemo {...args} />,
+  render: (args) => <FormattingToggleGroupDemo {...(args as ToggleGroupMultipleProps)} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const boldBtn = canvas.getByRole("button", { name: /bold/i });

@@ -7,31 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.1] - 2026-09-09
 
-### ⚛️ 'use client' Directive Regression Fix
+### ⚛️ 'use client' Directive Regression Fix & CI Assertion
 - **Restored `'use client';` Banners**:
-  - Re-introduced dedicated dual `tsup` build configuration with top-level `banner: { js: "'use client';" }` on all client entrypoints (`dist/index.js`, `dist/index.cjs`, `dist/analytics/index.js`, `dist/india/index.js`, `dist/hooks/use-toast.js`, `dist/pdf.js`).
+  - Re-introduced dedicated dual `tsup` build configuration with top-level `banner: { js: "'use client';" }` on client entrypoints (`dist/index.js`, `dist/index.cjs`, `dist/india/react/index.js`, `dist/hooks/use-toast.js`, `dist/pdf.js`).
   - Completely resolves Next.js App Router root import crashes where client components were bundled without directives.
-- **RSC & Edge Safety for `/utils`**:
-  - Maintained `dist/utils.js` as 100% directive-free and pure with zero DOM/React dependencies, guaranteeing safe execution in React Server Components, Server Actions, Route Handlers, and Edge runtimes.
+- **RSC & Edge Safety for Server Subpaths**:
+  - `dist/utils.js`, `dist/analytics/index.js`, and `dist/india/index.js` are 100% directive-free and pure with zero DOM/React dependencies, guaranteeing safe execution in React Server Components, Server Actions, Route Handlers, and Edge runtimes.
+- **CI Automated Assertion**:
+  - Added `scripts/verify-directives.mjs` running in CI (`npm run check:directives`) asserting `"use client"` as the literal first token on client entries and asserting absence on server/utility entries.
 
-### 🇮🇳 Shipped India Assets in `@umesh0492/react-libs/india`
-- **Implemented `AmountSummaryCardIndia`**:
-  - Created `src/india/components/amount-summary-card-india.tsx` featuring intra-state GST (CGST 50% + SGST 50%), inter-state IGST, statutory TDS withholding deductions, transport charges, and Indian currency (`₹` / Lakhs / Crores) formatting.
-  - Exported from `@umesh0492/react-libs/india`.
-  - Added unit test suite in `src/india/__tests__/amount-summary-card-india.test.tsx` (7/7 tests passing in pure Node).
-- **Implemented `locations.ts`**:
-  - Created `src/india/locations.ts` with complete `INDIA_STATES` (all 36 states and UTs), `INDIA_CITIES` (commercial/industrial localities), and query helpers (`getCitiesForState`, `getStateOptions`, `getCityOptions`, `isMetroCity`).
-  - Exported from `@umesh0492/react-libs/india`.
+### 🇮🇳 First-Class India Domain & React Subpath Split
+- **Pure Domain Subpath (`@umesh0492/react-libs/india`)**:
+  - Pure domain functions, constants, tax calculators, and geographic databases: `validateGSTIN`, `validatePAN`, `validatePhoneIN`, `validateIFSC`, `validateFSSAI`, `validatePincode`, `calculateGSTSplit`, `INDIA_STATES`, `INDIA_CITIES`, and scheduled languages list.
+  - Zero React, zero DOM dependencies, zero directives. 100% safe in RSC/edge runtimes.
+- **Component Subpath (`@umesh0492/react-libs/india/react`)**:
+  - Interactive UI component `AmountSummaryCardIndia` moved to dedicated subpath `@umesh0492/react-libs/india/react` with `"use client"` boundary.
+  - Full quality gate inclusion: Vitest coverage includes `src/india/**`, SSR smoke testing verified, export consistency verified by `scripts/check-exports.mjs`, and ESLint design token rules applied.
 
-### 🛡️ Quality Gate & CI Alignment
-- **Zero `--ignore-rules` in CI**:
-  - Removed `--ignore-rules no-resolution` from `.github/workflows/ci.yml`. Confirmed 100% 🟢 green across all resolution targets (`node10`, `node16 CJS`, `node16 ESM`, `bundler`) with zero ignore flags.
-  - Added `"check:types-pkg": "attw --pack ."` script to `package.json`.
+### 🎨 Clean `./style.css` Export & Packaging
+- **Direct String Export**:
+  - Replaced problematic require stub with direct string export `"./style.css": "./dist/style.css"`.
+  - Passed `npx @arethetypeswrong/cli --pack .` with 100% 🟢 green across all resolution environments with zero `--ignore-rules`.
 
-### 📦 Honest Packaging & Bundle Architecture
-- **Bundle Reality & Granularity**:
-  - Removed cryptic hashed internal chunks (`chunk-*.js`) by using direct, self-contained subpath entries (`splitting: false`).
-  - Truthfully documented package architecture: `@umesh0492/react-libs` (root) provides the full UI component kit, while consumer modularity is provided via first-class subpath imports (`@umesh0492/react-libs/utils`, `@umesh0492/react-libs/india`, `@umesh0492/react-libs/analytics`, `@umesh0492/react-libs/pdf`, `@umesh0492/react-libs/hooks/use-toast`).
+### ⚡ Storybook, TypeScript & Core Component Hardening
+- **Zero `// @ts-nocheck` Across All 62 Stories**:
+  - Removed all `// @ts-nocheck` comments across the entire Storybook directory.
+  - Resolved all Storybook type generics and missing arguments; `npx tsc --noEmit` and `npm run build-storybook` pass with 0 errors.
+- **Node 24 Vitest Parallelism Fix**:
+  - Resolved Node 24 worker contention by configuring controlled workers (`maxWorkers: process.env.CI ? 4 : 2`), eliminating serial execution workarounds while maintaining test isolation.
+- **Sidebar SSR Cookie Flash Fix**:
+  - Resolved post-paint cookie read flash by reading `sidebar_state` cookie during initial render in `useState` lazy initializer.
+- **AnalyticsProvider Optimization**:
+  - Fixed `isConfigEqual` callback churn by omitting function reference comparisons, preventing unnecessary engine re-initialization.
+- **Stepper Identifier Shadowing**:
+  - Renamed internal component function `StepItem` in `stepper.tsx` to `StepRow` to eliminate symbol shadowing.
+- **Carousel Ref Access Fix**:
+  - Replaced render-time `useRef` access with `useMemo` serialization to comply with React 19 / `react-hooks/refs` rules.
+- **Zero-Warning Lint Gate**:
+  - Enforced `eslint "src/**/*.{ts,tsx}" --max-warnings 0`. Eliminated all `any` casts in `src/test/`.
 
 ## [0.5.0] - 2026-09-08
 

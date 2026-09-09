@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderToString } from "react-dom/server";
-import { AmountSummaryCardIndia } from "../components/amount-summary-card-india";
+import { AmountSummaryCardIndia } from "../react/index";
 import {
   INDIA_STATES,
   INDIA_CITIES,

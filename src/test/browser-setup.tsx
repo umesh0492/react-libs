@@ -33,8 +33,9 @@ beforeAll(() => {
     document.head.appendChild(style);
 
     // 2. Mock Image to prevent network requests
+    const windowObj = window as unknown as Record<string, unknown>;
     const NativeImage = window.Image;
-    (window as any).Image = class extends NativeImage {
+    windowObj.Image = class extends NativeImage {
       constructor() {
         super();
         setTimeout(() => {
@@ -64,7 +65,7 @@ beforeAll(() => {
     });
 
     // 4. Mock IntersectionObserver
-    (window as any).IntersectionObserver = class IntersectionObserver {
+    windowObj.IntersectionObserver = class IntersectionObserver {
       constructor(callback: IntersectionObserverCallback) {
         this.callback = callback;
       }
@@ -73,7 +74,10 @@ beforeAll(() => {
       rootMargin = "";
       thresholds = [];
       observe() {
-        this.callback([{ isIntersecting: true, intersectionRatio: 1 } as any], this as any);
+        this.callback(
+          [{ isIntersecting: true, intersectionRatio: 1 } as unknown as IntersectionObserverEntry],
+          this as unknown as IntersectionObserver,
+        );
       }
       unobserve() {}
       disconnect() {}
@@ -81,7 +85,7 @@ beforeAll(() => {
     };
 
     // 5. Mock ResizeObserver (if not already handled)
-    (window as any).ResizeObserver = class ResizeObserver {
+    windowObj.ResizeObserver = class ResizeObserver {
       observe() {}
       unobserve() {}
       disconnect() {}
@@ -92,7 +96,11 @@ beforeAll(() => {
 
     // 7. Accelerate Timers
     const originalSetTimeout = window.setTimeout;
-    (window as any).setTimeout = (fn: Function, delay?: number, ...args: any[]) => {
+    windowObj.setTimeout = (
+      fn: (...args: unknown[]) => void,
+      delay?: number,
+      ...args: unknown[]
+    ) => {
       if (delay !== undefined && delay > 0 && delay <= 300) {
         return originalSetTimeout(fn, 0, ...args);
       }
@@ -101,7 +109,7 @@ beforeAll(() => {
 
     // 8. Accelerate requestAnimationFrame
     
-    (window as any).requestAnimationFrame = (callback: FrameRequestCallback) => {
+    windowObj.requestAnimationFrame = (callback: FrameRequestCallback) => {
       return originalSetTimeout(() => callback(performance.now()), 0);
     };
 

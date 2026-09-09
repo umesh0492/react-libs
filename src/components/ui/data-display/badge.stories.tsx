@@ -1,7 +1,6 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
-import { Badge, badgeVariants } from './badge';
+import { Badge } from './badge';
 
 /**
  * A compact label for status, category, or count display.

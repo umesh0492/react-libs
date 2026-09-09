@@ -118,6 +118,7 @@ describe("React Analytics Integration", () => {
             appId: "stable-app",
             autoTrackDom: false,
             autoTrackPages: false,
+            onError: () => {},
           }}
         >
           <ConsumerComponent pass={pass} />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
@@ -29,6 +28,10 @@ const meta = {
     },
   },
   tags: ['autodocs'],
+  args: {
+    data: [],
+    columns: [],
+  },
 } satisfies Meta<typeof DataTable>;
 
 export default meta;
@@ -57,11 +60,14 @@ const SAMPLE_RECORDS: RecordItem[] = [
 ];
 
 // Generate 20 rows for pagination demo
-const MANY_RECORDS: RecordItem[] = Array.from({ length: 20 }, (_, i) => ({
-  ...SAMPLE_RECORDS[i % SAMPLE_RECORDS.length],
-  id: `REC-${String(i + 1).padStart(3, '0')}`,
-  name: `${SAMPLE_RECORDS[i % SAMPLE_RECORDS.length].name} ${i >= 8 ? `(${Math.floor(i / 8) + 1})` : ''}`.trim(),
-}));
+const MANY_RECORDS: RecordItem[] = Array.from({ length: 20 }, (_, i) => {
+  const item = SAMPLE_RECORDS[i % SAMPLE_RECORDS.length]!;
+  return {
+    ...item,
+    id: `REC-${String(i + 1).padStart(3, '0')}`,
+    name: `${item.name} ${i >= 8 ? `(${Math.floor(i / 8) + 1})` : ''}`.trim(),
+  };
+});
 
 const recordColumns = [
   { key: 'id',       header: 'Record ID',  className: 'font-mono text-xs text-muted-foreground w-24' },
@@ -163,7 +169,6 @@ export const WithPagination: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const nextBtn = canvasElement.querySelector('[aria-label="Next page"]');
     const prevBtn = canvasElement.querySelector('[aria-label="Previous page"]');
     expect(nextBtn).toBeInTheDocument();

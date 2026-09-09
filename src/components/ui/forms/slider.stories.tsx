@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, userEvent } from "storybook/test";
@@ -41,29 +40,29 @@ const meta = {
     min: {
       control: "number",
       description: "Minimum allowed value.",
-      table: { category: "Range", defaultValue: { summary: 0 } },
+      table: { category: "Range", defaultValue: { summary: "0" } },
     },
     max: {
       control: "number",
       description: "Maximum allowed value.",
-      table: { category: "Range", defaultValue: { summary: 100 } },
+      table: { category: "Range", defaultValue: { summary: "100" } },
     },
     step: {
       control: "number",
       description:
         "Amount the value changes by during keyboard or pointer interaction.",
-      table: { category: "Range", defaultValue: { summary: 1 } },
+      table: { category: "Range", defaultValue: { summary: "1" } },
     },
     minStepsBetweenThumbs: {
       control: "number",
       description:
         "Minimum number of steps enforced between thumbs in multi-value sliders.",
-      table: { category: "Range", defaultValue: { summary: 0 } },
+      table: { category: "Range", defaultValue: { summary: "0" } },
     },
     disabled: {
       control: "boolean",
       description: "Disables the slider and all of its thumbs.",
-      table: { category: "State", defaultValue: { summary: false } },
+      table: { category: "State", defaultValue: { summary: "false" } },
     },
     orientation: {
       control: "radio",
@@ -80,7 +79,7 @@ const meta = {
     inverted: {
       control: "boolean",
       description: "Reverses the filled range direction.",
-      table: { category: "Layout", defaultValue: { summary: false } },
+      table: { category: "Layout", defaultValue: { summary: "false" } },
     },
     name: {
       control: "text",

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
@@ -10,6 +9,12 @@ const meta = {
   component: ConfirmDialog,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
+  args: {
+    open: false,
+    onOpenChange: () => {},
+    title: 'Confirm action',
+    onConfirm: () => {},
+  },
 } satisfies Meta<typeof ConfirmDialog>;
 
 export default meta;

@@ -14,18 +14,18 @@ Early iterations of `@umesh0492/react-libs` bundled regional Indian business log
 While valuable for Indian enterprise applications, baking regional assumptions into the root package caused domain leakage, broke internationalization for global consumers, and violated generic open-source library standards. However, completely purging working, battle-tested code would result in valuable business capability loss.
 
 ## Decision
-We adopted **Option 1: Subpath Module Isolation**:
-1. **Dedicated Subpath Entry Point**:
-   - All Indian compliance, taxation, and geographic domain logic is moved into `src/india/` and compiled to `@umesh0492/react-libs/india`.
-   - Dedicated build entry `india/index` configured in `tsup.config.ts`.
-   - Exported in `package.json` under `"./india"` with full dual ESM/CJS and TypeScript type definitions.
-2. **Preserved Domain Assets**:
-   - `src/india/validators.ts`: `validateGSTIN`, `validatePAN`, `validatePhoneIN`, `validateIFSC`, `validateFSSAI`, `validatePincode` (plus regex constants).
-   - `src/india/tax.ts`: `calculateGSTSplit`, `AmountSummaryCardIndia` regional wrapper.
-   - `src/india/constants.ts`: `INDIA_STATES`, `INDIA_CITIES`, regional language configurations.
-   - Preserved unit tests in `src/india/__tests__/india.test.ts`.
+We adopted **Option 1: Subpath Module Isolation** with a two-tier subpath structure:
+1. **Pure Domain Subpath (`@umesh0492/react-libs/india`)**:
+   - 100% pure TypeScript/JavaScript containing India compliance, taxation calculations, statutory validators, and regional datasets.
+   - Built with zero directive/banner into `dist/india/index.js` (and CJS/DTS).
+   - Zero React, DOM, or browser dependencies — 100% safe for React Server Components (RSC), Node.js, and Edge runtimes.
+   - Preserved assets: `validators.ts`, `tax.ts`, `constants.ts`, `locations.ts`.
+2. **Interactive UI Subpath (`@umesh0492/react-libs/india/react`)**:
+   - Dedicated entry point for interactive React UI components targeting Indian finance workflows (`AmountSummaryCardIndia`).
+   - Built with `'use client';` directive banner into `dist/india/react/index.js` (and CJS/DTS).
+   - Safe for Next.js App Router client components while preventing server runtime leakage.
 3. **Neutralization of Core Library**:
-   - Root (`.`) and `/utils` subpaths are 100% domain-neutral:
+   - Root (`.`) and `/utils` subpaths remain 100% domain-neutral:
      - Generic validators: `validateTaxId`, `validatePostalCode`, `validatePhone`, `validateBankAccount`, `validateRoutingCode`.
      - Generic currency: defaults to standard ISO/locale or user-provided currency code/symbol (default `$`).
      - `AmountSummaryCard`: accepts configurable `taxes?: { label: string; amount: number; rate?: number }[]`.
@@ -38,6 +38,8 @@ We adopted **Option 1: Subpath Module Isolation**:
 - **Positive**:
   - Global users get a clean, domain-neutral component library with zero unexpected regional defaults.
   - Indian enterprise consumers retain complete, first-class access to GST/PAN/IFSC validation and tax splitting via `@umesh0492/react-libs/india`.
+  - Full RSC purity: `@umesh0492/react-libs/india` can be safely imported into Server Components and backend Node/Edge services without dragging in React or client directives.
+  - Interactive UI (`AmountSummaryCardIndia`) lives in `@umesh0492/react-libs/india/react` with clear `'use client'` demarcation.
   - Zero bundle bloat: consumers importing `@umesh0492/react-libs` or `@umesh0492/react-libs/utils` never bundle Indian regional logic.
 - **Negative**:
-  - Existing consumers using GST/PAN validators directly from root must update their import to `@umesh0492/react-libs/india` (detailed in `MIGRATION.md`).
+  - Consumers using `AmountSummaryCardIndia` import from `@umesh0492/react-libs/india/react` instead of `@umesh0492/react-libs/india`.

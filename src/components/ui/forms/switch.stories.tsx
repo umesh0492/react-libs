@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, userEvent } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import { Switch } from "./switch";
 
 /**
@@ -163,10 +162,13 @@ export const SettingsPanel: Story = {
   play: async ({ canvasElement }) => {
     const switches = canvasElement.querySelectorAll('[role="switch"]');
     expect(switches).toHaveLength(4);
-    // Toggle first switch off, second switch on
-    await userEvent.click(switches[0]);
-    await userEvent.click(switches[1]);
-    expect(switches[0]).toHaveAttribute("data-state", "unchecked");
-    expect(switches[1]).toHaveAttribute("data-state", "checked");
+    const first = switches[0];
+    const second = switches[1];
+    if (first && second) {
+      await userEvent.click(first);
+      await userEvent.click(second);
+      expect(first).toHaveAttribute("data-state", "unchecked");
+      expect(second).toHaveAttribute("data-state", "checked");
+    }
   },
 };

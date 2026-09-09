@@ -22,6 +22,7 @@ import { Field, FieldLabel, FieldDescription } from "../components/ui/forms/fiel
 import { Badge } from "../components/ui/data-display/badge";
 import { StatusBadge } from "../components/ui/data-display/status-badge";
 import { AmountSummaryCard } from "../components/ui/data-display/amount-summary-card";
+import { AmountSummaryCardIndia } from "../india/react";
 import { SalaryRangeDisplay } from "../components/ui/data-display/salary-range-display";
 import { KPICard } from "../components/ui/data-display/kpi-card";
 import { MatchScoreGauge } from "../components/ui/data-display/match-score-gauge";
@@ -101,6 +102,18 @@ describe("SSR Smoke Test Suite - renderToString Zero Crash Check", () => {
           baseAmount={10000}
           taxes={[{ label: "VAT", amount: 1500 }]}
           shippingCost={200}
+        />
+      ),
+    },
+    {
+      name: "AmountSummaryCardIndia",
+      element: (
+        <AmountSummaryCardIndia
+          baseAmount={150000}
+          gstRate={18}
+          isIntraState={true}
+          transportCost={2500}
+          tdsPercentage={2}
         />
       ),
     },

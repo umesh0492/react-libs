@@ -60,10 +60,6 @@ async function buildCss() {
     console.log('ℹ️  No dist/index.css found to append.');
   }
 
-  // 3. Emit TypeScript declarations and CJS stub for dual module CSS exports
-  writeFileSync(join(DIST_DIR, 'css.d.ts'), 'declare const styles: string;\nexport default styles;\n');
-  writeFileSync(join(DIST_DIR, 'css.d.cts'), 'declare const styles: string;\nexport = styles;\n');
-  writeFileSync(join(DIST_DIR, 'style.cjs'), 'module.exports = "";\n');
 
   // 4. Verify output
   if (!existsSync(OUTPUT_CSS)) {

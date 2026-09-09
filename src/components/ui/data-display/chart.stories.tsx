@@ -1,9 +1,8 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within, waitFor } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 import {
   Bar, BarChart, Line, LineChart, Area, AreaChart,
-  Pie, PieChart, Cell, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
+  Pie, PieChart, Cell, XAxis, YAxis, CartesianGrid,
 } from 'recharts';
 import {
   ChartContainer,
@@ -85,7 +84,7 @@ const pieConfig = {
  */
 export const BarWithYAxis: Story = {
   args: { config: multiConfig, children: <div /> },
-  render: (args) => (
+  render: () => (
     <div className="w-full max-w-[600px] bg-card rounded-xl border shadow-sm p-6">
       <h3 className="font-semibold text-base mb-1">Activity Overview</h3>
       <p className="text-xs text-muted-foreground mb-4">Jan – Jun 2026</p>
@@ -189,7 +188,7 @@ export const DonutPie: Story = {
           <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
           <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={3}>
             {categoryData.map((entry) => (
-              <Cell key={entry.name} fill={pieConfig[entry.name]?.color ?? 'hsl(var(--muted))'} />
+              <Cell key={entry.name} fill={(pieConfig as Record<string, { label: string; color: string }>)[entry.name]?.color ?? 'hsl(var(--muted))'} />
             ))}
           </Pie>
           <ChartLegend content={<ChartLegendContent nameKey="name" />} />

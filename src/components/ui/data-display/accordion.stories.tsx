@@ -1,5 +1,3 @@
-// @ts-nocheck
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, userEvent, waitFor } from "storybook/test";
 import {
@@ -91,7 +89,7 @@ const faqItems = [
  * Notice the last item has no bottom border (fixed `last:border-b-0`).
  */
 export const SingleCollapsible: Story = {
-  render: (args) => (
+  render: () => (
     <div className="w-[480px] p-4">
       <Accordion type="single" collapsible>
         {faqItems.map(({ value, question, answer }) => (
@@ -156,12 +154,12 @@ export const MultipleOpen: Story = {
  * background instead of the old text-underline.
  */
 export const HoverState: Story = {
-  render: (args) => (
+  render: () => (
     <div className="w-[480px] p-4 border rounded-xl bg-card">
       <p className="text-xs text-muted-foreground mb-3 px-1">
         Hover over items — background highlights, NO underline ✓
       </p>
-      <Accordion collapsible {...args}>
+      <Accordion type="single" collapsible>
         {faqItems.slice(0, 3).map(({ value, question, answer }) => (
           <AccordionItem key={value} value={value}>
             <AccordionTrigger>{question}</AccordionTrigger>
@@ -175,12 +173,12 @@ export const HoverState: Story = {
 
 /** Nested in a card — last item cleanly ends without double-border. */
 export const InCard: Story = {
-  render: (args) => (
+  render: () => (
     <div className="w-[480px] p-5 border rounded-xl shadow-sm bg-card">
       <h2 className="font-semibold text-base mb-4">
         Frequently Asked Questions
       </h2>
-      <Accordion collapsible {...args}>
+      <Accordion type="single" collapsible>
         {faqItems.slice(0, 3).map(({ value, question, answer }) => (
           <AccordionItem key={value} value={value}>
             <AccordionTrigger>{question}</AccordionTrigger>

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within, userEvent, waitFor } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 import {
   Menubar,
   MenubarMenu,

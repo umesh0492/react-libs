@@ -1,8 +1,7 @@
-// @ts-nocheck
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from 'storybook/test';
-import { ScrollArea, ScrollBar } from './scroll-area';
+import { expect } from 'storybook/test';
+import { ScrollArea } from './scroll-area';
 import { Separator } from './separator';
 
 /**

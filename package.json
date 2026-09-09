@@ -28,7 +28,7 @@
     "provenance": true
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.0.0"
   },
   "type": "module",
   "main": "./dist/index.cjs",
@@ -51,8 +51,8 @@
       "india": [
         "./dist/india/index.d.ts"
       ],
-      "style.css": [
-        "./dist/css.d.ts"
+      "india/react": [
+        "./dist/india/react/index.d.ts"
       ]
     }
   },
@@ -74,7 +74,11 @@
     "build-storybook": "storybook build",
     "perf": "node scripts/generate-performance-report.mjs",
     "check:types-pkg": "npx @arethetypeswrong/cli --pack .",
-    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "check:directives": "node scripts/verify-directives.mjs",
+    "check:size": "node scripts/check-bundle-size.mjs",
+    "verify:release": "node scripts/verify-release-version.mjs",
+    "extract:release-notes": "node scripts/extract-release-notes.mjs",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" --max-warnings 0",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "perf:open": "node scripts/generate-performance-report.mjs && open docs/performance-report.md"
   },
@@ -139,16 +143,17 @@
         "default": "./dist/india/index.cjs"
       }
     },
-    "./style.css": {
+    "./india/react": {
       "import": {
-        "types": "./dist/css.d.ts",
-        "default": "./dist/style.css"
+        "types": "./dist/india/react/index.d.ts",
+        "default": "./dist/india/react/index.js"
       },
       "require": {
-        "types": "./dist/css.d.cts",
-        "default": "./dist/style.cjs"
+        "types": "./dist/india/react/index.d.cts",
+        "default": "./dist/india/react/index.cjs"
       }
-    }
+    },
+    "./style.css": "./dist/style.css"
   },
   "license": "MIT",
   "peerDependencies": {
@@ -258,7 +263,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^25.5.0",
+    "@types/node": "^24.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",

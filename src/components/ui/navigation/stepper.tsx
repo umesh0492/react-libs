@@ -94,7 +94,7 @@ function StepLabelContent({
   );
 }
 
-function StepItem({
+function StepRow({
   step,
   index,
   activeStep,
@@ -201,7 +201,7 @@ export const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
         {...props}
       >
         {steps.map((step, index) => (
-          <StepItem
+          <StepRow
             key={index}
             step={step}
             index={index}

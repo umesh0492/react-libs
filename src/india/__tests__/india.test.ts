@@ -133,4 +133,21 @@ describe("@umesh0492/react-libs/india", () => {
       expect(formatCrores(25000000)).toContain("2.5Cr");
     });
   });
+
+  describe("Subpath Architecture Separation", () => {
+    it("guarantees @umesh0492/react-libs/india is pure without React components", async () => {
+      const pureModule = await import("../index");
+      expect((pureModule as Record<string, unknown>).AmountSummaryCardIndia).toBeUndefined();
+      expect(pureModule.validateGSTIN).toBeDefined();
+      expect(pureModule.calculateGSTSplit).toBeDefined();
+      expect(pureModule.INDIA_STATES).toBeDefined();
+    });
+
+    it("exports AmountSummaryCardIndia from @umesh0492/react-libs/india/react", async () => {
+      const reactModule = await import("../react/index");
+      expect(reactModule.AmountSummaryCardIndia).toBeDefined();
+      expect(typeof reactModule.AmountSummaryCardIndia).toBe("object"); // React.forwardRef returns an object
+    });
+  });
 });
+

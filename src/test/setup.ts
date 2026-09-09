@@ -41,7 +41,10 @@ if (typeof window !== 'undefined') {
     rootMargin = "";
     thresholds = [];
     observe() {
-      this.callback([{ isIntersecting: true, intersectionRatio: 1 } as any], this as any);
+      this.callback(
+        [{ isIntersecting: true, intersectionRatio: 1 } as unknown as IntersectionObserverEntry],
+        this as unknown as IntersectionObserver,
+      );
     }
     unobserve() {}
     disconnect() {}

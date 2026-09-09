@@ -67,14 +67,9 @@ const Carousel = React.forwardRef<
     },
     ref,
   ) => {
-    const optsRef = React.useRef(opts);
-    const optsMatch =
-      opts === optsRef.current ||
-      (opts && optsRef.current && JSON.stringify(opts) === JSON.stringify(optsRef.current));
-    if (!optsMatch) {
-      optsRef.current = opts;
-    }
-    const stableOpts = optsRef.current;
+    const serializedOpts = JSON.stringify(opts);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const stableOpts = React.useMemo(() => opts, [serializedOpts]);
 
     const [carouselRef, api] = useEmblaCarousel(
       {

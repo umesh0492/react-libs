@@ -4,7 +4,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    fileParallelism: false,
+    // Controlled worker concurrency preventing JSDOM process startup contention on high-core machines
+    maxWorkers: process.env.CI ? 4 : 2,
     testTimeout: 20000,
     hookTimeout: 20000,
     setupFiles: ['./src/test/setup.ts'],
@@ -17,7 +18,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json-summary', 'html'],
       reportsDirectory: './coverage',
-      include: ['src/components/ui/**', 'src/lib/**', 'src/hooks/**', 'src/utils.ts'],
+      include: ['src/components/ui/**', 'src/lib/**', 'src/hooks/**', 'src/india/**', 'src/utils.ts'],
       exclude: [
         'src/**/*.stories.{ts,tsx}',
         'src/stories/**',

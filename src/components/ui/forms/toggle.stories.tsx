@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within, userEvent } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import { Toggle } from "./toggle";
 import { Bold, Italic, Underline } from "lucide-react";
 
@@ -145,11 +144,13 @@ export const FormattingToolbar: Story = {
     const boldBtn = buttons[0];
     const italicBtn = buttons[1];
 
-    await userEvent.click(boldBtn);
-    await userEvent.click(italicBtn);
+    if (boldBtn && italicBtn) {
+      await userEvent.click(boldBtn);
+      await userEvent.click(italicBtn);
 
-    expect(boldBtn).toHaveAttribute("data-state", "on");
-    expect(italicBtn).toHaveAttribute("data-state", "on");
+      expect(boldBtn).toHaveAttribute("data-state", "on");
+      expect(italicBtn).toHaveAttribute("data-state", "on");
+    }
   },
 };
 

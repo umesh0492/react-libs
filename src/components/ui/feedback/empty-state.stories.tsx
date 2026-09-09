@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within, userEvent, waitFor } from 'storybook/test';
+import { expect, within, userEvent } from 'storybook/test';
 import { EmptyState } from './empty-state';
 import { PackageOpen, SearchX, ShieldAlert, FileX2, Plus, RefreshCcw } from 'lucide-react';
 

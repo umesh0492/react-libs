@@ -33,9 +33,9 @@ import {
 import { validateGSTIN } from '@umesh0492/react-libs/utils';
 ```
 
-### After (v0.5.0):
+### After (v0.5.x):
 ```tsx
-// Recommended: import directly from the dedicated domain subpath
+// 1. Pure domain validators, tax calculations, and datasets (Server-safe, Edge-safe, Node-safe):
 import { 
   validateGSTIN, 
   validatePAN, 
@@ -43,10 +43,16 @@ import {
   validateFSSAI, 
   validatePincode, 
   calculateGSTSplit, 
-  AmountSummaryCardIndia,
+  calculateTDS,
   INDIA_STATES, 
-  INDIA_CITIES 
+  INDIA_CITIES,
+  INDIAN_LANGUAGES,
+  formatLakhs,
+  formatCrores
 } from '@umesh0492/react-libs/india';
+
+// 2. Interactive React UI components ('use client' bounded):
+import { AmountSummaryCardIndia } from '@umesh0492/react-libs/india/react';
 ```
 
 ---

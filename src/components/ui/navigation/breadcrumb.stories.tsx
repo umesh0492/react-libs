@@ -1,5 +1,3 @@
-// @ts-nocheck
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
 import { Slash } from 'lucide-react';

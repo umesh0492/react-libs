@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
@@ -12,7 +11,6 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "./input-group";
-import ts from "typescript";
 
 type AddonAlign = React.ComponentProps<typeof InputGroupAddon>["align"];
 type ButtonSize = React.ComponentProps<typeof InputGroupButton>["size"];
@@ -154,7 +152,7 @@ const meta = {
 } satisfies Meta<InputGroupStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<InputGroupStoryArgs>;
 
 export const WithLeadingIcon: Story = {
   args: {

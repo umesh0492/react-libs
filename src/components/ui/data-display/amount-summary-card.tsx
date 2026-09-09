@@ -56,11 +56,12 @@ export interface AmountSummaryCardProps extends React.HTMLAttributes<HTMLDivElem
 function calculateItemTax(item: AmountSummaryItem, isTaxInclusive: boolean) {
   const qty = Number(item.totalQuantity) || 0;
   const price = Number(item.targetPrice) || 0;
-  const rate = item.taxRate !== undefined
-    ? Number(item.taxRate)
-    : item.tax_rate !== undefined
-      ? Number(item.tax_rate)
-      : 0;
+  let rate = 0;
+  if (item.taxRate !== undefined) {
+    rate = Number(item.taxRate);
+  } else if (item.tax_rate !== undefined) {
+    rate = Number(item.tax_rate);
+  }
 
   if (isTaxInclusive) {
     const totalPrice = qty * price;
@@ -85,6 +86,112 @@ function calculateItemsTotals(items: AmountSummaryItem[], isTaxInclusive: boolea
   }
 
   return { calcBase, calcTax };
+}
+
+function computeAmounts({
+  baseAmount,
+  taxAmount,
+  taxes,
+  shippingCost,
+  transportCost,
+  withholdingPercentage,
+  tdsPercentage,
+  deductions,
+  netPayable,
+  isTaxInclusive,
+  items,
+}: Pick<
+  AmountSummaryCardProps,
+  | "baseAmount"
+  | "taxAmount"
+  | "taxes"
+  | "shippingCost"
+  | "transportCost"
+  | "withholdingPercentage"
+  | "tdsPercentage"
+  | "deductions"
+  | "netPayable"
+  | "isTaxInclusive"
+  | "items"
+>) {
+  let finalBaseAmount = baseAmount ?? 0;
+  let finalTaxAmount = taxAmount ?? 0;
+
+  if (items && items.length > 0) {
+    const computed = calculateItemsTotals(items, isTaxInclusive ?? false);
+    if (baseAmount === undefined) finalBaseAmount = computed.calcBase;
+    if (taxAmount === undefined && (!taxes || taxes.length === 0)) finalTaxAmount = computed.calcTax;
+  }
+
+  const effectiveShipping = shippingCost ?? transportCost ?? 0;
+  const effectiveWithholdingPct = withholdingPercentage ?? tdsPercentage ?? 0;
+  const withholdingAmount = finalBaseAmount * (effectiveWithholdingPct / 100);
+
+  let totalTaxFromList = 0;
+  if (taxes && taxes.length > 0) {
+    totalTaxFromList = taxes.reduce((acc, t) => acc + t.amount, 0);
+  } else {
+    totalTaxFromList = finalTaxAmount;
+  }
+
+  let totalDeductions = withholdingAmount;
+  if (deductions && deductions.length > 0) {
+    totalDeductions += deductions.reduce((acc, d) => acc + d.amount, 0);
+  }
+
+  const totalValue =
+    netPayable !== undefined
+      ? netPayable
+      : finalBaseAmount + totalTaxFromList + effectiveShipping - totalDeductions;
+
+  return {
+    finalBaseAmount,
+    finalTaxAmount,
+    effectiveShipping,
+    effectiveWithholdingPct,
+    withholdingAmount,
+    totalValue,
+  };
+}
+
+interface TaxBreakdownProps {
+  taxes?: Array<{ label: string; amount: number }>;
+  finalTaxAmount: number;
+  taxLabel: string;
+  fmt: (num: number) => string;
+}
+
+function TaxBreakdownSection({ taxes, finalTaxAmount, taxLabel, fmt }: TaxBreakdownProps) {
+  if (taxes && taxes.length > 0) {
+    return (
+      <>
+        {taxes.map((tax, idx) => (
+          <div
+            key={idx}
+            className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800"
+          >
+            <span className="text-[11px] font-medium text-slate-500">{tax.label}</span>
+            <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+              +{fmt(tax.amount)}
+            </span>
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  if (finalTaxAmount > 0) {
+    return (
+      <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
+        <span className="text-[11px] font-medium text-slate-500">{taxLabel}</span>
+        <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+          +{fmt(finalTaxAmount)}
+        </span>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 interface TotalPayableSectionProps {
@@ -156,35 +263,26 @@ export function AmountSummaryCard({
   className,
   ...props
 }: AmountSummaryCardProps) {
-  let finalBaseAmount = baseAmount ?? 0;
-  let finalTaxAmount = taxAmount ?? 0;
-
-  if (items && items.length > 0) {
-    const computed = calculateItemsTotals(items, isTaxInclusive);
-    if (baseAmount === undefined) finalBaseAmount = computed.calcBase;
-    if (taxAmount === undefined && (!taxes || taxes.length === 0)) finalTaxAmount = computed.calcTax;
-  }
-
-  const effectiveShipping = shippingCost ?? transportCost ?? 0;
-  const effectiveWithholdingPct = withholdingPercentage ?? tdsPercentage ?? 0;
-  const withholdingAmount = finalBaseAmount * (effectiveWithholdingPct / 100);
-
-  let totalTaxFromList = 0;
-  if (taxes && taxes.length > 0) {
-    totalTaxFromList = taxes.reduce((acc, t) => acc + t.amount, 0);
-  } else {
-    totalTaxFromList = finalTaxAmount;
-  }
-
-  let totalDeductions = withholdingAmount;
-  if (deductions && deductions.length > 0) {
-    totalDeductions += deductions.reduce((acc, d) => acc + d.amount, 0);
-  }
-
-  const totalValue =
-    netPayable !== undefined
-      ? netPayable
-      : finalBaseAmount + totalTaxFromList + effectiveShipping - totalDeductions;
+  const {
+    finalBaseAmount,
+    finalTaxAmount,
+    effectiveShipping,
+    effectiveWithholdingPct,
+    withholdingAmount,
+    totalValue,
+  } = computeAmounts({
+    baseAmount,
+    taxAmount,
+    taxes,
+    shippingCost,
+    transportCost,
+    withholdingPercentage,
+    tdsPercentage,
+    deductions,
+    netPayable,
+    isTaxInclusive,
+    items,
+  });
 
   const isSm = size === "sm";
 
@@ -223,26 +321,12 @@ export function AmountSummaryCard({
           </div>
 
           {/* Tax Breakdown */}
-          {taxes && taxes.length > 0 ? (
-            taxes.map((tax, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800"
-              >
-                <span className="text-[11px] font-medium text-slate-500">{tax.label}</span>
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-                  +{fmt(tax.amount)}
-                </span>
-              </div>
-            ))
-          ) : finalTaxAmount > 0 ? (
-            <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-              <span className="text-[11px] font-medium text-slate-500">{taxLabel}</span>
-              <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-                +{fmt(finalTaxAmount)}
-              </span>
-            </div>
-          ) : null}
+          <TaxBreakdownSection
+            taxes={taxes}
+            finalTaxAmount={finalTaxAmount}
+            taxLabel={taxLabel}
+            fmt={fmt}
+          />
 
           {/* Shipping & Logistics */}
           {effectiveShipping > 0 && (

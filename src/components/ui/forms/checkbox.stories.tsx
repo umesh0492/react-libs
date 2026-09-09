@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within, userEvent } from 'storybook/test';
+import { expect, userEvent } from 'storybook/test';
 import { Checkbox } from './checkbox';
 
 /**
@@ -150,11 +149,16 @@ export const CheckboxList: Story = {
   play: async ({ canvasElement }) => {
     const checkboxes = canvasElement.querySelectorAll('[role="checkbox"]');
     expect(checkboxes).toHaveLength(3);
-    await userEvent.click(checkboxes[0]);
-    await userEvent.click(checkboxes[2]);
-    expect(checkboxes[0]).toHaveAttribute('data-state', 'checked');
-    expect(checkboxes[1]).toHaveAttribute('data-state', 'unchecked');
-    expect(checkboxes[2]).toHaveAttribute('data-state', 'checked');
+    const first = checkboxes[0];
+    const second = checkboxes[1];
+    const third = checkboxes[2];
+    if (first && second && third) {
+      await userEvent.click(first);
+      await userEvent.click(third);
+      expect(first).toHaveAttribute('data-state', 'checked');
+      expect(second).toHaveAttribute('data-state', 'unchecked');
+      expect(third).toHaveAttribute('data-state', 'checked');
+    }
   },
 };
 

@@ -1,17 +1,6 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, userEvent, waitFor } from "storybook/test";
 import { FilterSelect } from "./filter-select";
-
-const meta = {
-  title: "UI/Forms/FilterSelect",
-  component: FilterSelect,
-  parameters: { layout: "centered" },
-  tags: ["autodocs"],
-} satisfies Meta<typeof FilterSelect>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
 
 const statusOptions = [
   { label: "Active", value: "active" },
@@ -20,13 +9,27 @@ const statusOptions = [
   { label: "Suspended", value: "suspended" },
 ];
 
+const meta = {
+  title: "UI/Forms/FilterSelect",
+  component: FilterSelect,
+  parameters: { layout: "centered" },
+  tags: ["autodocs"],
+  args: {
+    options: statusOptions,
+    onChange: () => {},
+  },
+} satisfies Meta<typeof FilterSelect>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
 export const Default: Story = {
   render: () => (
     <div className="p-8 w-[280px]">
       <FilterSelect
         placeholder="Filter by Status..."
         options={statusOptions}
-        onValueChange={() => {}}
+        onChange={() => {}}
       />
     </div>
   ),
@@ -53,7 +56,7 @@ export const NoOptionsPassed: Story = {
       <FilterSelect
         placeholder="Filter by Status..."
         options={[]}
-        onValueChange={() => {}}
+        onChange={() => {}}
       />
     </div>
   ),
@@ -82,7 +85,7 @@ export const WithPreselected: Story = {
         placeholder="Filter by Status..."
         options={statusOptions}
         value="active"
-        onValueChange={() => {}}
+        onChange={() => {}}
       />
     </div>
   ),

@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { getAnalyticsEngine, initAnalytics, AnalyticsEngine } from "../engine";
 import type { AnalyticsConfig, AnalyticsEvent, PageContext } from "../types";
@@ -51,8 +49,7 @@ function isConfigEqual(prev?: AnalyticsConfig, next?: AnalyticsConfig): boolean 
     prev.maxOfflineQueue !== next.maxOfflineQueue ||
     prev.storagePrefix !== next.storagePrefix ||
     prev.autoTrackDom !== next.autoTrackDom ||
-    prev.autoTrackPages !== next.autoTrackPages ||
-    prev.onError !== next.onError
+    prev.autoTrackPages !== next.autoTrackPages
   ) {
     return false;
   }
@@ -73,6 +70,11 @@ export function AnalyticsProvider({
     () => externalEngine || getAnalyticsEngine()
   );
 
+  const onErrorRef = React.useRef(config?.onError);
+  React.useEffect(() => {
+    onErrorRef.current = config?.onError;
+  }, [config?.onError]);
+
   const [activeConfig, setActiveConfig] = React.useState<AnalyticsConfig | undefined>(config);
 
   if (!isConfigEqual(activeConfig, config)) {
@@ -86,7 +88,11 @@ export function AnalyticsProvider({
     }
 
     if (activeConfig) {
-      const engine = initAnalytics(activeConfig);
+      const stableConfig: AnalyticsConfig = {
+        ...activeConfig,
+        onError: (err: unknown) => onErrorRef.current?.(err),
+      };
+      const engine = initAnalytics(stableConfig);
       setEngineInstance(engine);
 
       return () => {

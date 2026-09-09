@@ -1,7 +1,5 @@
-// @ts-nocheck
-import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within, userEvent, waitFor, screen } from 'storybook/test';
+import { expect, within, userEvent, waitFor } from 'storybook/test';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from './hover-card';
 
 const meta = {

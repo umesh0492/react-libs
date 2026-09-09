@@ -1,6 +1,5 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within } from "storybook/test";
+import { expect } from "storybook/test";
 import {
   Carousel,
   CarouselContent,
@@ -101,18 +100,18 @@ const SLIDES = [
   },
 ];
 
-function getCarouselFrameClassName(orientation: "horizontal" | "vertical") {
+function getCarouselFrameClassName(orientation: "horizontal" | "vertical" = "horizontal") {
   return orientation === "vertical"
     ? "p-8 w-[320px] h-[240px]"
     : "p-10 w-[420px]";
 }
 
-function getCarouselClassName(orientation: "horizontal" | "vertical") {
+function getCarouselClassName(orientation: "horizontal" | "vertical" = "horizontal") {
   return orientation === "vertical" ? "w-full h-full" : "w-full";
 }
 
 function getSlideCardClassName(
-  orientation: "horizontal" | "vertical",
+  orientation: "horizontal" | "vertical" = "horizontal",
   baseClassName: string,
 ) {
   return `${baseClassName} ${orientation === "vertical" ? "h-full" : ""}`;

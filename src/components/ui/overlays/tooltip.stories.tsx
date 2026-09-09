@@ -1,7 +1,6 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipArrow } from './tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 import { Button } from '../forms/button';
 import { Info, HelpCircle, Keyboard } from 'lucide-react';
 

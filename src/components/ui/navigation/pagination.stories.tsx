@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
@@ -19,6 +18,12 @@ const meta = {
     },
   },
   tags: ['autodocs'],
+  args: {
+    currentPage: 1,
+    totalPages: 10,
+    totalItems: 100,
+    onPageChange: () => {},
+  },
 } satisfies Meta<typeof DataTablePagination>;
 
 export default meta;

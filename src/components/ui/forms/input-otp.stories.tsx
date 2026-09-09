@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
 import {
@@ -51,7 +50,7 @@ const meta = {
       table: { category: "Events" },
     },
   },
-  args: { maxLength: 6, disabled: false },
+  args: { maxLength: 6, disabled: false, children: null as unknown as React.ReactNode },
 } satisfies Meta<typeof InputOTP>;
 
 export default meta;
@@ -67,7 +66,7 @@ export const SixDigit: Story = {
       <label className="text-sm font-medium" htmlFor="otp-6">
         Verification Code
       </label>
-      <InputOTP {...args} id="otp-6">
+      <InputOTP maxLength={args.maxLength} disabled={args.disabled} id="otp-6">
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -97,7 +96,7 @@ export const FourDigitPin: Story = {
       <label className="text-sm font-medium" htmlFor="otp-4">
         ATM PIN
       </label>
-      <InputOTP {...args} id="otp-4">
+      <InputOTP maxLength={args.maxLength ?? 4} disabled={args.disabled} id="otp-4">
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -119,7 +118,7 @@ export const SplitWithSeparator: Story = {
       <label className="text-sm font-medium" htmlFor="otp-split">
         Backup Code
       </label>
-      <InputOTP {...args} id="otp-split">
+      <InputOTP maxLength={args.maxLength} disabled={args.disabled} id="otp-split">
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -175,7 +174,7 @@ export const Disabled: Story = {
       >
         Code Expired
       </label>
-      <InputOTP {...args} id="otp-disabled">
+      <InputOTP maxLength={args.maxLength} disabled={args.disabled ?? true} id="otp-disabled">
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />

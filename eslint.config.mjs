@@ -166,6 +166,7 @@ export default tseslint.config(
     plugins: { 'react-hooks': reactHooks },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      'react-hooks/exhaustive-deps': 'error',
     },
   },
 
@@ -177,7 +178,7 @@ export default tseslint.config(
 
   // ─── Component source: design token enforcement ────────────────────────────
   {
-    files: ['src/components/**/*.{ts,tsx}', 'src/lib/**/*.{ts,tsx}'],
+    files: ['src/components/**/*.{ts,tsx}', 'src/lib/**/*.{ts,tsx}', 'src/india/**/*.{ts,tsx}'],
     plugins: {
       'design-tokens': {
         rules: { 
@@ -189,13 +190,13 @@ export default tseslint.config(
     },
     rules: {
       // Design token system — no raw hex/rgb/hsl in component files
-      'design-tokens/no-hardcoded-colors': 'warn',
+      'design-tokens/no-hardcoded-colors': 'error',
       'design-tokens/no-hardcoded-fonts': 'error',
       'design-tokens/no-unsafe-tokens': 'error',
 
       // TypeScript quality
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 
       // Prefer React.ComponentRef over the deprecated React.ElementRef
       'no-restricted-syntax': [

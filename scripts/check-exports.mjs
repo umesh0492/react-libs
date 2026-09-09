@@ -2,10 +2,14 @@
 /**
  * check-exports.mjs
  *
- * Verifies that all components in src/components/ui/ are exported from src/index.ts.
+ * Verifies:
+ * 1. All UI components in src/components/ui/ are exported from src/index.ts (unless exempt).
+ * 2. All India UI components in src/india/components/ are exported from src/india/react/index.ts.
+ * 3. All India domain modules in src/india/ are exported from src/india/index.ts.
+ * 4. Invariant: src/index.ts does NOT leak/re-export any India domain modules.
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, dirname, relative } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -13,8 +17,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const UI_DIR = join(ROOT, 'src', 'components', 'ui');
 const ENTRY_FILE = join(ROOT, 'src', 'index.ts');
+const INDIA_DIR = join(ROOT, 'src', 'india');
+const INDIA_ENTRY = join(INDIA_DIR, 'index.ts');
+const INDIA_REACT_ENTRY = join(INDIA_DIR, 'react', 'index.ts');
+const INDIA_COMPONENTS_DIR = join(INDIA_DIR, 'components');
 
 function getFiles(dir, allFiles = []) {
+  if (!existsSync(dir)) return allFiles;
   const files = readdirSync(dir);
   for (const file of files) {
     const name = join(dir, file);
@@ -57,7 +66,7 @@ for (const file of componentFiles) {
 }
 
 if (missing.length > 0) {
-  console.error('❌  MISSING EXPORTS FOUND');
+  console.error('❌  MISSING UI EXPORTS FOUND');
   console.error('    The following components are defined but not exported from src/index.ts:\n');
   for (const m of missing) {
     console.error(`    - ${m.name} (${m.file}.tsx)`);
@@ -66,5 +75,48 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-console.log('✅  All UI components are properly exported.');
+// ─── India React Component Exports ──────────────────────────────────────────
+if (existsSync(INDIA_REACT_ENTRY) && existsSync(INDIA_COMPONENTS_DIR)) {
+  const indiaReactContent = readFileSync(INDIA_REACT_ENTRY, 'utf8');
+  const indiaComponents = getFiles(INDIA_COMPONENTS_DIR);
+  const missingIndiaComponents = [];
+
+  for (const file of indiaComponents) {
+    const baseName = file.split('/').pop().replace(/\.tsx$/, '');
+    const pattern = new RegExp(`from\\s+['"].*${baseName}['"]`, 'i');
+    if (!pattern.test(indiaReactContent)) {
+      missingIndiaComponents.push(baseName);
+    }
+  }
+
+  if (missingIndiaComponents.length > 0) {
+    console.error('❌  MISSING INDIA REACT EXPORTS FOUND');
+    console.error('    The following components are missing from src/india/react/index.ts:\n');
+    for (const name of missingIndiaComponents) {
+      console.error(`    - ${name}`);
+    }
+    process.exit(1);
+  }
+}
+
+// ─── India Pure Domain Exports ──────────────────────────────────────────────
+if (existsSync(INDIA_ENTRY)) {
+  const indiaContent = readFileSync(INDIA_ENTRY, 'utf8');
+  const indiaModules = ['validators', 'tax', 'constants', 'locations'];
+  for (const mod of indiaModules) {
+    const pattern = new RegExp(`from\\s+['"]\\.\\/${mod}['"]`, 'i');
+    if (!pattern.test(indiaContent)) {
+      console.error(`❌  MISSING INDIA DOMAIN EXPORT: ${mod} is not exported in src/india/index.ts`);
+      process.exit(1);
+    }
+  }
+}
+
+// ─── Domain Isolation Invariant ─────────────────────────────────────────────
+if (/from\s+['"]\.\/india/i.test(entryContent)) {
+  console.error('❌  DOMAIN LEAK: src/index.ts imports from ./india! Core must remain domain-neutral.');
+  process.exit(1);
+}
+
+console.log('✅  All UI components and subpath exports are properly verified.');
 process.exit(0);

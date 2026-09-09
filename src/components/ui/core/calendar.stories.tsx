@@ -1,21 +1,21 @@
-// @ts-nocheck
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DateRange } from "react-day-picker";
-import { expect, within, userEvent } from "storybook/test";
+import { expect } from "storybook/test";
 import { Calendar } from "./calendar";
 
 const DEFAULT_MONTH = new Date(2026, 3);
-type CalendarStoryArgs = React.ComponentProps<typeof Calendar>;
-
-function toDate(value: unknown, fallback = new Date()) {
-  if (value instanceof Date) return value;
-  if (typeof value === "number") return new Date(value);
-  if (typeof value === "string" && value) return new Date(value);
-  return fallback;
-}
+type CalendarStoryArgs = Omit<
+  React.ComponentProps<typeof Calendar>,
+  "selected" | "onSelect" | "mode"
+> & {
+  selected?: Date | DateRange | Date[];
+  mode?: "single" | "range" | "multiple";
+  onSelect?: unknown;
+};
 
 function SingleCalendarStory(args: CalendarStoryArgs) {
+  const { selected: _selected, onSelect: _onSelect, mode: _mode, ...rest } = args;
   const [selected, setSelected] = React.useState<Date | undefined>(
     args.selected as Date | undefined,
   );
@@ -27,7 +27,7 @@ function SingleCalendarStory(args: CalendarStoryArgs) {
   return (
     <div className="p-4 border rounded-xl shadow-sm bg-card">
       <Calendar
-        {...args}
+        {...rest}
         mode="single"
         selected={selected}
         onSelect={setSelected}
@@ -42,6 +42,7 @@ function SingleCalendarStory(args: CalendarStoryArgs) {
   );
 }
 function RangeCalendarStory(args: CalendarStoryArgs) {
+  const { selected: _selected, onSelect: _onSelect, mode: _mode, ...rest } = args;
   const [range, setRange] = React.useState<DateRange | undefined>(
     args.selected as DateRange | undefined,
   );
@@ -52,7 +53,7 @@ function RangeCalendarStory(args: CalendarStoryArgs) {
 
   return (
     <div className="p-4 border rounded-xl shadow-sm bg-card">
-      <Calendar {...args} mode="range" selected={range} onSelect={setRange} />
+      <Calendar {...rest} mode="range" selected={range} onSelect={setRange} />
       {range?.from && range?.to && (
         <p className="mt-2 text-center text-sm text-muted-foreground">
           {range.from.toLocaleDateString()} to {range.to.toLocaleDateString()}
@@ -63,6 +64,7 @@ function RangeCalendarStory(args: CalendarStoryArgs) {
 }
 
 function MultipleCalendarStory(args: CalendarStoryArgs) {
+  const { selected: _selected, onSelect: _onSelect, mode: _mode, ...rest } = args;
   const [days, setDays] = React.useState<Date[]>(
     (args.selected as Date[]) ?? [],
   );
@@ -73,38 +75,18 @@ function MultipleCalendarStory(args: CalendarStoryArgs) {
 
   return (
     <div className="p-4 border rounded-xl shadow-sm bg-card">
-      <Calendar {...args} mode="multiple" selected={days} onSelect={setDays} />
+      <Calendar
+        {...rest}
+        mode="multiple"
+        selected={days}
+        onSelect={(val) => setDays(val ?? [])}
+      />
       {days.length > 0 && (
         <p className="mt-2 text-center text-xs text-muted-foreground">
           {days.length} day{days.length !== 1 ? "s" : ""} selected
         </p>
       )}
     </div>
-  );
-}
-
-function DisabledPastCalendarStory(
-  args: CalendarStoryArgs & { minDate?: Date | number | string },
-) {
-  const { minDate, ...calendarArgs } = args;
-
-  return (
-    <SingleCalendarStory
-      {...calendarArgs}
-      disabled={{ before: toDate(minDate) }}
-    />
-  );
-}
-function DisabledFutureCalendarStory(
-  args: CalendarStoryArgs & { maxDate?: Date | number | string },
-) {
-  const { maxDate, ...calendarArgs } = args;
-
-  return (
-    <SingleCalendarStory
-      {...calendarArgs}
-      disabled={{ after: toDate(maxDate) }}
-    />
   );
 }
 
@@ -162,7 +144,7 @@ type Story = StoryObj<typeof meta>;
  * Today shows a dot indicator; selected date is a perfect circle.
  */
 export const SingleDay: Story = {
-  render: (args) => <SingleCalendarStory {...args} today={Date.now()} />,
+  render: (args) => <SingleCalendarStory {...args} today={new Date()} />,
   args: {
     mode: "single",
   },
@@ -246,51 +228,29 @@ export const WithDropdownNavigation: Story = {
 
 /** Disable all past dates (booking / scheduling use-case). */
 export const DisabledPast: Story = {
-  render: (args) => <DisabledPastCalendarStory {...args} />,
+  render: (args) => <SingleCalendarStory {...args} disabled={{ before: new Date() }} />,
   args: {
     mode: "single",
-    minDate: new Date(),
-  },
-  argTypes: {
-    minDate: {
-      control: "date",
-      description: "Disable all dates before this date.",
-      table: {
-        category: "Behaviour",
-        defaultValue: { summary: "today" },
-      },
-    },
   },
   parameters: {
     docs: {
       description: {
         story:
-          "Dates before the chosen control date are disabled (dimmed and unclickable). If no date is provided, it defaults to today.",
+          "Dates before today are disabled (dimmed and unclickable).",
       },
     },
   },
 };
 export const DisabledFuture: Story = {
-  render: (args) => <DisabledFutureCalendarStory {...args} />,
+  render: (args) => <SingleCalendarStory {...args} disabled={{ after: new Date() }} />,
   args: {
     mode: "single",
-    maxDate: new Date(),
-  },
-  argTypes: {
-    maxDate: {
-      control: "date",
-      description: "Disable all dates after this date.",
-      table: {
-        category: "Behaviour",
-        defaultValue: { summary: "today" },
-      },
-    },
   },
   parameters: {
     docs: {
       description: {
         story:
-          "Dates after the chosen control date are disabled (dimmed and unclickable). If no date is provided, it defaults to today.",
+          "Dates after today are disabled (dimmed and unclickable).",
       },
     },
   },

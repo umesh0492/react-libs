@@ -77,19 +77,29 @@ const SidebarProvider = React.forwardRef<
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
+  // Initial state reads cookie immediately to avoid post-paint SSR/client flash.
+  const [_open, _setOpen] = React.useState(() => {
+    if (typeof document !== "undefined") {
+      const match = document.cookie.match(
+        new RegExp(`(?:^|; )${SIDEBAR_COOKIE_NAME}=([^;]*)`)
+      )
+      if (match && match[1]) {
+        return match[1] === "true"
+      }
+    }
+    return defaultOpen
+  })
   const open = openProp ?? _open
 
-  // Client-side fallback: synchronize state with sidebar_state cookie after mount.
-  // Note: For true zero-flash SSR in Next.js/Remix, read the cookie on the server
-  // and pass `<SidebarProvider defaultOpen={cookieValue === "true"}>`.
+  // Client-side fallback: synchronize state if cookie was updated externally
   React.useEffect(() => {
     if (typeof document !== "undefined") {
       const match = document.cookie.match(
         new RegExp(`(?:^|; )${SIDEBAR_COOKIE_NAME}=([^;]*)`)
       )
       if (match && match[1]) {
-        _setOpen(match[1] === "true")
+        const cookieVal = match[1] === "true"
+        _setOpen((prev) => (prev !== cookieVal ? cookieVal : prev))
       }
     }
   }, [])
