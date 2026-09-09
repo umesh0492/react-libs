@@ -112,6 +112,6 @@ initAnalytics({
   ].filter(Boolean),
   batchSize: 10,
   flushIntervalMs: 5000,
-  globalMetadata: { appVersion: "1.0.0", tenantId: "org_42" },
+  globalMetadata: { appVersion: "0.1.0", tenantId: "org_42" },
 });
 ```

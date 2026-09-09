@@ -1,23 +1,23 @@
-# Migration Guide: Upgrading to v0.5.0
+# Migration Guide: Upgrading to v0.1.0
 
-This guide details breaking changes, architectural evolutions, and migration steps for upgrading to `@umesh0492/react-libs` v0.5.0.
+This guide details architectural evolutions and migration steps for upgrading to `@umesh0492/react-libs` v0.1.0.
 
 ---
 
 ## Overview of Architectural Changes
 
-In v0.5.0, `@umesh0492/react-libs` achieves full domain neutralization, minimal bundle footprint, and strict React Server Components (RSC) purity:
+In v0.1.0, `@umesh0492/react-libs` achieves full domain neutralization, minimal bundle footprint, and strict React Server Components (RSC) purity:
 1. **Dedicated Domain Subpath**: Indian regional and compliance logic has been moved from root and `/utils` into a dedicated subpath: `@umesh0492/react-libs/india`.
-2. **100% Pure RSC `/utils`**: The `@umesh0492/react-libs/utils` entry point now exports only pure, deterministic utilities with zero DOM, browser, or React dependencies.
-3. **Optional Peer Dependencies**: Heavy libraries (`recharts`, `react-pdf`, `xlsx`, `jspdf`, `canvas-confetti`, etc.) have been moved from direct dependencies to optional peer dependencies.
+2. **Pure RSC `/utils`**: The `@umesh0492/react-libs/utils` entry point exports pure utilities with zero DOM, browser, or React dependencies.
+3. **Optional Peer Dependencies**: Heavy libraries (`recharts`, `react-pdf`, `xlsx`, `jspdf`, `canvas-confetti`, etc.) are declared as optional peer dependencies.
 
 ---
 
 ## 1. Indian Domain & Compliance Logic Migration
 
-All Indian-specific validators, tax calculations, and regional constants are now isolated in `@umesh0492/react-libs/india`.
+All Indian-specific validators, tax calculations, and regional constants are isolated in `@umesh0492/react-libs/india`.
 
-### Before (v0.4.x):
+### Before (pre-0.1.0):
 ```tsx
 // Deprecated: imports from root or /utils
 import { 
@@ -33,7 +33,7 @@ import {
 import { validateGSTIN } from '@umesh0492/react-libs/utils';
 ```
 
-### After (v0.5.x):
+### After (v0.1.0):
 ```tsx
 // 1. Pure domain validators, tax calculations, and datasets (Server-safe, Edge-safe, Node-safe):
 import { 
@@ -64,10 +64,10 @@ import { AmountSummaryCardIndia } from '@umesh0492/react-libs/india/react';
 - If your application imported `downloadFileSecurely` or `exportData` from `@umesh0492/react-libs/utils`, update the import to root `@umesh0492/react-libs`:
 
 ```tsx
-// Before (v0.4.x)
+// Before (pre-0.1.0)
 import { downloadFileSecurely, exportData } from '@umesh0492/react-libs/utils';
 
-// After (v0.5.0)
+// After (v0.1.0)
 import { downloadFileSecurely, exportData } from '@umesh0492/react-libs';
 ```
 
@@ -99,7 +99,7 @@ If you use any of the following features, ensure the corresponding peer package 
 The card now accepts dynamic, configurable tax breakdowns rather than hardcoded Indian GST categories (`CGST`, `SGST`, `IGST`).
 
 ```tsx
-// Before (v0.4.x)
+// Before (pre-0.1.0)
 <AmountSummaryCard
   subtotal={10000}
   cgst={900}
@@ -107,7 +107,7 @@ The card now accepts dynamic, configurable tax breakdowns rather than hardcoded 
   total={11800}
 />
 
-// After (v0.5.0)
+// After (v0.1.0)
 <AmountSummaryCard
   subtotal={10000}
   taxes={[
@@ -127,10 +127,10 @@ The card now accepts dynamic, configurable tax breakdowns rather than hardcoded 
 Deprecated `minLakhs`, `fixedLakhs`, and `esopsLakhs` props have been replaced with standard numeric props and configurable currency:
 
 ```tsx
-// Before (v0.4.x)
+// Before (pre-0.1.0)
 <SalaryRangeDisplay minLakhs={20} fixedLakhs={35} esopsLakhs={10} />
 
-// After (v0.5.0)
+// After (v0.1.0)
 <SalaryRangeDisplay min={2000000} max={3500000} equity={1000000} currency="$" />
 ```
 
@@ -138,7 +138,7 @@ Deprecated `minLakhs`, `fixedLakhs`, and `esopsLakhs` props have been replaced w
 `BilingualTooltip` no longer bundles a hardcoded Hindi translation dictionary. Provide your translation map and target language code via props:
 
 ```tsx
-// After (v0.5.0)
+// After (v0.1.0)
 <BilingualTooltip
   term="Gross Revenue"
   dictionary={{ "Gross Revenue": "Ingresos Brutos" }}

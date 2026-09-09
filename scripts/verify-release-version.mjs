@@ -40,7 +40,7 @@ function verifyReleaseVersion() {
 
   const changelog = readFileSync(CHANGELOG_PATH, 'utf8');
 
-  // Match header like "## [0.5.1]" or "## [v0.5.1]"
+  // Match header like "## [0.1.0]" or "## [v0.1.0]"
   const escapedVersion = version.replace(/\./g, '\\.');
   const changelogRegex = new RegExp(`^##\\s+\\[v?${escapedVersion}\\]`, 'm');
 

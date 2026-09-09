@@ -60,6 +60,9 @@ jobs:
       - name: Bundle Size Limit Gate
         run: npm run check:size
 
+      - name: CI Truth Gate (docs-match-tree)
+        run: npm run check:truth
+
       - name: Check Package Types Matrix (attw)
         run: npx @arethetypeswrong/cli --pack .
 

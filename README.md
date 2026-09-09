@@ -1,9 +1,9 @@
 # @umesh0492/react-libs
 
-> **Production-grade React 19 component library with Tailwind CSS v4 & Radix UI primitives.**  
+> **React 19 component library with Tailwind CSS v4 & Radix UI primitives.**  
 > Single source of truth for visual components, design tokens, hooks, formatters, and behavioral analytics across web applications.
 
-[![Version](https://img.shields.io/npm/v/@umesh0492/react-libs)](https://www.npmjs.com/package/@umesh0492/react-libs)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://www.npmjs.com/package/@umesh0492/react-libs)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#testing)
 [![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](#testing)
 [![React](https://img.shields.io/badge/react-19-blue)](https://react.dev)
@@ -422,7 +422,7 @@ export function InvoiceViewer() {
 
 ## Pluggable Behavioral Analytics
 
-The library includes an enterprise behavioral analytics engine with automated DOM tracking, batching, offline resilience, and pluggable destination adapters:
+The library includes a client behavioral analytics engine with automated DOM tracking, batching, offline resilience, and pluggable destination adapters:
 
 ```tsx
 import {
@@ -549,8 +549,8 @@ npm publish --access public
 
 - **Radix UI Primitives**: Built upon headless, fully accessible primitives managing focus traps, ARIA attributes, and keyboard navigation according to WCAG 2.1 AA specifications. Automated regression tests via `axe-core` verify 0 violations across all interactive widgets.
 - **SSR Compatibility**: Root UI components avoid top-level browser globals during module evaluation, guarding interactive code within client hooks and event handlers. Pure utilities in `@umesh0492/react-libs/utils` feature zero DOM and zero React dependencies for native Server Component execution. Browser-only components like `PdfViewer` reside in isolated client subpaths.
-- **Dual ESM & CommonJS**: Full dual module support (`import` and `require`) with TypeScript declaration files (`.d.ts` and `.d.cts`) and subpath type mappings across modern module loaders, verified 100% clean with `@arethetypeswrong/cli`.
-- **Domain Subpath Isolation**: Preserves all Indian compliance logic (`@umesh0492/react-libs/india`) while leaving the root package and `/utils` 100% pure and globally domain-neutral.
+- **Dual ESM & CommonJS**: Full dual module support (`import` and `require`) with TypeScript declaration files (`.d.ts` and `.d.cts`) and subpath type mappings across modern module loaders, verified with `@arethetypeswrong/cli`.
+- **Domain Subpath Isolation**: Preserves all Indian compliance logic (`@umesh0492/react-libs/india`) while leaving the root package and `/utils` domain-neutral.
 - **Static Zero-Runtime CSS Delivery**: CSS tokens and component styles compile into static stylesheets (`theme.css` and `dist/style.css`), eliminating runtime `<style>` injection and satisfying strict Content Security Policies (`CSP`).
 - **Tree-Shaking**: Pure ES modules allow modern bundlers (Vite, Rollup, Webpack, Turbopack) to eliminate unused components and utilities from consumer bundles.
 
@@ -567,7 +567,7 @@ Explore our formal design decisions in [`docs/adr/`](./docs/adr/):
 
 ## Community & Contributing
 
-- **[Migration Guide](./MIGRATION.md)**: Upgrading from v0.4.x to v0.5.0.
+- **[Migration Guide](./MIGRATION.md)**: Upgrading to v0.1.0.
 - **[Code of Conduct](./CODE_OF_CONDUCT.md)**: We are committed to providing a friendly, safe, and welcoming environment for all contributors.
 - **[Security Policy](./SECURITY.md)**: Guidelines for reporting security vulnerabilities responsibly.
 - **[Contributing Guide](./CONTRIBUTING.md)**: Step-by-step instructions for adding components, writing tests, and filing pull requests.

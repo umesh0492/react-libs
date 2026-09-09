@@ -12,8 +12,8 @@ const meta = {
     docs: {
       description: {
         component:
-          '**@umesh0492/react-libs** — Shared UI component library for modern enterprise workspaces. ' +
-          '70+ components · 784 tests · 100% pass rate · ≥80% coverage · Storybook 10 · Tailwind v4 · React 19',
+          '**@umesh0492/react-libs** — UI component library for web applications. ' +
+          '50+ accessible Tailwind UI components · Storybook 10 · Tailwind v4 · React 19',
       },
     },
   },
@@ -241,16 +241,16 @@ export const ComponentDirectory: Story = {
             </h1>
             <p style={{ margin: 0, fontSize: 15, color: '#6b7280' }}>
               <strong style={{ color: '#111827' }}>@umesh0492/react-libs</strong> —
-              Shared UI component library for modern enterprise workspaces.
+              UI component library for web applications.
             </p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }}>
             {[
-              { label: 'v0.4.3', accent: true },
-              { label: '70+ components' },
+              { label: 'v0.1.0', accent: true },
+              { label: '50+ components' },
               { label: '784 tests' },
               { label: '≥80% coverage' },
-              { label: '100% passing' },
+              { label: 'Vitest passing' },
               { label: 'Storybook 10' },
               { label: 'Tailwind v4' },
               { label: 'React 19' },
@@ -265,9 +265,9 @@ export const ComponentDirectory: Story = {
 
         {/* ── Stats ── */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
-          <StatCard value="70+" label="Components" sub="Across 7 domains" />
+          <StatCard value="50+" label="Components" sub="Across UI domains" />
           <StatCard value="784" label="Tests" sub="Verified ≥80% Coverage" accent="#16a34a" />
-          <StatCard value="100%" label="Pass Rate" sub="0 failures" accent="#16a34a" />
+          <StatCard value="Passing" label="Test Suite" sub="Vitest unit tests" accent="#16a34a" />
           <StatCard value="14ms" label="P50 Latency" sub="Median test time" />
           <StatCard value="580ms" label="P95 Latency" sub="95th percentile" />
         </div>
@@ -329,7 +329,7 @@ import { initAnalytics } from '@umesh0492/react-libs/analytics';`}</CodeBlock>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
             <div>
               <p style={{ fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
-                Enterprise Workspace (orange theme)
+                Orange Accent theme
               </p>
               <CodeBlock>{`:root {
   --color-primary: 24.6 95% 53.1%;

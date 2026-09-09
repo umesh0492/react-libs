@@ -8,9 +8,8 @@ Only the current and recent active releases receive security updates and bug fix
 
 | Version | Supported          |
 | ------- | ------------------ |
-| v0.3.x  | :white_check_mark: |
-| v0.x    | :white_check_mark: |
-| < v0.1  | :x:                |
+| 0.1.x   | :white_check_mark: |
+| < 0.1   | :x:                |
 
 We strongly advise all users to stay updated with the latest releases to ensure optimal security and compatibility.
 

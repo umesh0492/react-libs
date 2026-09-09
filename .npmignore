@@ -30,6 +30,7 @@ coverage/**
 .tmp/**
 
 # Development & git
+node_modules/
 .git/**
 .github/**
 .husky/**
@@ -37,3 +38,4 @@ coverage/**
 .idea/**
 *.log
 secret.md
+

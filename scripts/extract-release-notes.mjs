@@ -7,7 +7,7 @@
  *
  * Usage:
  *   node scripts/extract-release-notes.mjs
- *   node scripts/extract-release-notes.mjs --version 0.5.1
+ *   node scripts/extract-release-notes.mjs --version 0.1.0
  *   node scripts/extract-release-notes.mjs --output dist/release-notes.md
  */
 
@@ -70,20 +70,19 @@ function extractReleaseNotes() {
   const cleanVersion = targetVersion.replace(/^v/, '');
   const escapedVersion = cleanVersion.replace(/\./g, '\\.');
 
-  // Regex to match header and all content until next '## [' or EOF
-  const sectionRegex = new RegExp(
-    `^##\\s+\\[v?${escapedVersion}\\][^\n]*\n([\\s\\S]*?)(?=^##\\s+\\[|\\Z)`,
-    'm'
-  );
+  // Match header and all content until next '## [' or EOF
+  const headerRegex = new RegExp(`^##\\s+\\[v?${escapedVersion}\\][^\n]*`, 'm');
+  const headerMatch = changelog.match(headerRegex);
 
-  const match = changelog.match(sectionRegex);
-
-  if (!match || match[1] === undefined) {
+  if (!headerMatch) {
     console.error(`❌ Could not find release notes for version "${cleanVersion}" in CHANGELOG.md.`);
     process.exit(1);
   }
 
-  let notes = match[1].trim();
+  const startIndex = headerMatch.index + headerMatch[0].length;
+  const afterHeader = changelog.slice(startIndex);
+  const nextHeaderMatch = afterHeader.match(/\n##\s+\[/);
+  let notes = (nextHeaderMatch ? afterHeader.slice(0, nextHeaderMatch.index) : afterHeader).trim();
 
   // Remove trailing markdown horizontal rule if present
   notes = notes.replace(/\n---\s*$/, '').trim();

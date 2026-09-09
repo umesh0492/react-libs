@@ -1,7 +1,7 @@
 {
   "name": "@umesh0492/react-libs",
-  "version": "0.5.1",
-  "description": "Production-grade React 19 component library with Tailwind CSS v4 & Radix UI primitives.",
+  "version": "0.1.0",
+  "description": "React 19 component library with Tailwind CSS v4 & Radix UI primitives.",
   "keywords": [
     "react",
     "react19",
@@ -67,7 +67,7 @@
   ],
   "scripts": {
     "build": "node -e \"fs.rmSync('dist', { recursive: true, force: true })\" && tsup && node scripts/build-css.mjs",
-    "prepublishOnly": "npm run build && npm run test",
+    "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
     "prestorybook": "npm run test",
     "storybook": "storybook dev -p 6006",
@@ -78,6 +78,8 @@
     "check:size": "node scripts/check-bundle-size.mjs",
     "verify:release": "node scripts/verify-release-version.mjs",
     "extract:release-notes": "node scripts/extract-release-notes.mjs",
+    "check:truth": "node scripts/docs-match-tree.mjs",
+    "docs-match-tree": "node scripts/docs-match-tree.mjs",
     "lint": "eslint \"src/**/*.{ts,tsx}\" --max-warnings 0",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "perf:open": "node scripts/generate-performance-report.mjs && open docs/performance-report.md"

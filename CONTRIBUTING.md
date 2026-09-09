@@ -279,12 +279,12 @@ Publishing is triggered automatically by pushing a version tag. **Do not run `np
 npm run test
 
 # 2. Bump version (patch | minor | major)
-npm version minor    # e.g. 0.4.3 → 0.5.0
+npm version patch    # e.g. 0.1.0 → 0.1.1
 
 # 3. Commit & tag
 git add package.json package-lock.json
-git commit -m "chore: bump @umesh0492/react-libs to 0.5.0"
-git tag v0.5.0
+git commit -m "chore: bump @umesh0492/react-libs to 0.1.1"
+git tag v0.1.1
 
 # 4. Push — CI runs + auto-publishes
 git push && git push --tags

@@ -15,7 +15,7 @@
 | **Navigation** | Sidebar, NavigationMenu, Breadcrumb, Tabs, Menubar, Pagination |
 | **Feedback** | Toast/Toaster, Sonner, Skeleton, Progress, Spinner, Alert, EmptyState, RoleEmptyState |
 
-> Full API docs → [README.md](./README.md) · Full test patterns → [test.md](./test.md)
+> Full API docs → [README.md](./README.md)
 
 ---
 

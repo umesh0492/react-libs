@@ -10,6 +10,7 @@ node_modules/
 dist/
 build/
 .next/
+.tsup/
 
 # Environment files
 .env
@@ -43,6 +44,7 @@ vitest-kbd.json
 test_output.txt
 lint-output.txt
 lint_results.txt
+test.md
 
 
 # Secrets
