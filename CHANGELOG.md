@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-09-09
+
+### ⚛️ 'use client' Directive Regression Fix
+- **Restored `'use client';` Banners**:
+  - Re-introduced dedicated dual `tsup` build configuration with top-level `banner: { js: "'use client';" }` on all client entrypoints (`dist/index.js`, `dist/index.cjs`, `dist/analytics/index.js`, `dist/india/index.js`, `dist/hooks/use-toast.js`, `dist/pdf.js`).
+  - Completely resolves Next.js App Router root import crashes where client components were bundled without directives.
+- **RSC & Edge Safety for `/utils`**:
+  - Maintained `dist/utils.js` as 100% directive-free and pure with zero DOM/React dependencies, guaranteeing safe execution in React Server Components, Server Actions, Route Handlers, and Edge runtimes.
+
+### 🇮🇳 Shipped India Assets in `@umesh0492/react-libs/india`
+- **Implemented `AmountSummaryCardIndia`**:
+  - Created `src/india/components/amount-summary-card-india.tsx` featuring intra-state GST (CGST 50% + SGST 50%), inter-state IGST, statutory TDS withholding deductions, transport charges, and Indian currency (`₹` / Lakhs / Crores) formatting.
+  - Exported from `@umesh0492/react-libs/india`.
+  - Added unit test suite in `src/india/__tests__/amount-summary-card-india.test.tsx` (7/7 tests passing in pure Node).
+- **Implemented `locations.ts`**:
+  - Created `src/india/locations.ts` with complete `INDIA_STATES` (all 36 states and UTs), `INDIA_CITIES` (commercial/industrial localities), and query helpers (`getCitiesForState`, `getStateOptions`, `getCityOptions`, `isMetroCity`).
+  - Exported from `@umesh0492/react-libs/india`.
+
+### 🛡️ Quality Gate & CI Alignment
+- **Zero `--ignore-rules` in CI**:
+  - Removed `--ignore-rules no-resolution` from `.github/workflows/ci.yml`. Confirmed 100% 🟢 green across all resolution targets (`node10`, `node16 CJS`, `node16 ESM`, `bundler`) with zero ignore flags.
+  - Added `"check:types-pkg": "attw --pack ."` script to `package.json`.
+
+### 📦 Honest Packaging & Bundle Architecture
+- **Bundle Reality & Granularity**:
+  - Removed cryptic hashed internal chunks (`chunk-*.js`) by using direct, self-contained subpath entries (`splitting: false`).
+  - Truthfully documented package architecture: `@umesh0492/react-libs` (root) provides the full UI component kit, while consumer modularity is provided via first-class subpath imports (`@umesh0492/react-libs/utils`, `@umesh0492/react-libs/india`, `@umesh0492/react-libs/analytics`, `@umesh0492/react-libs/pdf`, `@umesh0492/react-libs/hooks/use-toast`).
+
 ## [0.5.0] - 2026-09-08
 
 ### 🇮🇳 Dedicated Domain Subpath (`@umesh0492/react-libs/india`)

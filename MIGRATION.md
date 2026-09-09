@@ -43,6 +43,7 @@ import {
   validateFSSAI, 
   validatePincode, 
   calculateGSTSplit, 
+  AmountSummaryCardIndia,
   INDIA_STATES, 
   INDIA_CITIES 
 } from '@umesh0492/react-libs/india';
