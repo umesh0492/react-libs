@@ -54,7 +54,7 @@ jobs:
         run: npm run build
 
       - name: Check Package Types Matrix (attw)
-        run: npx @arethetypeswrong/cli --pack . --ignore-rules no-resolution
+        run: npx @arethetypeswrong/cli --pack .
 
       - name: Verify Component Exports
         run: node scripts/check-exports.mjs
