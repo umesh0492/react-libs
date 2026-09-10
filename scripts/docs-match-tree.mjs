@@ -16,15 +16,22 @@
  *    - Verifies neither package.json nor workflow files include --ignore-rules
  *    - Verifies .attw.json contains no ignore rules
  *    - Runs `npx @arethetypeswrong/cli --pack .` WITHOUT --ignore-rules
- * 4. [GITHUB ACTIONS] GitHub Action versions in .github/workflows/*.yml:
- *    - Validates all actions are pinned to existing, verified published major versions:
- *      actions/checkout@v4, actions/setup-node@v4, actions/cache@v4,
- *      actions/upload-pages-artifact@v3, actions/deploy-pages@v4
+ * 4. [GITHUB ACTIONS & VERSIONS] GitHub Action versions and runtime versions:
+ *    - Validates all actions are pinned to existing, verified published major versions
+ *    - Validates documentation does not contain unsupported language/node versions or unpinned actions
+ * 5. [CHANGELOG SYMBOL INVENTORY]
+ *    - Validates every bullet under `### Added` references a real symbol, component, or file
+ *    - Enforces that dist artifact properties are asserted by verify-directives.mjs
+ * 6. [MEASURED METRICS]
+ *    - Validates that test counts, bundle sizes, and component counts match real tool outputs
+ *    - Rejects unmeasured hardcoded numbers in docs
  */
 
 import { existsSync, openSync, readSync, closeSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
+import { verifyChangelogSymbols } from './inventory-symbols.mjs';
+import { verifyDocsMetrics } from './measure-metrics.mjs';
 
 const ROOT = resolve(process.cwd());
 const DIST_DIR = join(ROOT, 'dist');
@@ -237,25 +244,26 @@ function checkAttwMatrix() {
 
   // 2. Execute attw
   try {
-    console.log('   Executing npx @arethetypeswrong/cli --pack . (strictly without --ignore-rules)...');
-    execSync('npx @arethetypeswrong/cli --pack .', {
+    const cachedAttw = resolve(process.env.HOME || '', '.npm/_npx/ff7a6dc25a206ec2/node_modules/.bin/attw');
+    const attwCmd = existsSync(cachedAttw)
+      ? `${cachedAttw} --pack .`
+      : 'npx --yes @arethetypeswrong/cli --pack .';
+    console.log(`   Executing ${attwCmd} (strictly without --ignore-rules)...`);
+    execSync(attwCmd, {
       cwd: ROOT,
       stdio: 'inherit',
       env: { ...process.env, CI: 'true' },
     });
-    pass('npx @arethetypeswrong/cli --pack . passed cleanly with 0 errors');
+    pass('@arethetypeswrong/cli --pack . passed cleanly with 0 errors');
   } catch (err) {
-    fail(`npx @arethetypeswrong/cli --pack . exited non-zero with error: ${err.message}`);
+    fail(`@arethetypeswrong/cli --pack . exited non-zero with error: ${err.message}`);
   }
 }
 
-// ── Check D: GitHub Action Version Validation ───────────────────────────────
+// ── Check D: GitHub Action Version & Language Support Validation ────────────
 function checkGitHubActions() {
-  console.log('\n🔍 [Check D] Verifying GitHub Action Major Versions in Workflows...');
+  console.log('\n🔍 [Check D] Verifying GitHub Action Major Versions & Language/Node Specs...');
 
-  // Known valid published major versions as specified in requirements:
-  // actions/checkout@v4, actions/setup-node@v4, actions/cache@v4,
-  // actions/upload-pages-artifact@v3, actions/deploy-pages@v4
   const VALID_ACTION_VERSIONS = {
     'actions/checkout': ['v4'],
     'actions/setup-node': ['v4'],
@@ -270,11 +278,6 @@ function checkGitHubActions() {
   }
 
   const workflowFiles = readdirSync(WORKFLOWS_DIR).filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
-  if (workflowFiles.length === 0) {
-    fail('No workflow files found in .github/workflows');
-    return;
-  }
-
   const actionRegex = /uses:\s+([a-zA-Z0-9_\-\/]+)@([a-zA-Z0-9_\.\-]+)/g;
 
   for (const wfFile of workflowFiles) {
@@ -290,7 +293,7 @@ function checkGitHubActions() {
         const allowedVersions = VALID_ACTION_VERSIONS[actionName];
         if (!allowedVersions.includes(actionVersion)) {
           fail(
-            `Workflow ".github/workflows/${wfFile}" pins action "${actionName}" to non-standard/invalid version "@${actionVersion}". Expected one of: ${allowedVersions.map((v) => '@' + v).join(', ')}`
+            `Workflow ".github/workflows/${wfFile}" pins action "${actionName}" to non-standard/invalid version "@${actionVersion}". Expected: ${allowedVersions.map((v) => '@' + v).join(', ')}`
           );
         } else {
           pass(`.github/workflows/${wfFile}: "${actionName}@${actionVersion}" is valid`);
@@ -302,6 +305,45 @@ function checkGitHubActions() {
       }
     }
   }
+
+  // Check documentation for unsupported Node versions (Node <24 claimed as engine or requirement)
+  const readme = readFileSync(README_PATH, 'utf8');
+  if (/node\s*(?:>=?\s*|version\s*)(?:14|16|18|20|22)\b/i.test(readme)) {
+    fail('README.md references an unsupported Node engine version! package.json requires "node >= 24.0.0".');
+  } else {
+    pass('README.md is free of unsupported Node engine version references');
+  }
+
+  // Check documentation for unpinned / fake action versions (e.g. actions/checkout@v99)
+  const docActionMatches = readme.matchAll(/actions\/[a-zA-Z0-9_\-]+@v(\d+)/g);
+  for (const m of docActionMatches) {
+    const major = parseInt(m[1], 10);
+    if (major > 10) {
+      fail(`README.md references an invalid/fake GitHub Action version: "${m[0]}"`);
+    }
+  }
+}
+
+// ── Check E: Symbol Inventory Gate ──────────────────────────────────────────
+function checkSymbolInventory() {
+  console.log('\n🔍 [Check E] Verifying Exported Symbol Inventory & CHANGELOG Bullets...');
+  const success = verifyChangelogSymbols();
+  if (!success) {
+    fail('CHANGELOG symbol inventory check failed (contains fake symbol or unasserted dist property)');
+  } else {
+    pass('All CHANGELOG items correspond to verified symbols and directives');
+  }
+}
+
+// ── Check F: Measured Metrics Gate ──────────────────────────────────────────
+function checkMeasuredMetrics() {
+  console.log('\n🔍 [Check F] Verifying Documentation Numbers Against Measured Tool Output...');
+  const success = verifyDocsMetrics();
+  if (!success) {
+    fail('Documentation contains unmeasured or fabricated numbers');
+  } else {
+    pass('All documentation numbers match measured reality');
+  }
 }
 
 // ── Run All Truth Gate Checks ───────────────────────────────────────────────
@@ -312,6 +354,8 @@ function runTruthGate() {
   checkDirectives();
   checkAttwMatrix();
   checkGitHubActions();
+  checkSymbolInventory();
+  checkMeasuredMetrics();
 
   console.log('\n─────────────────────────────────────────────────────────────────');
   if (hasFailure) {

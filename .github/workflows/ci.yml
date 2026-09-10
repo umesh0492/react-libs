@@ -64,7 +64,7 @@ jobs:
         run: npm run check:truth
 
       - name: Check Package Types Matrix (attw)
-        run: npx @arethetypeswrong/cli --pack .
+        run: npm run check:types-pkg
 
       - name: Verify Module Directives & Universal Packaging
         run: npm run check:directives
