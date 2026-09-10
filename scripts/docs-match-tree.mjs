@@ -139,57 +139,60 @@ function checkDirectives() {
   const indexJs = join(DIST_DIR, 'index.js');
   const utilsJs = join(DIST_DIR, 'utils.js');
   const analyticsJs = join(DIST_DIR, 'analytics', 'index.js');
+  const analyticsReactJs = join(DIST_DIR, 'analytics', 'react', 'index.js');
+  const indiaReactJs = join(DIST_DIR, 'india', 'react', 'index.js');
 
-  const files = [
+  const requiredFiles = [
     { path: indexJs, rel: 'dist/index.js' },
     { path: utilsJs, rel: 'dist/utils.js' },
     { path: analyticsJs, rel: 'dist/analytics/index.js' },
+    { path: analyticsReactJs, rel: 'dist/analytics/react/index.js' },
+    { path: indiaReactJs, rel: 'dist/india/react/index.js' },
   ];
 
-  for (const { path, rel } of files) {
+  for (const { path, rel } of requiredFiles) {
     if (!existsSync(path)) {
       fail(`Required build output file missing: ${rel}. Run "npm run build" first.`);
       return;
     }
   }
 
-  // Assertion 1: head -c 40 dist/index.js MUST contain "use client"
-  const indexHead = readHead(indexJs, 40);
-  if (!indexHead.includes('use client')) {
-    fail(`head -c 40 dist/index.js lacks "use client". Head preview: ${JSON.stringify(indexHead)}`);
-  } else {
-    pass(`head -c 40 dist/index.js contains "use client" banner`);
+  // Assertion 1: Client files MUST contain "use client" in the first 40 bytes
+  const clientFiles = [
+    { path: indexJs, rel: 'dist/index.js' },
+    { path: analyticsReactJs, rel: 'dist/analytics/react/index.js' },
+    { path: indiaReactJs, rel: 'dist/india/react/index.js' },
+  ];
+
+  for (const { path, rel } of clientFiles) {
+    const head = readHead(path, 40);
+    if (!head.includes('use client')) {
+      fail(`head -c 40 ${rel} lacks "use client". Head preview: ${JSON.stringify(head)}`);
+    } else {
+      pass(`head -c 40 ${rel} contains "use client" banner`);
+    }
   }
 
-  // Assertion 2: head -c 40 dist/utils.js MUST NOT contain "use client"
-  const utilsHead = readHead(utilsJs, 40);
-  if (utilsHead.includes('use client')) {
-    fail(`head -c 40 dist/utils.js contains "use client". Head preview: ${JSON.stringify(utilsHead)}`);
-  } else {
-    pass(`head -c 40 dist/utils.js is free of "use client" directive`);
-  }
+  // Assertion 2: Universal files MUST NOT contain "use client" in the first 40 bytes or file body
+  const universalFiles = [
+    { path: utilsJs, rel: 'dist/utils.js' },
+    { path: analyticsJs, rel: 'dist/analytics/index.js' },
+  ];
 
-  // Assertion 3: head -c 40 dist/analytics/index.js MUST NOT contain "use client"
-  const analyticsHead = readHead(analyticsJs, 40);
-  if (analyticsHead.includes('use client')) {
-    fail(`head -c 40 dist/analytics/index.js contains "use client". Head preview: ${JSON.stringify(analyticsHead)}`);
-  } else {
-    pass(`head -c 40 dist/analytics/index.js is free of "use client" directive`);
-  }
+  for (const { path, rel } of universalFiles) {
+    const head = readHead(path, 40);
+    if (head.includes('use client')) {
+      fail(`head -c 40 ${rel} contains "use client". Head preview: ${JSON.stringify(head)}`);
+    } else {
+      pass(`head -c 40 ${rel} is free of "use client" directive`);
+    }
 
-  // Deep check: ensure universal modules don't leak "use client" anywhere
-  const utilsFull = readFileSync(utilsJs, 'utf8');
-  if (utilsFull.includes('use client')) {
-    fail(`dist/utils.js leaks "use client" directive in file body`);
-  } else {
-    pass(`dist/utils.js deep scan: 0 directive leaks`);
-  }
-
-  const analyticsFull = readFileSync(analyticsJs, 'utf8');
-  if (analyticsFull.includes('use client')) {
-    fail(`dist/analytics/index.js leaks "use client" directive in file body`);
-  } else {
-    pass(`dist/analytics/index.js deep scan: 0 directive leaks`);
+    const fullContent = readFileSync(path, 'utf8');
+    if (fullContent.includes('use client')) {
+      fail(`${rel} leaks "use client" directive in file body`);
+    } else {
+      pass(`${rel} deep scan: 0 directive leaks`);
+    }
   }
 }
 

@@ -28,6 +28,7 @@ const CLIENT_FILES = [
   'dist/pdf.js',
   'dist/hooks/use-toast.js',
   'dist/india/react/index.js',
+  'dist/analytics/react/index.js',
 ];
 
 const UNIVERSAL_FILES = [

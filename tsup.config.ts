@@ -34,6 +34,7 @@ export default defineConfig([
     entry: {
       index: 'src/index.ts',
       'india/react/index': 'src/india/react/index.ts',
+      'analytics/react/index': 'src/lib/analytics/react/index.ts',
       pdf: 'src/components/ui/data-display/pdf-viewer.tsx',
     },
     format: ['esm', 'cjs'],

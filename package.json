@@ -42,6 +42,9 @@
       "analytics": [
         "./dist/analytics/index.d.ts"
       ],
+      "analytics/react": [
+        "./dist/analytics/react/index.d.ts"
+      ],
       "hooks/use-toast": [
         "./dist/hooks/use-toast.d.ts"
       ],
@@ -63,10 +66,12 @@
   "files": [
     "dist",
     "!dist/**/*.map",
+    "!dist/**/* 2.*",
     "src/styles"
   ],
   "scripts": {
     "build": "node -e \"fs.rmSync('dist', { recursive: true, force: true })\" && tsup && node scripts/build-css.mjs",
+    "prepack": "npm run build",
     "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
     "prestorybook": "npm run test",
@@ -113,6 +118,16 @@
       "require": {
         "types": "./dist/analytics/index.d.cts",
         "default": "./dist/analytics/index.cjs"
+      }
+    },
+    "./analytics/react": {
+      "import": {
+        "types": "./dist/analytics/react/index.d.ts",
+        "default": "./dist/analytics/react/index.js"
+      },
+      "require": {
+        "types": "./dist/analytics/react/index.d.cts",
+        "default": "./dist/analytics/react/index.cjs"
       }
     },
     "./hooks/use-toast": {

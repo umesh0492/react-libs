@@ -9,7 +9,8 @@ This guide details architectural evolutions and migration steps for upgrading to
 In v0.1.0, `@umesh0492/react-libs` achieves full domain neutralization, minimal bundle footprint, and strict React Server Components (RSC) purity:
 1. **Dedicated Domain Subpath**: Indian regional and compliance logic has been moved from root and `/utils` into a dedicated subpath: `@umesh0492/react-libs/india`.
 2. **Pure RSC `/utils`**: The `@umesh0492/react-libs/utils` entry point exports pure utilities with zero DOM, browser, or React dependencies.
-3. **Optional Peer Dependencies**: Heavy libraries (`recharts`, `react-pdf`, `xlsx`, `jspdf`, `canvas-confetti`, etc.) are declared as optional peer dependencies.
+3. **Pure Analytics Engine vs Client React Subpath**: `@umesh0492/react-libs/analytics` exports the pure headless engine, queue, and adapters (zero React hooks, zero directives, RSC-safe). React components and hooks (`AnalyticsProvider`, `useAnalytics`, `TrackArea`, `PageViewTracker`) are isolated in `@umesh0492/react-libs/analytics/react` with a `'use client'` boundary.
+4. **Optional Peer Dependencies**: Heavy libraries (`recharts`, `react-pdf`, `xlsx`, `jspdf`, `canvas-confetti`, etc.) are declared as optional peer dependencies.
 
 ---
 
@@ -73,7 +74,25 @@ import { downloadFileSecurely, exportData } from '@umesh0492/react-libs';
 
 ---
 
-## 3. Optional Peer Dependencies
+## 3. Analytics Subpath Migration (Pure vs React Boundary)
+
+Analytics functionality is cleanly partitioned between pure headless telemetry and React bindings:
+
+- **Server-Safe Telemetry Engine (`@umesh0492/react-libs/analytics`)**:
+  Contains zero React code and zero `"use client"` directives. Completely safe to import in RSC, background tasks, or server runtimes.
+  ```tsx
+  import { createAnalyticsEngine, ConsoleAdapter, HttpAdapter } from '@umesh0492/react-libs/analytics';
+  ```
+
+- **React Client Context & Hooks (`@umesh0492/react-libs/analytics/react`)**:
+  Contains `"use client"` bounded provider, hooks, and tracker components.
+  ```tsx
+  import { AnalyticsProvider, useAnalytics, TrackArea, PageViewTracker } from '@umesh0492/react-libs/analytics/react';
+  ```
+
+---
+
+## 4. Optional Peer Dependencies
 
 To keep the core bundle lightweight and eliminate dependency bloat, heavy visualization and specialized packages are now declared as **optional peer dependencies**.
 
@@ -93,7 +112,7 @@ If you use any of the following features, ensure the corresponding peer package 
 
 ---
 
-## 4. Component API Updates
+## 5. Component API Updates
 
 ### `AmountSummaryCard`
 The card now accepts dynamic, configurable tax breakdowns rather than hardcoded Indian GST categories (`CGST`, `SGST`, `IGST`).
@@ -118,9 +137,9 @@ The card now accepts dynamic, configurable tax breakdowns rather than hardcoded 
 />
 ```
 
-> **Tip for India GST apps**: Use `AmountSummaryCardIndia` from `@umesh0492/react-libs/india` which automatically formats GST splits:
+> **Tip for India GST apps**: Use `AmountSummaryCardIndia` from `@umesh0492/react-libs/india/react` which automatically formats GST splits:
 > ```tsx
-> import { AmountSummaryCardIndia } from '@umesh0492/react-libs/india';
+> import { AmountSummaryCardIndia } from '@umesh0492/react-libs/india/react';
 > ```
 
 ### `SalaryRangeDisplay`

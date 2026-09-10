@@ -118,5 +118,20 @@ if (/from\s+['"]\.\/india/i.test(entryContent)) {
   process.exit(1);
 }
 
+// ─── Analytics Client Isolation Invariant ──────────────────────────────────
+if (/from\s+['"]\.\/lib\/analytics\/react/i.test(entryContent) || /from\s+['"]\.\/analytics\/react/i.test(entryContent)) {
+  console.error('❌  CLIENT LEAK: src/index.ts must not import ./analytics/react! Analytics client must remain isolated.');
+  process.exit(1);
+}
+
+const ANALYTICS_ENTRY = join(ROOT, 'src', 'lib', 'analytics', 'index.ts');
+if (existsSync(ANALYTICS_ENTRY)) {
+  const analyticsContent = readFileSync(ANALYTICS_ENTRY, 'utf8');
+  if (/from\s+['"]\.\/react/i.test(analyticsContent)) {
+    console.error('❌  BOUNDARY LEAK: src/lib/analytics/index.ts must not export ./react! Pure engine must be isolated from React.');
+    process.exit(1);
+  }
+}
+
 console.log('✅  All UI components and subpath exports are properly verified.');
 process.exit(0);
