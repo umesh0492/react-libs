@@ -1,7 +1,7 @@
 # react-lib Component Wiki
 
 > **Visual cookbook for `@umesh0492/react-libs`** — copy-paste patterns for every component.
-> - **70+ components** across 6 semantic domains
+> - Accessible UI components across 6 semantic domains
 > - **Storybook 10** at http://localhost:6006 — live visual playground
 
 ### Quick Domain Index

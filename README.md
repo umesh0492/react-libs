@@ -5,7 +5,6 @@
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://www.npmjs.com/package/@umesh0492/react-libs)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#testing)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](#testing)
 [![React](https://img.shields.io/badge/react-19-blue)](https://react.dev)
 [![Tailwind](https://img.shields.io/badge/tailwind-v4-38bdf8)](https://tailwindcss.com)
 [![Storybook](https://img.shields.io/badge/storybook-10.x-ff4785)](https://umesh0492.github.io/react-libs)
@@ -63,10 +62,12 @@ The library exposes dedicated entry points for UI components, server-safe utilit
 
 | Subpath / Export | Module Formats | SSR / RSC Compatibility | Purpose & Contents |
 |---|---|---|---|
-| `@umesh0492/react-libs` | ESM (`import`), CJS (`require`) | **Client Components** (`'use client'`) | Primary UI component library (70+ components, primitives, forms, dialogs, charts, error boundaries, and hooks). SSR-compatible with browser APIs guarded inside lifecycle hooks. |
+| `@umesh0492/react-libs` | ESM (`import`), CJS (`require`) | **Client Components** (`'use client'`) | Primary UI component library (accessible Tailwind UI components, primitives, forms, dialogs, charts, error boundaries, and hooks). SSR-compatible with browser APIs guarded inside lifecycle hooks. |
 | `@umesh0492/react-libs/utils` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Pure utility helpers, formatters, universal validators, masking, and `cn`. Zero DOM and zero React dependencies; safe in Next.js Server Components, Server Actions, Route Handlers, and Edge runtimes. |
-| `@umesh0492/react-libs/india` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Dedicated domain subpath containing India compliance logic: GSTIN, PAN, IFSC, FSSAI, and Pincode validators, GST tax calculation splits, regional constants (`INDIA_STATES`, `INDIA_CITIES`), and regional cards. |
-| `@umesh0492/react-libs/analytics` | ESM (`import`), CJS (`require`) | **Client & SSR-Safe** | Pluggable behavioral analytics tracking engine, DOM auto-tracking, batching pipeline, and destination adapters. |
+| `@umesh0492/react-libs/india` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Dedicated domain subpath containing India compliance logic: GSTIN, PAN, IFSC, FSSAI, and Pincode validators, GST tax calculation splits, regional constants (`INDIA_STATES`, `INDIA_CITIES`). |
+| `@umesh0492/react-libs/india/react` | ESM (`import`), CJS (`require`) | **Client Component** (`'use client'`) | Interactive regional components (e.g. `AmountSummaryCardIndia`). |
+| `@umesh0492/react-libs/analytics` | ESM (`import`), CJS (`require`) | **RSC & Server-Safe** | Pure behavioral analytics tracking engine, DOM auto-tracking, batching pipeline, and destination adapters. Zero React hooks. |
+| `@umesh0492/react-libs/analytics/react` | ESM (`import`), CJS (`require`) | **Client Components** (`'use client'`) | React integration layer for analytics: `AnalyticsProvider`, `useAnalytics`, `TrackArea`, and `PageViewTracker`. |
 | `@umesh0492/react-libs/pdf` | ESM (`import`), CJS (`require`) | **Client-Only** (`'use client'`) | Dedicated client subpath for `PdfViewer`. Isolated from root to prevent Node SSR from executing browser-only PDF workers (`pdfjs-dist`). |
 | `@umesh0492/react-libs/hooks/use-toast` | ESM (`import`), CJS (`require`) | **Client Hook** (`'use client'`) | Standalone imperative toast notification hook (`useToast`, `toast`). |
 | `@umesh0492/react-libs/style.css` | CSS | N/A | Standalone pre-compiled stylesheet with all Tailwind utility classes and design tokens. |
@@ -516,7 +517,7 @@ The codebase maintains strict automated quality gates:
 npm run test             # Vitest unit & interaction tests with coverage
 npm run storybook        # Launch Storybook visual playground
 npm run build-storybook  # Compile static Storybook bundle
-npm run lint             # ESLint static code analysis
+npm run lint             # ESLint static code analysis (src/**/*.{ts,tsx} with --max-warnings 0)
 npx tsc --noEmit         # Full TypeScript compiler verification
 npm run perf             # Generate performance benchmark report
 ```
