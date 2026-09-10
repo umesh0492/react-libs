@@ -100,14 +100,12 @@ describe("React Analytics Integration", () => {
     engine.destroy();
   });
 
-  it("does not re-initialize or destroy engine when config is an inline object on parent re-renders", () => {
-    let capturedEngine1: any = null;
-    let capturedEngine2: any = null;
+  it("does not re-initialize or destroy engine when config and onError are inline on 5x parent re-renders", () => {
+    const capturedEngines: any[] = [];
 
     function ConsumerComponent({ pass }: { pass: number }) {
       const { engine } = useAnalytics();
-      if (pass === 1) capturedEngine1 = engine;
-      if (pass === 2) capturedEngine2 = engine;
+      capturedEngines.push({ pass, engine });
       return <div>Pass: {pass}</div>;
     }
 
@@ -115,11 +113,11 @@ describe("React Analytics Integration", () => {
       return (
         <AnalyticsProvider
           config={{
-            appId: "stable-app",
+            appId: "stable-app-5x",
             autoTrackDom: false,
             autoTrackPages: false,
-            onError: () => {},
           }}
+          onError={() => {}}
         >
           <ConsumerComponent pass={pass} />
         </AnalyticsProvider>
@@ -127,16 +125,25 @@ describe("React Analytics Integration", () => {
     }
 
     const { rerender } = render(<Parent pass={1} />);
-    expect(capturedEngine1).toBeTruthy();
+    const initialEngine = capturedEngines[0].engine;
+    expect(initialEngine).toBeTruthy();
 
-    const destroySpy = vi.spyOn(capturedEngine1, "destroy");
+    const destroySpy = vi.spyOn(initialEngine, "destroy");
 
-    rerender(<Parent pass={2} />);
+    for (let pass = 2; pass <= 5; pass++) {
+      rerender(<Parent pass={pass} />);
+    }
 
-    expect(capturedEngine2).toBe(capturedEngine1);
+    // Assert engine.destroy called 0x after mount
     expect(destroySpy).not.toHaveBeenCalled();
 
+    // Assert engine identity remains strictly stable across all 5 renders
+    expect(capturedEngines.length).toBe(5);
+    for (let i = 1; i < 5; i++) {
+      expect(capturedEngines[i].engine).toBe(initialEngine);
+    }
+
     destroySpy.mockRestore();
-    capturedEngine1?.destroy();
+    initialEngine.destroy();
   });
 });

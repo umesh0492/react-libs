@@ -20,6 +20,7 @@ export interface AnalyticsProviderProps {
   children: React.ReactNode;
   config?: AnalyticsConfig;
   engine?: AnalyticsEngine;
+  onError?: (err: unknown) => void;
 }
 
 /* eslint-disable security/detect-object-injection */
@@ -53,7 +54,10 @@ function isConfigEqual(prev?: AnalyticsConfig, next?: AnalyticsConfig): boolean 
   ) {
     return false;
   }
-  if (!areArraysEqual(prev.adapters, next.adapters)) return false;
+  // Compare adapters by name rather than reference identity
+  if (!areArraysEqual(prev.adapters, next.adapters, (a, b) => a?.name === b?.name)) {
+    return false;
+  }
   if (!areArraysEqual(prev.maskPatterns, next.maskPatterns, (x, y) => x?.toString() === y?.toString())) {
     return false;
   }
@@ -65,21 +69,26 @@ export function AnalyticsProvider({
   children,
   config,
   engine: externalEngine,
+  onError,
 }: AnalyticsProviderProps) {
   const [engineInstance, setEngineInstance] = React.useState<AnalyticsEngine | null>(
-    () => externalEngine || getAnalyticsEngine()
+    () => externalEngine || (config ? null : getAnalyticsEngine())
   );
 
-  const onErrorRef = React.useRef(config?.onError);
+  const onErrorRef = React.useRef(onError || config?.onError);
   React.useEffect(() => {
-    onErrorRef.current = config?.onError;
-  }, [config?.onError]);
+    onErrorRef.current = onError || config?.onError;
+  }, [onError, config?.onError]);
 
-  const [activeConfig, setActiveConfig] = React.useState<AnalyticsConfig | undefined>(config);
+  const configRef = React.useRef<AnalyticsConfig | undefined>(config);
+  const [configVersion, setConfigVersion] = React.useState(0);
 
-  if (!isConfigEqual(activeConfig, config)) {
-    setActiveConfig(config);
-  }
+  React.useEffect(() => {
+    if (!isConfigEqual(configRef.current, config)) {
+      configRef.current = config;
+      setConfigVersion((v) => v + 1);
+    }
+  }, [config]);
 
   React.useEffect(() => {
     if (externalEngine) {
@@ -87,9 +96,10 @@ export function AnalyticsProvider({
       return;
     }
 
-    if (activeConfig) {
+    const currentConf = configRef.current;
+    if (currentConf) {
       const stableConfig: AnalyticsConfig = {
-        ...activeConfig,
+        ...currentConf,
         onError: (err: unknown) => onErrorRef.current?.(err),
       };
       const engine = initAnalytics(stableConfig);
@@ -99,8 +109,10 @@ export function AnalyticsProvider({
         engine.destroy();
         setEngineInstance(null);
       };
+    } else {
+      setEngineInstance(getAnalyticsEngine());
     }
-  }, [externalEngine, activeConfig]);
+  }, [externalEngine, configVersion]);
 
   const value = React.useMemo<AnalyticsContextValue>(() => {
     return {
