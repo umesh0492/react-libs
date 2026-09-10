@@ -306,14 +306,14 @@ describe("SSR Smoke Test Suite - renderToString Zero Crash Check", () => {
 
 describe("SSR Subpath Purity & Execution Suite", () => {
   it("imports and executes pure analytics engine without React hooks or DOM in SSR context", async () => {
-    const { createAnalyticsEngine, ConsoleAdapter, MemoryQueue } = await import("../lib/analytics");
-    expect(createAnalyticsEngine).toBeDefined();
+    const { AnalyticsEngine, ConsoleAdapter } = await import("../lib/analytics");
+    expect(AnalyticsEngine).toBeDefined();
 
-    const engine = createAnalyticsEngine({
-      appName: "ssr-test-app",
-      queue: new MemoryQueue(),
+    const engine = new AnalyticsEngine({
+      appId: "ssr-test-app",
       adapters: [new ConsoleAdapter()],
-      enabled: false,
+      autoTrackDom: false,
+      autoTrackPages: false,
     });
 
     expect(engine).toBeDefined();
@@ -325,8 +325,8 @@ describe("SSR Subpath Purity & Execution Suite", () => {
     const { AnalyticsProvider, TrackArea } = await import("../lib/analytics/react");
     expect(() => {
       const html = renderToString(
-        <AnalyticsProvider config={{ appName: "ssr-app", enabled: false }}>
-          <TrackArea name="ssr-test-area">
+        <AnalyticsProvider config={{ appId: "ssr-app", autoTrackDom: false, autoTrackPages: false }}>
+          <TrackArea journey="ssr-test-area">
             <div>SSR Tracked Content</div>
           </TrackArea>
         </AnalyticsProvider>
@@ -339,8 +339,8 @@ describe("SSR Subpath Purity & Execution Suite", () => {
     const { calculateGSTSplit, validateGSTIN, INDIA_STATES } = await import("../india");
     expect(validateGSTIN("29ABCDE1234F1Z5")).toBe(true);
     const split = calculateGSTSplit(1000, 18, true);
-    expect(split.cgst).toBe(90);
-    expect(split.sgst).toBe(90);
+    expect(split.cgstAmount).toBe(90);
+    expect(split.sgstAmount).toBe(90);
     expect(INDIA_STATES.length).toBeGreaterThan(20);
   });
 });
