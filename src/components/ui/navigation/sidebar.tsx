@@ -53,13 +53,35 @@ function useSidebar() {
   return context
 }
 
+/**
+ * Props for the {@link SidebarProvider} component.
+ *
+ * In SSR frameworks (like Next.js App Router), `defaultOpen` must be set from the server-read cookie
+ * (`cookies().get('sidebar_state')`) to avoid hydration mismatch if the cookie state differs from the default.
+ */
+export interface SidebarProviderProps extends React.ComponentProps<"div"> {
+  /**
+   * Initial open state of the sidebar.
+   *
+   * In SSR frameworks (like Next.js App Router), `defaultOpen` must be set from the server-read cookie
+   * (`cookies().get('sidebar_state')`) to avoid hydration mismatch if the cookie state differs from the default.
+   *
+   * @default true
+   */
+  defaultOpen?: boolean
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+/**
+ * State provider for the Sidebar component and context.
+ *
+ * In SSR frameworks (like Next.js App Router), `defaultOpen` must be set from the server-read cookie
+ * (`cookies().get('sidebar_state')`) to avoid hydration mismatch if the cookie state differs from the default.
+ */
 const SidebarProvider = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    defaultOpen?: boolean
-    open?: boolean
-    onOpenChange?: (open: boolean) => void
-  }
+  SidebarProviderProps
 >(function SidebarProvider(
   {
     defaultOpen = true,
