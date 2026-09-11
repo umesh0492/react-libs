@@ -1065,3 +1065,12 @@ export function Announcement() {
 }
 ```
 
+---
+
+## Accessibility & Quality Gates
+
+- **Automated WCAG 2.1 AA Checks**: Enforced via `axe-core` across interactive component tests in `src/components/ui/__tests__/accessibility.test.tsx`.
+- **Blocking CI Gate**: `npm run test` asserts 0 violations on all interactive components.
+- **Storybook Error Policy**: Configured in `.storybook/preview.ts` as `a11y: { test: 'error' }` to fail on accessibility regressions.
+
+

@@ -555,6 +555,12 @@ npm publish --access public
 - **Static Zero-Runtime CSS Delivery**: CSS tokens and component styles compile into static stylesheets (`theme.css` and `dist/style.css`), eliminating runtime `<style>` injection and satisfying strict Content Security Policies (`CSP`).
 - **Tree-Shaking**: Pure ES modules allow modern bundlers (Vite, Rollup, Webpack, Turbopack) to eliminate unused components and utilities from consumer bundles.
 
+### Blocking Accessibility (a11y) Quality Gate
+
+Accessibility compliance is strictly enforced across CI and development environments:
+- **Automated Vitest Axe Suite**: [`src/components/ui/__tests__/accessibility.test.tsx`](./src/components/ui/__tests__/accessibility.test.tsx) runs `axe-core` against all interactive widgets and primitives, asserting 0 violations (`expect(results.violations).toEqual([])`) as a blocking CI gate.
+- **Storybook A11y Error Policy**: Storybook preview configuration ([`.storybook/preview.ts`](./.storybook/preview.ts)) enforces `a11y: { test: 'error' }`, ensuring that any accessibility violation immediately fails tests rather than being marked as non-blocking TODOs.
+
 ### Architecture Decision Records (ADRs)
 Explore our formal design decisions in [`docs/adr/`](./docs/adr/):
 - [ADR 0001: tsup and Dual Module (ESM/CJS) Publishing Architecture](./docs/adr/0001-tsup-and-dual-module-publishing.md)

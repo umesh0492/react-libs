@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stabilized `AnalyticsProvider` configuration equality: adapter comparison by name and stable `onError` callback reference to eliminate recreation churn.
 - Eliminated state updates during render in `AnalyticsProvider` to prevent React render loops and cascading updates.
 
+### Changed
+- Configured Storybook a11y parameters to `a11y: { test: 'error' }` in `.storybook/preview.ts` to block on accessibility violations.
+- Documented `src/components/ui/__tests__/accessibility.test.tsx` (automated `axe-core` suite) as the blocking CI gate for accessibility compliance.
+- Expanded `src/__tests__/ssr-smoke.test.tsx` to systematically verify server-side rendering and module directive boundaries across all 8 `package.json` `exports` entries.
+- Streamlined Vitest runner concurrency (`pool: 'forks'`, `maxWorkers: 2`) and removed redundant `prestorybook` test execution.
+
 ## [0.1.0] - 2026-09-09
 Initial public release.
 
