@@ -1,6 +1,6 @@
 {
   "name": "@umesh0492/react-libs",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "React 19 component library with Tailwind CSS v4 & Radix UI primitives.",
   "keywords": [
     "react",
@@ -56,6 +56,21 @@
       ],
       "india/react": [
         "./dist/india/react/index.d.ts"
+      ],
+      "button": [
+        "./dist/button.d.ts"
+      ],
+      "dialog": [
+        "./dist/dialog.d.ts"
+      ],
+      "card": [
+        "./dist/card.d.ts"
+      ],
+      "badge": [
+        "./dist/badge.d.ts"
+      ],
+      "input": [
+        "./dist/input.d.ts"
       ]
     }
   },
@@ -63,6 +78,7 @@
     "*.css",
     "**/*.css"
   ],
+  "bundleDependencies": false,
   "files": [
     "dist",
     "!dist/**/*.map",
@@ -168,6 +184,56 @@
       "require": {
         "types": "./dist/india/react/index.d.cts",
         "default": "./dist/india/react/index.cjs"
+      }
+    },
+    "./button": {
+      "import": {
+        "types": "./dist/button.d.ts",
+        "default": "./dist/button.js"
+      },
+      "require": {
+        "types": "./dist/button.d.cts",
+        "default": "./dist/button.cjs"
+      }
+    },
+    "./dialog": {
+      "import": {
+        "types": "./dist/dialog.d.ts",
+        "default": "./dist/dialog.js"
+      },
+      "require": {
+        "types": "./dist/dialog.d.cts",
+        "default": "./dist/dialog.cjs"
+      }
+    },
+    "./card": {
+      "import": {
+        "types": "./dist/card.d.ts",
+        "default": "./dist/card.js"
+      },
+      "require": {
+        "types": "./dist/card.d.cts",
+        "default": "./dist/card.cjs"
+      }
+    },
+    "./badge": {
+      "import": {
+        "types": "./dist/badge.d.ts",
+        "default": "./dist/badge.js"
+      },
+      "require": {
+        "types": "./dist/badge.d.cts",
+        "default": "./dist/badge.cjs"
+      }
+    },
+    "./input": {
+      "import": {
+        "types": "./dist/input.d.ts",
+        "default": "./dist/input.js"
+      },
+      "require": {
+        "types": "./dist/input.d.cts",
+        "default": "./dist/input.cjs"
       }
     },
     "./style.css": "./dist/style.css"

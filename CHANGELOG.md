@@ -5,21 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.0] - 2026-09-11
 
 ### Added
+- Dedicated client subpaths `@umesh0492/react-libs/button`, `@umesh0492/react-libs/dialog`, `@umesh0492/react-libs/card`, `@umesh0492/react-libs/badge`, `@umesh0492/react-libs/input` (`Button`, `Dialog`, `Card`, `Badge`, `Input`) for fine-grained per-component tree-shaking with dual ESM/CJS exports and TypeScript definitions.
+- Automated per-entry bundle size verification budgets in `scripts/check-bundle-size.mjs` ensuring component subpaths remain under strict budgets (`dist/button.js` <= 15 KB raw, measured 2.55 KB raw).
 - Dedicated client subpath `@umesh0492/react-libs/analytics/react` (`AnalyticsProvider`, `useAnalytics`, `TrackArea`, `PageViewTracker`) with explicit `'use client'` directive boundary.
 - Pure headless domain isolation for `@umesh0492/react-libs/analytics` with zero React hooks, zero client directives, and full server runtime safety.
 
-### Fixed
-- Stabilized `AnalyticsProvider` configuration equality: adapter comparison by name and stable `onError` callback reference to eliminate recreation churn.
-- Eliminated state updates during render in `AnalyticsProvider` to prevent React render loops and cascading updates.
-
 ### Changed
+- Isolated `window.history.pushState` and `window.history.replaceState` monkey-patching in `AnalyticsEngine` behind explicit opt-in (`patchHistory: true`, defaults to `false`) with full method restoration and event listener cleanup upon `destroy()`.
 - Configured Storybook a11y parameters to `a11y: { test: 'error' }` in `.storybook/preview.ts` to block on accessibility violations.
 - Documented `src/components/ui/__tests__/accessibility.test.tsx` (automated `axe-core` suite) as the blocking CI gate for accessibility compliance.
-- Expanded `src/__tests__/ssr-smoke.test.tsx` to systematically verify server-side rendering and module directive boundaries across all 8 `package.json` `exports` entries.
-- Streamlined Vitest runner concurrency (`pool: 'forks'`, `maxWorkers: 2`) and removed redundant `prestorybook` test execution.
+- Expanded `src/__tests__/ssr-smoke.test.tsx` to systematically verify server-side rendering and module directive boundaries across all `package.json` `exports` entries.
+- Streamlined Vitest runner concurrency (`maxWorkers: 2`) and removed redundant `prestorybook` test execution.
+
+### Fixed
+- Migrated all hardcoded slate and indigo color classes in `AmountSummaryCard` to semantic design tokens (`text-muted-foreground`, `text-primary`, `border-border`, `bg-card`, `bg-destructive`).
+- Stabilized `AnalyticsProvider` configuration equality: adapter comparison by name and stable `onError` callback reference to eliminate recreation churn.
+- Eliminated state updates during render in `AnalyticsProvider` to prevent React render loops and cascading updates.
+- Documented `SidebarProvider` SSR hydration contract requiring `defaultOpen` to read server cookies to prevent client hydration mismatch.
 
 ## [0.1.0] - 2026-09-09
 Initial public release.
