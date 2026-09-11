@@ -7,6 +7,11 @@ afterEach(() => {
     cleanup();
 });
 
+// SSR / Node environment polyfills
+if (typeof (globalThis as any).DOMMatrix === 'undefined') {
+  (globalThis as any).DOMMatrix = class DOMMatrix {};
+}
+
 // JSDOM specific mocks
 if (typeof window !== 'undefined') {
   // JSDOM does not implement matchMedia — mock it globally

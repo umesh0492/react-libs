@@ -1,6 +1,18 @@
+// @vitest-environment node
 import * as React from "react";
 import { describe, it, expect } from "vitest";
 import { renderToString } from "react-dom/server";
+import fs from "node:fs";
+import path from "node:path";
+
+// Subpath Entry Imports for SSR Verification
+import { cn as pureCn } from "../utils";
+import { AnalyticsEngine as PureAnalyticsEngine, ConsoleAdapter as PureConsoleAdapter } from "../lib/analytics";
+import { AnalyticsProvider as SsrAnalyticsProvider, TrackArea as SsrTrackArea } from "../lib/analytics/react";
+import { calculateGSTSplit as pureCalculateGSTSplit, validateGSTIN as pureValidateGSTIN, INDIA_STATES as pureIndiaStates } from "../india";
+import { AmountSummaryCardIndia as SsrAmountSummaryCardIndia } from "../india/react";
+import { useToast as ssrUseToast, toast as ssrToast } from "../hooks/use-toast";
+import { PdfViewer as SsrPdfViewer } from "../components/ui/data-display/pdf-viewer";
 
 // Form Components
 import { Button } from "../components/ui/forms/button";
@@ -304,14 +316,63 @@ describe("SSR Smoke Test Suite - renderToString Zero Crash Check", () => {
   }
 });
 
-describe("SSR Subpath Purity & Execution Suite", () => {
-  it("imports and executes pure analytics engine without React hooks or DOM in SSR context", async () => {
-    const { AnalyticsEngine, ConsoleAdapter } = await import("../lib/analytics");
-    expect(AnalyticsEngine).toBeDefined();
+describe("SSR Subpath Purity & Execution Suite - All 8 package.json Exports", () => {
+  const DIST_DIR = path.resolve(__dirname, "../../dist");
 
-    const engine = new AnalyticsEngine({
+  function assertDirective(filePath: string, expected: "client" | "pure") {
+    const fullPath = path.join(DIST_DIR, filePath);
+    expect(fs.existsSync(fullPath), `Artifact must exist: ${filePath}`).toBe(true);
+    const content = fs.readFileSync(fullPath, "utf-8");
+    const firstLine = content.split("\n")[0]?.trim() || "";
+
+    if (expected === "client") {
+      expect(
+        firstLine.startsWith("'use client';") || firstLine.startsWith('"use client";'),
+        `${filePath} must have 'use client' as line 1 (got: ${firstLine})`
+      ).toBe(true);
+    } else {
+      expect(
+        content.includes("'use client'") || content.includes('"use client"'),
+        `${filePath} must NOT contain 'use client' directive`
+      ).toBe(false);
+    }
+  }
+
+  // 1. Export "." (Root entry)
+  it("subpath '.' has 'use client' banner and renders in SSR without throwing", () => {
+    assertDirective("index.js", "client");
+    expect(() => {
+      const html = renderToString(
+        <div>
+          <Button>Root Button</Button>
+          <Badge>Root Badge</Badge>
+        </div>
+      );
+      expect(html).toContain("Root Button");
+      expect(html).toContain("Root Badge");
+    }).not.toThrow();
+  });
+
+  // 2. Export "./utils"
+  it("subpath './utils' has NO 'use client' and executes server-side without throwing", () => {
+    assertDirective("utils.js", "pure");
+    expect(typeof pureCn).toBe("function");
+    expect(pureCn("px-4", "py-2")).toBe("px-4 py-2");
+  });
+
+  // 3. Export "./analytics"
+  it("subpath './analytics' has NO 'use client', zero React hooks/DOM, and executes server-side without throwing", () => {
+    assertDirective("analytics/index.js", "pure");
+    const analyticsContent = fs.readFileSync(path.join(DIST_DIR, "analytics/index.js"), "utf-8");
+    expect(analyticsContent).not.toMatch(/\buseState\b/);
+    expect(analyticsContent).not.toMatch(/\buseEffect\b/);
+    expect(analyticsContent).not.toMatch(/\bcreateContext\b/);
+
+    expect(PureAnalyticsEngine).toBeDefined();
+
+    const engine = new PureAnalyticsEngine({
       appId: "ssr-test-app",
-      adapters: [new ConsoleAdapter()],
+      adapters: [new PureConsoleAdapter()],
       autoTrackDom: false,
       autoTrackPages: false,
     });
@@ -321,27 +382,74 @@ describe("SSR Subpath Purity & Execution Suite", () => {
     expect(typeof engine.destroy).toBe("function");
   });
 
-  it("renders AnalyticsProvider and TrackArea from analytics/react via renderToString without throwing", async () => {
-    const { AnalyticsProvider, TrackArea } = await import("../lib/analytics/react");
+  // 4. Export "./analytics/react"
+  it("subpath './analytics/react' has 'use client' banner and renders in SSR without throwing", () => {
+    assertDirective("analytics/react/index.js", "client");
     expect(() => {
       const html = renderToString(
-        <AnalyticsProvider config={{ appId: "ssr-app", autoTrackDom: false, autoTrackPages: false }}>
-          <TrackArea journey="ssr-test-area">
+        <SsrAnalyticsProvider config={{ appId: "ssr-app", autoTrackDom: false, autoTrackPages: false }}>
+          <SsrTrackArea journey="ssr-test-area">
             <div>SSR Tracked Content</div>
-          </TrackArea>
-        </AnalyticsProvider>
+          </SsrTrackArea>
+        </SsrAnalyticsProvider>
       );
       expect(html).toContain("SSR Tracked Content");
     }).not.toThrow();
   });
 
-  it("imports and executes pure india domain utilities in SSR context", async () => {
-    const { calculateGSTSplit, validateGSTIN, INDIA_STATES } = await import("../india");
-    expect(validateGSTIN("29ABCDE1234F1Z5")).toBe(true);
-    const split = calculateGSTSplit(1000, 18, true);
+  // 5. Export "./india"
+  it("subpath './india' has NO 'use client' and executes pure domain calculations server-side without throwing", () => {
+    assertDirective("india/index.js", "pure");
+    expect(pureValidateGSTIN("29ABCDE1234F1Z5")).toBeUndefined();
+    expect(pureValidateGSTIN("invalid")).toBeDefined();
+    const split = pureCalculateGSTSplit(1000, 18, true);
     expect(split.cgstAmount).toBe(90);
     expect(split.sgstAmount).toBe(90);
-    expect(INDIA_STATES.length).toBeGreaterThan(20);
+    expect(split.totalPayable).toBe(1180);
+    expect(pureIndiaStates.length).toBeGreaterThan(20);
+  });
+
+  // 6. Export "./india/react"
+  it("subpath './india/react' has 'use client' banner and renders in SSR without throwing", () => {
+    assertDirective("india/react/index.js", "client");
+    expect(() => {
+      const html = renderToString(
+        <SsrAmountSummaryCardIndia
+          baseAmount={1000}
+          gstRate={18}
+          isIntraState={true}
+        />
+      );
+      expect(html).toBeDefined();
+      expect(html.length).toBeGreaterThan(0);
+    }).not.toThrow();
+  });
+
+  // 7. Export "./hooks/use-toast"
+  it("subpath './hooks/use-toast' has 'use client' banner and executes in SSR without throwing", () => {
+    assertDirective("hooks/use-toast.js", "client");
+    expect(typeof ssrToast).toBe("function");
+
+    function ToastConsumer() {
+      const { toasts } = ssrUseToast();
+      return <div data-testid="toasts-len">{toasts.length}</div>;
+    }
+
+    expect(() => {
+      const html = renderToString(<ToastConsumer />);
+      expect(html).toContain("toasts-len");
+    }).not.toThrow();
+  });
+
+  // 8. Export "./pdf"
+  it("subpath './pdf' has 'use client' banner and renders in SSR without throwing", () => {
+    assertDirective("pdf.js", "client");
+    expect(() => {
+      const html = renderToString(<SsrPdfViewer file="sample.pdf" />);
+      expect(html).toBeDefined();
+      expect(html.length).toBeGreaterThan(0);
+    }).not.toThrow();
   });
 });
+
 
