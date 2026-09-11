@@ -1,6 +1,51 @@
+// @vitest-environment node
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { initAnalytics, getAnalyticsEngine } from "../engine";
 import type { AnalyticsAdapter, AnalyticsEvent } from "../types";
+
+// Lightweight SSR / Node window mock avoiding heavy JSDOM startup overhead
+const storage = new Map<string, string>();
+const mockStorage = {
+  getItem: (k: string) => storage.get(k) ?? null,
+  setItem: (k: string, v: string) => { storage.set(k, String(v)); },
+  removeItem: (k: string) => { storage.delete(k); },
+  clear: () => { storage.clear(); },
+  key: (i: number) => Array.from(storage.keys())[i] ?? null,
+  get length() { return storage.size; },
+};
+
+if (typeof (globalThis as any).window === "undefined") {
+  (globalThis as any).window = {
+    localStorage: mockStorage,
+    sessionStorage: mockStorage,
+    history: {
+      pushState: () => {},
+      replaceState: () => {},
+    },
+    location: {
+      href: "http://localhost:3000/home",
+      pathname: "/home",
+      search: "",
+    },
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  };
+} else {
+  (globalThis as any).window.localStorage = mockStorage;
+  (globalThis as any).window.sessionStorage = mockStorage;
+}
+if (typeof (globalThis as any).document === "undefined") {
+  (globalThis as any).document = {
+    title: "Test Page",
+    referrer: "",
+    visibilityState: "visible",
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  };
+} else {
+  (globalThis as any).document.addEventListener = (globalThis as any).document.addEventListener || (() => {});
+  (globalThis as any).document.removeEventListener = (globalThis as any).document.removeEventListener || (() => {});
+}
 
 describe("AnalyticsEngine", () => {
   let trackedEvents: AnalyticsEvent[] = [];
@@ -85,4 +130,49 @@ describe("AnalyticsEngine", () => {
     expect(event1.page.path).toBe("/home");
     expect(event2.page.path).toBe("/settings");
   });
+
+  describe("window.history monkey-patching opt-in", () => {
+    const originalPushState = window.history.pushState;
+
+    afterEach(() => {
+      window.history.pushState = originalPushState;
+    });
+
+    it("does NOT monkey-patch window.history.pushState by default when patchHistory is omitted", () => {
+      const initialPushState = window.history.pushState;
+      initAnalytics({
+        adapters: [mockAdapter],
+        autoTrackPages: true,
+      });
+
+      expect(window.history.pushState).toBe(initialPushState);
+    });
+
+    it("does NOT monkey-patch window.history.pushState when patchHistory is false", () => {
+      const initialPushState = window.history.pushState;
+      initAnalytics({
+        adapters: [mockAdapter],
+        autoTrackPages: true,
+        patchHistory: false,
+      });
+
+      expect(window.history.pushState).toBe(initialPushState);
+    });
+
+    it("monkey-patches window.history.pushState when patchHistory is true and restores it on destroy()", () => {
+      const initialPushState = window.history.pushState;
+      const engine = initAnalytics({
+        adapters: [mockAdapter],
+        autoTrackPages: true,
+        patchHistory: true,
+      });
+
+      expect(window.history.pushState).not.toBe(initialPushState);
+
+      engine.destroy();
+
+      expect(window.history.pushState).toBe(initialPushState);
+    });
+  });
 });
+

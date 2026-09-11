@@ -46,6 +46,10 @@ export interface AnalyticsConfig {
   globalMetadata?: Record<string, unknown>;
   autoTrackDom?: boolean;
   autoTrackPages?: boolean;
+  /**
+   * @warning Monkey-patching window.history.pushState/replaceState can cause conflicts with client-side routers (Next.js App Router, Remix, React Router). Defaults to false.
+   */
+  patchHistory?: boolean;
   maskPatterns?: RegExp[];
   onError?: (error: unknown) => void;
 }

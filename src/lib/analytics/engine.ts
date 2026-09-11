@@ -17,6 +17,7 @@ export class AnalyticsEngine {
   private globalMetadata: Record<string, unknown> = {};
   private originalPushState?: typeof history.pushState;
   private originalReplaceState?: typeof history.replaceState;
+  private popStateListener?: () => void;
   private isInitialized = false;
 
   constructor(config: AnalyticsConfig = {}) {
@@ -91,26 +92,30 @@ export class AnalyticsEngine {
     // Track initial page view on load
     this.trackPageView();
 
-    // Wrap history.pushState
-    this.originalPushState = window.history.pushState.bind(window.history);
-    window.history.pushState = (...args: Parameters<typeof history.pushState>) => {
-      this.originalPushState?.(...args);
+    // Wrap history.pushState and replaceState only if patchHistory is explicitly enabled
+    if (this.config.patchHistory === true) {
+      this.originalPushState = window.history.pushState;
+      const originalPush = this.originalPushState;
+      window.history.pushState = (...args: Parameters<typeof history.pushState>) => {
+        originalPush.apply(window.history, args);
+        this.sessionManager.renewPageId();
+        this.trackPageView();
+      };
+
+      this.originalReplaceState = window.history.replaceState;
+      const originalReplace = this.originalReplaceState;
+      window.history.replaceState = (...args: Parameters<typeof history.replaceState>) => {
+        originalReplace.apply(window.history, args);
+        this.sessionManager.renewPageId();
+        this.trackPageView();
+      };
+    }
+
+    this.popStateListener = () => {
       this.sessionManager.renewPageId();
       this.trackPageView();
     };
-
-    // Wrap history.replaceState
-    this.originalReplaceState = window.history.replaceState.bind(window.history);
-    window.history.replaceState = (...args: Parameters<typeof history.replaceState>) => {
-      this.originalReplaceState?.(...args);
-      this.sessionManager.renewPageId();
-      this.trackPageView();
-    };
-
-    window.addEventListener("popstate", () => {
-      this.sessionManager.renewPageId();
-      this.trackPageView();
-    });
+    window.addEventListener("popstate", this.popStateListener);
   }
 
   private handleDomInteraction(
@@ -283,12 +288,20 @@ export class AnalyticsEngine {
     this.domTracker?.stop();
     this.queue.destroy();
 
-    if (typeof window !== "undefined" && window.history) {
-      if (this.originalPushState) {
-        window.history.pushState = this.originalPushState;
+    if (typeof window !== "undefined") {
+      if (window.history) {
+        if (this.originalPushState) {
+          window.history.pushState = this.originalPushState;
+          this.originalPushState = undefined;
+        }
+        if (this.originalReplaceState) {
+          window.history.replaceState = this.originalReplaceState;
+          this.originalReplaceState = undefined;
+        }
       }
-      if (this.originalReplaceState) {
-        window.history.replaceState = this.originalReplaceState;
+      if (this.popStateListener) {
+        window.removeEventListener("popstate", this.popStateListener);
+        this.popStateListener = undefined;
       }
     }
     this.isInitialized = false;
