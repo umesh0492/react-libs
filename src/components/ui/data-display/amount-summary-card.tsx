@@ -168,10 +168,10 @@ function TaxBreakdownSection({ taxes, finalTaxAmount, taxLabel, fmt }: TaxBreakd
         {taxes.map((tax, idx) => (
           <div
             key={idx}
-            className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800"
+            className="flex justify-between items-center py-1 border-b border-dashed border-border"
           >
-            <span className="text-[11px] font-medium text-slate-500">{tax.label}</span>
-            <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+            <span className="text-[11px] font-medium text-muted-foreground">{tax.label}</span>
+            <span className="font-semibold text-primary">
               +{fmt(tax.amount)}
             </span>
           </div>
@@ -182,9 +182,9 @@ function TaxBreakdownSection({ taxes, finalTaxAmount, taxLabel, fmt }: TaxBreakd
 
   if (finalTaxAmount > 0) {
     return (
-      <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-        <span className="text-[11px] font-medium text-slate-500">{taxLabel}</span>
-        <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+      <div className="flex justify-between items-center py-1 border-b border-dashed border-border">
+        <span className="text-[11px] font-medium text-muted-foreground">{taxLabel}</span>
+        <span className="font-semibold text-primary">
           +{fmt(finalTaxAmount)}
         </span>
       </div>
@@ -209,15 +209,15 @@ function TotalPayableSection({ isUrgent, urgentLabel, isSm, totalValue, fmt }: T
         className={cn(
           "mt-2 p-3.5 rounded-xl border flex justify-between items-center shadow-xs transition-all",
           isUrgent
-            ? "bg-slate-900 border-rose-900/50 text-white"
-            : "bg-slate-900 border-slate-800 text-white"
+            ? "bg-destructive text-destructive-foreground border-destructive"
+            : "bg-card border-border text-card-foreground"
         )}
       >
         <div className="space-y-0.5">
-          <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">
+          <span className="text-[9px] uppercase tracking-wider text-muted-foreground font-bold block">
             Total Payable
           </span>
-          <span className="text-[9px] text-slate-500 block leading-tight">
+          <span className="text-[9px] text-muted-foreground block leading-tight">
             Inclusive of taxes & deductions
           </span>
         </div>
@@ -294,28 +294,28 @@ export function AmountSummaryCard({
   return (
     <Card
       className={cn(
-        "rounded-xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50/30 shadow-xs dark:border-slate-800 dark:from-slate-900 dark:to-slate-950",
+        "rounded-xl border border-border bg-card shadow-xs",
         className
       )}
       {...props}
     >
       <CardHeader
         className={cn(
-          "border-b border-slate-100 dark:border-slate-800",
+          "border-b border-border",
           isSm ? "px-3 py-2" : "px-4.5 py-3"
         )}
       >
-        <CardTitle className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-          <Coins className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+        <CardTitle className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+          <Coins className="h-3.5 w-3.5 text-primary" />
           <span>Amount Summary</span>
         </CardTitle>
       </CardHeader>
       <CardContent className={isSm ? "p-3 space-y-2" : "p-4.5 space-y-3"}>
         <div className="space-y-0.5 text-xs">
           {/* Base Cost */}
-          <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-            <span className="text-[11px] font-medium text-slate-500">Base Cost</span>
-            <span className="font-semibold text-slate-800 dark:text-slate-200">
+          <div className="flex justify-between items-center py-1 border-b border-dashed border-border">
+            <span className="text-[11px] font-medium text-muted-foreground">Base Cost</span>
+            <span className="font-semibold text-foreground">
               {fmt(finalBaseAmount)}
             </span>
           </div>
@@ -330,9 +330,9 @@ export function AmountSummaryCard({
 
           {/* Shipping & Logistics */}
           {effectiveShipping > 0 && (
-            <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-              <span className="text-[11px] font-medium text-slate-500">Logistics & Shipping</span>
-              <span className="font-semibold text-slate-700 dark:text-slate-300">
+            <div className="flex justify-between items-center py-1 border-b border-dashed border-border">
+              <span className="text-[11px] font-medium text-muted-foreground">Logistics & Shipping</span>
+              <span className="font-semibold text-foreground">
                 +{fmt(effectiveShipping)}
               </span>
             </div>
@@ -340,8 +340,8 @@ export function AmountSummaryCard({
 
           {/* Withholding */}
           {effectiveWithholdingPct > 0 && (
-            <div className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800">
-              <span className="text-[11px] font-medium text-slate-500">
+            <div className="flex justify-between items-center py-1 border-b border-dashed border-border">
+              <span className="text-[11px] font-medium text-muted-foreground">
                 Withholding ({effectiveWithholdingPct}%)
               </span>
               <span className="font-semibold text-rose-600 dark:text-rose-400">
@@ -355,9 +355,9 @@ export function AmountSummaryCard({
             deductions.map((d, idx) => (
               <div
                 key={idx}
-                className="flex justify-between items-center py-1 border-b border-dashed border-slate-100 dark:border-slate-800"
+                className="flex justify-between items-center py-1 border-b border-dashed border-border"
               >
-                <span className="text-[11px] font-medium text-slate-500">{d.label}</span>
+                <span className="text-[11px] font-medium text-muted-foreground">{d.label}</span>
                 <span className="font-semibold text-rose-600 dark:text-rose-400">
                   -{fmt(d.amount)}
                 </span>
