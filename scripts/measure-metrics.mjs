@@ -69,6 +69,11 @@ export function measureMetrics() {
     'dist/analytics/react/index.js',
     'dist/india/index.js',
     'dist/india/react/index.js',
+    'dist/button.js',
+    'dist/dialog.js',
+    'dist/card.js',
+    'dist/badge.js',
+    'dist/input.js',
     'dist/style.css',
   ];
 

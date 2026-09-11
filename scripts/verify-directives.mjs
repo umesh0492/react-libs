@@ -29,6 +29,11 @@ const CLIENT_FILES = [
   'dist/hooks/use-toast.js',
   'dist/india/react/index.js',
   'dist/analytics/react/index.js',
+  'dist/button.js',
+  'dist/dialog.js',
+  'dist/card.js',
+  'dist/badge.js',
+  'dist/input.js',
 ];
 
 const UNIVERSAL_FILES = [

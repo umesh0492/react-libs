@@ -63,6 +63,36 @@ const BUDGETS = [
     maxGzipKb: 2,
   },
   {
+    file: 'dist/button.js',
+    label: 'Button Subpath (ESM)',
+    maxRawKb: 15,
+    maxGzipKb: 5,
+  },
+  {
+    file: 'dist/dialog.js',
+    label: 'Dialog Subpath (ESM)',
+    maxRawKb: 25,
+    maxGzipKb: 8,
+  },
+  {
+    file: 'dist/card.js',
+    label: 'Card Subpath (ESM)',
+    maxRawKb: 15,
+    maxGzipKb: 5,
+  },
+  {
+    file: 'dist/badge.js',
+    label: 'Badge Subpath (ESM)',
+    maxRawKb: 15,
+    maxGzipKb: 5,
+  },
+  {
+    file: 'dist/input.js',
+    label: 'Input Subpath (ESM)',
+    maxRawKb: 15,
+    maxGzipKb: 5,
+  },
+  {
     file: 'dist/style.css',
     label: 'Compiled Tailwind CSS',
     maxRawKb: 180,
