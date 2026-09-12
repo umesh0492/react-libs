@@ -25,21 +25,34 @@ const DIST_DIR = join(ROOT, 'dist');
 
 const CLIENT_FILES = [
   'dist/index.js',
+  'dist/index.cjs',
   'dist/pdf.js',
+  'dist/pdf.cjs',
   'dist/hooks/use-toast.js',
+  'dist/hooks/use-toast.cjs',
   'dist/india/react/index.js',
+  'dist/india/react/index.cjs',
   'dist/analytics/react/index.js',
+  'dist/analytics/react/index.cjs',
   'dist/button.js',
+  'dist/button.cjs',
   'dist/dialog.js',
+  'dist/dialog.cjs',
   'dist/card.js',
+  'dist/card.cjs',
   'dist/badge.js',
+  'dist/badge.cjs',
   'dist/input.js',
+  'dist/input.cjs',
 ];
 
 const UNIVERSAL_FILES = [
   'dist/utils.js',
+  'dist/utils.cjs',
   'dist/analytics/index.js',
+  'dist/analytics/index.cjs',
   'dist/india/index.js',
+  'dist/india/index.cjs',
 ];
 
 let failed = false;
@@ -64,6 +77,13 @@ for (const relPath of CLIENT_FILES) {
     console.error(`❌ [DIRECTIVE ERROR] ${relPath} does NOT start with 'use client';`);
     const preview = content.slice(0, 60).replace(/\n/g, '\\n');
     console.error(`   Actual start: "${preview}..."`);
+    failed = true;
+  }
+
+  // Detect duplicate directives (e.g. injected banner + source directive)
+  const occurrences = (content.match(/['"]use client['"]/g) || []).length;
+  if (occurrences > 1) {
+    console.error(`❌ [DUPLICATE DIRECTIVE] ${relPath} contains ${occurrences} 'use client' directives!`);
     failed = true;
   }
 }

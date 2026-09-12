@@ -30,7 +30,7 @@
 import { existsSync, openSync, readSync, closeSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
-import { verifyChangelogSymbols } from './inventory-symbols.mjs';
+import { verifyChangelogSymbols, verifyReadmeComponents } from './inventory-symbols.mjs';
 import { verifyDocsMetrics } from './measure-metrics.mjs';
 
 const ROOT = resolve(process.cwd());
@@ -326,12 +326,19 @@ function checkGitHubActions() {
 
 // ── Check E: Symbol Inventory Gate ──────────────────────────────────────────
 function checkSymbolInventory() {
-  console.log('\n🔍 [Check E] Verifying Exported Symbol Inventory & CHANGELOG Bullets...');
-  const success = verifyChangelogSymbols();
-  if (!success) {
+  console.log('\n🔍 [Check E] Verifying Exported Symbol Inventory (CHANGELOG & README)...');
+  const changelogSuccess = verifyChangelogSymbols();
+  if (!changelogSuccess) {
     fail('CHANGELOG symbol inventory check failed (contains fake symbol or unasserted dist property)');
   } else {
     pass('All CHANGELOG items correspond to verified symbols and directives');
+  }
+
+  const readmeSuccess = verifyReadmeComponents();
+  if (!readmeSuccess) {
+    fail('README component reference check failed (contains unexported or fabricated component names)');
+  } else {
+    pass('All README components correspond to verified exported symbols');
   }
 }
 

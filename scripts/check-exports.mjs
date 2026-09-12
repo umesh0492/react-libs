@@ -54,8 +54,8 @@ for (const file of componentFiles) {
     continue;
   }
   
-  // Check for export * from './path' or export { name } from './path'
-  const exportPattern = new RegExp(`from\\s+['"]\\.\\/${relPath}['"]`, 'i');
+  // Check for export * from './path' or export { name } from './path' (must be active export, not comment)
+  const exportPattern = new RegExp(`^\\s*export\\s+(?:\\*|\\{[^}]+\\})\\s+from\\s+['"]\\.\\/${relPath}['"]`, 'm');
   
   if (!exportPattern.test(entryContent)) {
     missing.push({
@@ -83,7 +83,7 @@ if (existsSync(INDIA_REACT_ENTRY) && existsSync(INDIA_COMPONENTS_DIR)) {
 
   for (const file of indiaComponents) {
     const baseName = file.split('/').pop().replace(/\.tsx$/, '');
-    const pattern = new RegExp(`from\\s+['"].*${baseName}['"]`, 'i');
+    const pattern = new RegExp(`^\\s*export\\s+.*from\\s+['"].*${baseName}['"]`, 'm');
     if (!pattern.test(indiaReactContent)) {
       missingIndiaComponents.push(baseName);
     }
@@ -104,7 +104,7 @@ if (existsSync(INDIA_ENTRY)) {
   const indiaContent = readFileSync(INDIA_ENTRY, 'utf8');
   const indiaModules = ['validators', 'tax', 'constants', 'locations'];
   for (const mod of indiaModules) {
-    const pattern = new RegExp(`from\\s+['"]\\.\\/${mod}['"]`, 'i');
+    const pattern = new RegExp(`^\\s*export\\s+.*from\\s+['"]\\.\\/${mod}['"]`, 'm');
     if (!pattern.test(indiaContent)) {
       console.error(`❌  MISSING INDIA DOMAIN EXPORT: ${mod} is not exported in src/india/index.ts`);
       process.exit(1);

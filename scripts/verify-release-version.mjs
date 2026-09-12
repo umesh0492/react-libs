@@ -40,18 +40,21 @@ function verifyReleaseVersion() {
 
   const changelog = readFileSync(CHANGELOG_PATH, 'utf8');
 
-  // Match header like "## [0.1.0]" or "## [v0.1.0]"
-  const escapedVersion = version.replace(/\./g, '\\.');
-  const changelogRegex = new RegExp(`^##\\s+\\[v?${escapedVersion}\\]`, 'm');
+  // Extract the topmost release section from CHANGELOG.md
+  const topMatch = changelog.match(/^##\s+\[v?([0-9]+\.[0-9]+\.[0-9]+[^\]]*)\]/m);
+  if (!topMatch || !topMatch[1]) {
+    console.error('❌ Could not extract top release version (## [x.y.z]) from CHANGELOG.md');
+    process.exit(1);
+  }
+  const topVersion = topMatch[1].trim();
 
-  if (!changelogRegex.test(changelog)) {
-    console.error(`❌ CHANGELOG.md does not contain an entry for version "${version}".`);
-    console.error(`   Expected header format: "## [${version}] - YYYY-MM-DD"`);
-    console.error(`   Please document your changes in CHANGELOG.md before proceeding with the release.`);
+  if (version !== topVersion) {
+    console.error(`❌ package.json version "${version}" does not match top CHANGELOG.md release "${topVersion}".`);
+    console.error(`   The package version must correspond to the latest/top release entry.`);
     process.exit(1);
   }
 
-  console.log(`✅ CHANGELOG.md contains matching section: "## [${version}]"`);
+  console.log(`✅ CHANGELOG.md topmost release section matches: "## [${version}]"`);
 
   // Verify Git Tag in CI environments if triggered by tag push
   const refType = process.env.GITHUB_REF_TYPE;

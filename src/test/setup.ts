@@ -8,8 +8,9 @@ afterEach(() => {
 });
 
 // SSR / Node environment polyfills
-if (typeof (globalThis as any).DOMMatrix === 'undefined') {
-  (globalThis as any).DOMMatrix = class DOMMatrix {};
+const globalScope = globalThis as unknown as { DOMMatrix?: typeof DOMMatrix };
+if (typeof globalScope.DOMMatrix === 'undefined') {
+  globalScope.DOMMatrix = class DOMMatrix {} as unknown as typeof DOMMatrix;
 }
 
 // JSDOM specific mocks

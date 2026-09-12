@@ -131,7 +131,7 @@ export * from "./components/ui/feedback/progress-ring";
 export * from "./components/ui/feedback/role-empty-state";
 export * from "./components/ui/feedback/skeleton";
 export * from "./components/ui/feedback/skeleton-list";
-export { Toaster as SonnerToaster } from "./components/ui/feedback/sonner";
+export { Toaster as SonnerToaster, Toaster as Sonner } from "./components/ui/feedback/sonner";
 export * from "./components/ui/feedback/spinner";
 export * from "./components/ui/feedback/success-micro-interaction";
 export * from "./components/ui/feedback/toast";

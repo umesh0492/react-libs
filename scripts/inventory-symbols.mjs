@@ -77,6 +77,35 @@ export function getExportedSymbols() {
         .join('');
       symbols.add(pascal);
       symbols.add(base);
+
+      // Deep parse exports from the referenced module
+      const dir = dirname(full);
+      const candidates = [
+        join(dir, modPath + '.ts'),
+        join(dir, modPath + '.tsx'),
+        join(dir, modPath, 'index.ts'),
+        join(dir, modPath, 'index.tsx'),
+      ];
+      for (const cand of candidates) {
+        if (existsSync(cand)) {
+          const modContent = readFileSync(cand, 'utf8');
+          const modDirectMatches = modContent.matchAll(/export\s+(?:const|function|class|type|interface)\s+([A-Za-z0-9_]+)/g);
+          for (const dm of modDirectMatches) {
+            symbols.add(dm[1]);
+          }
+          const modNamedMatches = modContent.matchAll(/export\s*\{\s*([^}]+)\s*\}/g);
+          for (const nm of modNamedMatches) {
+            const parts = nm[1].split(',');
+            for (const p of parts) {
+              const sym = p.trim().split(/\s+as\s+/).pop().trim();
+              if (sym && /^[A-Za-z0-9_]+$/.test(sym)) {
+                symbols.add(sym);
+              }
+            }
+          }
+          break;
+        }
+      }
     }
 
     // Parse direct export declarations (const, function, class, type, interface)
@@ -145,7 +174,7 @@ export function verifyChangelogSymbols() {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    if (line.startsWith('### Added')) {
+    if (/^###\s+(Added|Fixed|Changed|Security|Performance|Deprecated)/i.test(line)) {
       inAddedSection = true;
       continue;
     } else if (line.startsWith('### ') || line.startsWith('## ')) {
@@ -252,8 +281,54 @@ export function verifyChangelogSymbols() {
   return true;
 }
 
+export function verifyReadmeComponents() {
+  console.log('🔍 [Inventory Gate] Verifying README.md component reference against exported symbols...');
+  const readmePath = join(ROOT, 'README.md');
+  if (!existsSync(readmePath)) {
+    console.error('❌ [FAIL] README.md not found');
+    return false;
+  }
+  const readme = readFileSync(readmePath, 'utf8');
+  const tableMatch = readme.match(/## Component Reference[\s\S]*?\| Domain \| Component \| Notes \|([\s\S]*?)\n---/);
+  if (!tableMatch) {
+    console.error('❌ [FAIL] Could not find Component Reference table in README.md');
+    return false;
+  }
+
+  const { symbols } = getExportedSymbols();
+  const lines = tableMatch[1].split('\n').filter((l) => l.trim().startsWith('|'));
+  let hasError = false;
+  let verifiedCount = 0;
+
+  for (const line of lines) {
+    if (line.includes('|---|')) continue;
+    const cols = line.split('|').map((c) => c.trim()).filter(Boolean);
+    if (cols.length < 2) continue;
+    const compCol = cols.length === 3 ? cols[1] : cols[0];
+    const compNames = [...compCol.matchAll(/`([A-Za-z0-9_]+)`/g)].map((m) => m[1]);
+    for (const name of compNames) {
+      if (!symbols.has(name)) {
+        console.error(`❌ [FAIL] README.md lists component "${name}" which is not exported or found in symbol inventory!`);
+        hasError = true;
+      } else {
+        verifiedCount++;
+      }
+    }
+  }
+
+  if (hasError) {
+    console.error('❌ [FAIL] README.md component reference verification failed!\n');
+    return false;
+  }
+
+  console.log(`✅ [PASS] All ${verifiedCount} components in README.md verified against exported symbols.\n`);
+  return true;
+}
+
 // Direct execution
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const success = verifyChangelogSymbols();
-  process.exit(success ? 0 : 1);
+  const changelogSuccess = verifyChangelogSymbols();
+  const readmeSuccess = verifyReadmeComponents();
+  process.exit(changelogSuccess && readmeSuccess ? 0 : 1);
 }
+

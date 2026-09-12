@@ -306,6 +306,13 @@ console.log(`    Wall  : ${(totalWallMs / 1000).toFixed(2)}s`);
 // ---------------------------------------------------------------------------
 // 6. Performance Gate Check
 // ---------------------------------------------------------------------------
+if (globalStats.failing > 0) {
+  console.error(`\n❌  PERFORMANCE GATE FAILED`);
+  console.error(`    ${globalStats.failing} test(s) failed during the performance run.`);
+  console.error(`    Performance metrics must not pass when tests are failing.`);
+  process.exit(1);
+}
+
 const THRESHOLD = parseInt(process.env.PERF_P95_THRESHOLD || '750', 10);
 if (globalStats.p95 > THRESHOLD) {
   console.error(`\n❌  PERFORMANCE GATE FAILED`);

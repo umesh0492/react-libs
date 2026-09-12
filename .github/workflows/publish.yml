@@ -33,17 +33,35 @@ jobs:
       - name: Verify Project Types
         run: npx tsc --noEmit
 
-      - name: Assure Test Coverage Checks
-        run: npm run test
-
-      - name: Prebuild Storybook Artifacts
-        run: npm run build-storybook
+      - name: Lint (Static Analysis & Custom Rules)
+        run: npm run lint
 
       - name: Build Package
         run: npm run build
 
       - name: Bundle Size Limit Gate
         run: npm run check:size
+
+      - name: CI Truth Gate (docs-match-tree)
+        run: npm run check:truth
+
+      - name: Check Package Types Matrix (attw)
+        run: npm run check:types-pkg
+
+      - name: Verify Module Directives & Universal Packaging
+        run: npm run check:directives
+
+      - name: Verify Component Exports
+        run: node scripts/check-exports.mjs
+
+      - name: Performance Gate (P95 Enforcement)
+        run: npm run perf
+
+      - name: Assure Test Coverage Checks
+        run: npm run test
+
+      - name: Prebuild Storybook Artifacts
+        run: npm run build-storybook
 
       - name: Extract Release Notes
         run: node scripts/extract-release-notes.mjs --output dist/release-notes.md

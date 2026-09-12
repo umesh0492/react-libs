@@ -71,14 +71,24 @@ export function AnalyticsProvider({
   engine: externalEngine,
   onError,
 }: AnalyticsProviderProps) {
-  const [engineInstance, setEngineInstance] = React.useState<AnalyticsEngine | null>(
-    () => externalEngine || (config ? null : getAnalyticsEngine())
-  );
+  const [engineInstance, setEngineInstance] = React.useState<AnalyticsEngine | null>(() => {
+    if (externalEngine) return externalEngine;
+    if (config) {
+      return initAnalytics(config);
+    }
+    return getAnalyticsEngine();
+  });
 
+  const activeEngineRef = React.useRef<AnalyticsEngine | null>(engineInstance);
   const onErrorRef = React.useRef(onError || config?.onError);
+
   React.useEffect(() => {
     onErrorRef.current = onError || config?.onError;
   }, [onError, config?.onError]);
+
+  React.useEffect(() => {
+    activeEngineRef.current = engineInstance;
+  }, [engineInstance]);
 
   const configRef = React.useRef<AnalyticsConfig | undefined>(config);
   const [configVersion, setConfigVersion] = React.useState(0);
@@ -93,24 +103,36 @@ export function AnalyticsProvider({
   React.useEffect(() => {
     if (externalEngine) {
       setEngineInstance(externalEngine);
+      activeEngineRef.current = externalEngine;
       return;
     }
 
     const currentConf = configRef.current;
     if (currentConf) {
-      const stableConfig: AnalyticsConfig = {
-        ...currentConf,
-        onError: (err: unknown) => onErrorRef.current?.(err),
-      };
-      const engine = initAnalytics(stableConfig);
-      setEngineInstance(engine);
+      let engine = activeEngineRef.current;
+      if (!engine || configVersion > 0) {
+        if (engine && !externalEngine) {
+          engine.destroy();
+        }
+        engine = initAnalytics({
+          ...currentConf,
+          onError: (err: unknown) => onErrorRef.current?.(err),
+        });
+        activeEngineRef.current = engine;
+        setEngineInstance(engine);
+      }
 
       return () => {
-        engine.destroy();
-        setEngineInstance(null);
+        if (!externalEngine && activeEngineRef.current) {
+          activeEngineRef.current.destroy();
+          activeEngineRef.current = null;
+          setEngineInstance(null);
+        }
       };
     } else {
-      setEngineInstance(getAnalyticsEngine());
+      const globalEng = getAnalyticsEngine();
+      activeEngineRef.current = globalEng;
+      setEngineInstance(globalEng);
     }
   }, [externalEngine, configVersion]);
 
